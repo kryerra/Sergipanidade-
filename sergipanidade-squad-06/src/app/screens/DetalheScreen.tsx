@@ -21,13 +21,19 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { translations } from "../data/translations";
 import type { UserProfile } from "../App";
 
-/* ─────────── Gallery images (Unsplash) ─────────── */
+/* ─────────── Gallery images orla de atalaia ─────────── */
 const GALLERY_URLS = [
+  //foto praia
   "https://images.unsplash.com/photo-1662781288502-5d3a42cf4290?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-  "https://images.unsplash.com/photo-1776722201758-d5ae8399179a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
+  //foto ponte praia
+  "https://imgmd.net/images/v1/guia/1703215/orla-de-atalaia.jpg",
+  //foto praia mato
   "https://images.unsplash.com/photo-1748288147802-ebb42e5dbda2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-  "https://images.unsplash.com/photo-1723482471019-aeab76dc44c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-  "https://images.unsplash.com/photo-1775914907136-9720af24ec89?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
+  //foto lagos
+  "https://s3.a8se.com/images/lagos_da_orla_de_atalaia_governo_d.2e16d0ba.fill-770x515.jpg",
+  //foto orla natal
+  "https://www.se.gov.br/anexos/uploads/image/image/362813/slide_17326566d6e27cbf478c2cff6194bffc.jpg",
+  //foto peixes (substituir, n achei onde a ft esta)
   "https://images.unsplash.com/photo-1566151442928-b58e10e2b62e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
 ];
 

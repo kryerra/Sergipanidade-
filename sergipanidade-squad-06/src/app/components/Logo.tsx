@@ -18,13 +18,6 @@ interface LogoProps {
   className?: string;
 }
 
-/* ─── SVG path data extracted from logo-horizontal-_remv_-2.svg ─────────────
-   Original SVG transform: translate(0,493) scale(0.1,-0.1)
-   Content bounding box in SVG space:
-     Full logo  → x: 50–425, y: 158–330  ⟹ viewBox "50 158 385 175"
-     Icon only  → x: 50–150, y: 158–330  ⟹ viewBox "50 158 108 172"
-─────────────────────────────────────────────────────────────────────────── */
-
 const ICON_PATHS = (
   <>
     {/* Crab / expressionist symbol — main body */}
