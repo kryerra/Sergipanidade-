@@ -38,7 +38,7 @@ import { getDestinationById, destinations } from "../data/destinations";
 import type { Destination } from "../data/destinations";
 import { translations } from "../data/translations";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import SergipeCulturalBg from "../../imports/Sergipe_img__2_.png";
+import SergipeCulturalBg from "../../imports/fundo-roteiro.png";
 
 const BackgroundWrapper = ({ children, className = "" }: { children: ReactNode, className?: string }) => {
   return (

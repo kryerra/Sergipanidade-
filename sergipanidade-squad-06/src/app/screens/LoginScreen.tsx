@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { SergipanidadeLogo } from '../components/SergipanidadeLogo';
 import { translations } from '../data/translations';
-import bgImage from 'figma:asset/4c8369430cad333d5f775db977cda478762b5ad7.png';
 import type { UserProfile } from '../App';
 
 interface LoginScreenProps {

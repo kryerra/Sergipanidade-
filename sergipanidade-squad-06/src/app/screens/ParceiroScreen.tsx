@@ -18,7 +18,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { translations } from "../data/translations";
-import AracajuBg from "../../imports/Captura_de_Tela_(5).png";
 
 /* ─────────── Tipos ─────────── */
 interface ParceiroScreenProps {
@@ -280,17 +279,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
         className="pt-[62px] relative overflow-hidden"
         style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #E5E7EB' }}
       >
-        {/* Background image de Aracaju com opacidade muito baixa */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${AracajuBg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.05,
-          }}
-        />
-
+        
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-12 relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <div>
