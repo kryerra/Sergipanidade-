@@ -1,4 +1,4 @@
-iimport { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { destinations } from "../data/destinations";
 import { translations } from "../data/translations";
 import { AtracaoCard } from "../components/AtracaoCard";
