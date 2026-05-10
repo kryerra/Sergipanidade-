@@ -100,6 +100,7 @@ export default function App() {
       <AppRoutes 
         onNavigate={handleNavigate} 
         onToast={handleToast}
+        onChangeLanguage={handleChangeLanguage}
         currentScreen={currentScreen}
         language={language}
       />

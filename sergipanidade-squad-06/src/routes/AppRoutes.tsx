@@ -22,11 +22,12 @@ const CulturaScreen = React.lazy(() => import("@/features/cultura/CulturaScreen"
 export interface AppRoutesProps {
   onNavigate: (screen: string, destinationId?: string) => void;
   onToast: (msg: string) => void;
+  onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
   currentScreen: string;
   language: 'pt' | 'en' | 'es';
 }
 
-export function AppRoutes({ onNavigate, onToast, language }: AppRoutesProps) {
+export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: AppRoutesProps) {
   const {
     userProfile,
     setUserProfile,
@@ -42,10 +43,6 @@ export function AppRoutes({ onNavigate, onToast, language }: AppRoutesProps) {
 
   const navigate = useNavigate();
   const { id: destinationId } = useParams<{ id: string }>();
-
-  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es') => {
-    // Language change is handled by parent App component
-  };
 
   // Wrapper components for routes that need params or complex props
   const DetalheWrapper = () => {
@@ -77,7 +74,7 @@ export function AppRoutes({ onNavigate, onToast, language }: AppRoutesProps) {
             onNavigate={onNavigate} 
             onToast={onToast} 
             language={language} 
-            onChangeLanguage={handleChangeLanguage}
+            onChangeLanguage={onChangeLanguage}
             onLogin={setUserProfile}
           />
         } />
@@ -87,7 +84,7 @@ export function AppRoutes({ onNavigate, onToast, language }: AppRoutesProps) {
             onNavigate={onNavigate}
             onToast={onToast}
             language={language}
-            onChangeLanguage={handleChangeLanguage}
+            onChangeLanguage={onChangeLanguage}
             userProfile={userProfile}
           />
         } />

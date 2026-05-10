@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { destinations } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
-import { AtracaoCard } from "./components/AtracaoCard";
-import { HotelCard } from "./components/HotelCard";
+import { AtracaoCard } from "@/features/home/components/AtracaoCard";
+import { HotelCard } from "@/features/home/components/HotelCard";
 import { HeroSlideshow } from "@/components/shared/HeroSlideshow";
 import { SERGIPE_HOME_MIX } from "@/constants/sergipeImages";
-import type { UserProfile } from "@/types";
 import {
   ChevronDown,
   Search,
@@ -20,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import type { UserProfile } from "../App";
 
 // ─── Mock data — Hotéis ──────────────────────────
 const HOTEL_IMG_1 =
