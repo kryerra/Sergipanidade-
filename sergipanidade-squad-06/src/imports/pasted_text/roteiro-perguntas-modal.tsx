@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Dialog, DialogContent } from '../ui/dialog';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from "@google/generative-ai';
 import { destinations } from '../data/destinations';
 import { translations } from '../data/translations';
 
