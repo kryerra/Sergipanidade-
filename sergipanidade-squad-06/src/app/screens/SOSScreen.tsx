@@ -45,6 +45,97 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
   };
 
   const [serginhoOpen, setSerginhoOpen] = useState(false);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+  const faqAnswers = [
+    {
+      title: language === 'pt' ? 'Como criar um roteiro?' : language === 'es' ? '¿Cómo crear un itinerario?' : 'How to create an itinerary?',
+      steps: language === 'pt'
+        ? [
+          'Na tela inicial, toque em "Roteiro" no menu inferior.',
+          'Escolha quantos dias você quer explorar Sergipe.',
+          'Selecione com quem você vai viajar (solo, casal, família ou grupo).',
+          'Defina seu orçamento: econômico, moderado ou premium.',
+          'Toque em "Gerar Roteiro" e aguarde o assistente montar seu plano personalizado.',
+          'Você pode ajustar as paradas e salvar o roteiro para acessar offline.',
+        ]
+        : language === 'es'
+          ? [
+            'En la pantalla de inicio, toca "Itinerario" en el menú inferior.',
+            'Elige cuántos días quieres explorar Sergipe.',
+            'Selecciona con quién vas a viajar (solo, pareja, familia o grupo).',
+            'Define tu presupuesto: económico, moderado o premium.',
+            'Toca "Generar Itinerario" y espera a que el asistente prepare tu plan.',
+            'Puedes ajustar las paradas y guardar el itinerario para acceso sin conexión.',
+          ]
+          : [
+            'On the home screen, tap "Itinerary" in the bottom menu.',
+            'Choose how many days you want to explore Sergipe.',
+            'Select who you are traveling with (solo, couple, family or group).',
+            'Set your budget: budget, moderate or premium.',
+            'Tap "Generate Itinerary" and wait for the assistant to build your plan.',
+            'You can adjust stops and save the itinerary for offline access.',
+          ],
+    },
+    {
+      title: language === 'pt' ? 'Como me tornar um parceiro?' : language === 'es' ? '¿Cómo convertirme en socio?' : 'How to become a partner?',
+      steps: language === 'pt'
+        ? [
+          'Acesse o menu lateral e toque em "Seja um Parceiro".',
+          'Preencha o formulário com os dados do seu negócio (nome, categoria, localização).',
+          'Adicione fotos e uma descrição atrativa do seu estabelecimento.',
+          'Envie o cadastro para análise — a aprovação ocorre em até 3 dias úteis.',
+          'Após aprovado, seu negócio aparecerá no mapa e nas buscas do app.',
+          'Você receberá um painel para gerenciar avaliações e promoções.',
+        ]
+        : language === 'es'
+          ? [
+            'Accede al menú lateral y toca "Sé un Socio".',
+            'Completa el formulario con los datos de tu negocio.',
+            'Agrega fotos y una descripción atractiva de tu establecimiento.',
+            'Envía el registro para revisión — la aprobación tarda hasta 3 días hábiles.',
+            'Una vez aprobado, tu negocio aparecerá en el mapa y en las búsquedas.',
+            'Recibirás un panel para gestionar reseñas y promociones.',
+          ]
+          : [
+            'Open the side menu and tap "Become a Partner".',
+            'Fill in the form with your business details (name, category, location).',
+            'Add photos and an attractive description of your establishment.',
+            'Submit for review — approval takes up to 3 business days.',
+            'Once approved, your business will appear on the map and in app searches.',
+            'You will receive a dashboard to manage reviews and promotions.',
+          ],
+    },
+    {
+      title: language === 'pt' ? 'Como avaliar um local?' : language === 'es' ? '¿Cómo calificar un lugar?' : 'How to rate a place?',
+      steps: language === 'pt'
+        ? [
+          'Abra a página de qualquer ponto turístico, restaurante ou serviço no app.',
+          'Role até a seção "Avaliações" na parte inferior da página.',
+          'Toque nas estrelas para dar sua nota (1 a 5).',
+          'Escreva um comentário descrevendo sua experiência (opcional, mas ajuda outros viajantes!).',
+          'Adicione fotos da sua visita se quiser.',
+          'Toque em "Publicar" — sua avaliação aparece imediatamente para outros usuários.',
+        ]
+        : language === 'es'
+          ? [
+            'Abre la página de cualquier punto turístico, restaurante o servicio en la app.',
+            'Desplázate hasta la sección "Reseñas" en la parte inferior de la página.',
+            'Toca las estrellas para dar tu puntuación (1 a 5).',
+            'Escribe un comentario describiendo tu experiencia (¡opcional, pero ayuda a otros viajeros!).',
+            'Agrega fotos de tu visita si lo deseas.',
+            'Toca "Publicar" — tu reseña aparece de inmediato para otros usuarios.',
+          ]
+          : [
+            'Open the page of any tourist spot, restaurant or service in the app.',
+            'Scroll to the "Reviews" section at the bottom of the page.',
+            'Tap the stars to give your rating (1 to 5).',
+            'Write a comment describing your experience (optional, but it helps other travelers!).',
+            'Add photos from your visit if you want.',
+            'Tap "Publish" — your review appears immediately for other users.',
+          ],
+    },
+  ];
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState<Message[]>([
     { text: t.chatBotWelcome, isBot: true },
@@ -185,7 +276,7 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
       >
         <div className="flex items-center justify-center gap-3 mb-4">
           <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
-               style={{ backgroundColor: '#FEE2E2', color: '#DC2626' }}>
+            style={{ backgroundColor: '#FEE2E2', color: '#DC2626' }}>
             <Shield size={28} strokeWidth={2} />
           </div>
           <h1
@@ -417,6 +508,7 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
           {faqs.map(({ Icon, question }, i) => (
             <div
               key={i}
+              onClick={() => setFaqOpen(i)}
               className="bg-white rounded-xl p-5 flex flex-col gap-3
                          cursor-pointer hover:shadow-md transition-all duration-200 group"
               style={{
@@ -438,7 +530,7 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
               </p>
               <span
                 className="font-medium group-hover:underline"
-                style={{ fontSize: '13px', color: '#64748B' }}
+                style={{ fontSize: '13px', color: '#3B82F6' }}
               >
                 {t.seeAnswer}
               </span>
@@ -464,6 +556,97 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
           </button>
         </div>
       </section>
+
+      {/* ── FAQ MODAL ── */}
+      {faqOpen !== null && (
+        <div className="fixed inset-0 z-[950] flex items-end sm:items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+            onClick={() => setFaqOpen(null)}
+          />
+
+          {/* Panel */}
+          <div
+            className="relative w-full sm:w-[480px] bg-white rounded-t-[24px] sm:rounded-[var(--radius)]
+                       shadow-[0_32px_80px_rgba(0,0,0,0.35)] flex flex-col overflow-hidden"
+            style={{ maxHeight: '90vh' }}
+          >
+            {/* Header */}
+            <div
+              className="px-5 py-4 flex items-center gap-3"
+              style={{ borderBottom: '1px solid #E5E7EB' }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: '#EFF6FF', color: '#3B82F6' }}
+              >
+                <HelpCircle size={18} strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div
+                  className="font-['Fjalla_One'] tracking-wide leading-tight"
+                  style={{ fontSize: '16px', color: '#1E293B' }}
+                >
+                  {faqAnswers[faqOpen].title}
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748B' }}>
+                  Central de Ajuda
+                </div>
+              </div>
+              <button
+                onClick={() => setFaqOpen(null)}
+                aria-label="Fechar"
+                className="bg-transparent border-none cursor-pointer p-1 rounded-full
+                           min-w-[36px] min-h-[36px] flex items-center justify-center transition-colors"
+                style={{ color: '#64748B' }}
+              >
+                <X size={18} strokeWidth={2.5} />
+              </button>
+            </div>
+
+            {/* Steps */}
+            <div className="overflow-y-auto px-5 py-5 flex flex-col gap-3">
+              {faqAnswers[faqOpen].steps.map((step, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-bold"
+                    style={{
+                      backgroundColor: '#EFF6FF',
+                      color: '#3B82F6',
+                      fontSize: '13px',
+                      minWidth: '28px',
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+                  <p
+                    className="leading-relaxed pt-0.5"
+                    style={{ fontSize: '14px', color: '#374151' }}
+                  >
+                    {step}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div
+              className="px-5 py-4"
+              style={{ borderTop: '1px solid #E5E7EB' }}
+            >
+              <button
+                onClick={() => setFaqOpen(null)}
+                className="w-full py-3 rounded-xl text-white font-['Fjalla_One'] tracking-wider
+                           border-none cursor-pointer transition-all"
+                style={{ backgroundColor: '#3B82F6', fontSize: '15px' }}
+              >
+                Entendi!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── CHATBOT SERGINHO MODAL ── */}
       {serginhoOpen && (
@@ -542,11 +725,10 @@ export function SOSScreen({ onToast, language }: SOSScreenProps) {
               {chatMessages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`max-w-[85%] px-4 py-3 leading-relaxed ${
-                    msg.isBot
+                  className={`max-w-[85%] px-4 py-3 leading-relaxed ${msg.isBot
                       ? 'self-start rounded-2xl rounded-bl-sm'
                       : 'self-end rounded-2xl rounded-br-sm'
-                  }`}
+                    }`}
                   style={{
                     fontSize: '14px',
                     backgroundColor: msg.isBot ? '#FFFFFF' : '#3B82F6',
