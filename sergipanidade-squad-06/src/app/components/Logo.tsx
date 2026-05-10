@@ -18,6 +18,13 @@ interface LogoProps {
   className?: string;
 }
 
+/* ─── SVG path data extracted from logo-horizontal-_remv_-2.svg ─────────────
+   Original SVG transform: translate(0,493) scale(0.1,-0.1)
+   Content bounding box in SVG space:
+     Full logo  → x: 50–425, y: 158–330  ⟹ viewBox "50 158 385 175"
+     Icon only  → x: 50–150, y: 158–330  ⟹ viewBox "50 158 108 172"
+─────────────────────────────────────────────────────────────────────────── */
+
 const ICON_PATHS = (
   <>
     {/* Crab / expressionist symbol — main body */}
@@ -173,19 +180,24 @@ export function Logo({
     );
   }
 
-  const w = width ?? 180;
-  const h = height;
+  const w = width ?? 145;
+  const h = height ?? 64;
   return (
     <div className={`flex flex-col items-center ${className}`} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
       <svg
-        viewBox="50 158 390 178"
-        width={w}
-        height={h}
-        fill={fill}
-        aria-label="Sergipanidade"
-        role="img"
-        style={{ display: 'block', flexShrink: 0 }}
-      >
+  viewBox="45 145 410 205"
+  width={w}
+  height={h}
+  fill={fill}
+  aria-label="Sergipanidade"
+  role="img"
+  preserveAspectRatio="xMidYMid meet"
+  style={{
+    display: 'block',
+    flexShrink: 0,
+    overflow: 'visible',
+  }}
+>
         <g transform="translate(0,493) scale(0.1,-0.1)" stroke="none">
           {ICON_PATHS}
           {TEXT_PATHS}

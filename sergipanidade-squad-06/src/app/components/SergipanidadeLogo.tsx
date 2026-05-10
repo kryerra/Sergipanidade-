@@ -14,7 +14,7 @@ interface SergipanidadeLogoProps {
 export function SergipanidadeLogo({
   variant = 'dark',
   showSlogan = false,
-  iconSize = 40,
+  iconSize = 32,
   iconOnly = false,
 }: SergipanidadeLogoProps) {
   if (iconOnly) {
@@ -30,9 +30,10 @@ export function SergipanidadeLogo({
 
   return (
     <Logo
-      variant={variant}
-      width={iconSize * 4.5}
-      showSlogan={showSlogan}
-    />
+  variant={variant}
+  width={145}
+  height={64}
+  showSlogan={showSlogan}
+/>
   );
 }

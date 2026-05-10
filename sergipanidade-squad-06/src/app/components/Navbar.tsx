@@ -3,11 +3,24 @@ import { SergipanidadeLogo } from './SergipanidadeLogo';
 import { translations } from '../data/translations';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import {
-  Menu, Home, Map as MapIcon, Route, Handshake,
-  AlertTriangle, User, LogOut, Search, ChevronDown, MapPin, Landmark
+  Menu,
+  Home,
+  Map as MapIcon,
+  Route,
+  User,
+  LogOut,
+  Search,
+  ChevronDown,
+  MapPin,
+  Landmark,
 } from 'lucide-react';
 import { PrimaryButton } from './PrimaryButton';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 interface NavbarProps {
   currentScreen: string;
@@ -17,37 +30,53 @@ interface NavbarProps {
   onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
 }
 
-export function Navbar({ currentScreen, onNavigate, isVisible, language, onChangeLanguage }: NavbarProps) {
+export function Navbar({
+  currentScreen,
+  onNavigate,
+  isVisible,
+  language,
+}: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('Aracaju');
+
+  const cities = [
+    'Aracaju',
+    'São Cristóvão',
+    'Laranjeiras',
+    'Canindé',
+    'Lagarto',
+    'Itabaiana',
+  ];
+
+  const cityOptions = cities.filter((city) => city !== selectedCity);
+
   if (!isVisible) return null;
 
   const t = translations[language] as typeof translations.pt;
 
-  // Mobile Bottom Nav items
   const bottomNavItems = [
-    { label: 'Home',                          screen: 'home',    icon: Home },
-    { label: t?.destinations || 'Destinos',   screen: 'guia',    icon: MapIcon },
-    { label: 'Cultura',                       screen: 'cultura', icon: Landmark },
-    { label: t?.itinerary || 'Roteiro',       screen: 'roteiro', icon: Route },
-    { label: t?.profile || 'Perfil',          screen: 'perfil',  icon: User },
+    { label: 'Home', screen: 'home', icon: Home },
+    { label: t?.destinations || 'Destinos', screen: 'guia', icon: MapIcon },
+    { label: 'Cultura', screen: 'cultura', icon: Landmark },
+    { label: t?.itinerary || 'Roteiro', screen: 'roteiro', icon: Route },
+    { label: t?.profile || 'Perfil', screen: 'perfil', icon: User },
   ];
 
-  // Desktop Nav Items
   const desktopNavItems = [
-    { label: 'Home',                          screen: 'home' },
-    { label: t?.destinations || 'Destinos',   screen: 'guia' },
-    { label: 'Cultura',                       screen: 'cultura' },
-    { label: t?.itinerary || 'Roteiro',       screen: 'roteiro' },
-    { label: t?.partner || 'Parceiro',        screen: 'parceiro' },
-    { label: 'SOS',                           screen: 'sos', isSos: true },
-    { label: t?.profile || 'Perfil',          screen: 'perfil' },
+    { label: 'Home', screen: 'home' },
+    { label: t?.destinations || 'Destinos', screen: 'guia' },
+    { label: 'Cultura', screen: 'cultura' },
+    { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
+    { label: t?.partner || 'Parceiro', screen: 'parceiro' },
+    { label: 'SOS', screen: 'sos', isSos: true },
+    { label: t?.profile || 'Perfil', screen: 'perfil' },
   ];
 
   return (
     <>
-      {/* ── Top Navbar — versão clean branca ── */}
+      {/* Top Navbar */}
       <nav
-        className="fixed top-0 left-0 right-0 z-[900]"
+        className="fixed top-0 left-0 right-0 z-[900] overflow-visible"
         style={{
           backgroundColor: '#FFFFFF',
           borderBottom: '1px solid #D9D9D9',
@@ -55,35 +84,63 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
         }}
       >
         {/* Desktop Header */}
-        <div className="hidden md:flex items-center justify-between px-8 h-[64px] w-full mx-auto">
+        <div className="hidden md:flex items-center justify-between px-8 h-[76px] w-full mx-auto overflow-visible">
           {/* Left: Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className="flex items-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[44px]"
+            className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
           >
-            <SergipanidadeLogo variant="light" iconSize={36} showSlogan={false} />
+            <div className="flex items-center justify-center h-[56px] w-[150px] overflow-visible">
+              <SergipanidadeLogo
+                variant="light"
+                iconSize={30}
+                showSlogan={false}
+              />
+            </div>
           </button>
 
           {/* Center: Breadcrumb */}
-          <div className="flex items-center gap-1.5 text-[13px]" style={{ color: '#8A8A8A' }}>
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">Brasil</span>
+          <div
+            className="flex items-center gap-1.5 text-[13px]"
+            style={{ color: '#8A8A8A' }}
+          >
+            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
+              Brasil
+            </span>
+
             <span style={{ color: '#D9D9D9' }}>›</span>
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">Sergipe (SE)</span>
+
+            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
+              Sergipe (SE)
+            </span>
+
             <span style={{ color: '#D9D9D9' }}>›</span>
+
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="flex items-center gap-1 font-medium outline-none cursor-pointer bg-transparent border-none transition-colors min-h-[44px]"
                 style={{ color: '#1A1A1A' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#0D7377')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#1A1A1A')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#0D7377';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#1A1A1A';
+                }}
               >
-                Aracaju
+                {selectedCity}
                 <ChevronDown size={14} className="opacity-60" />
               </DropdownMenuTrigger>
+
               <DropdownMenuContent>
-                <DropdownMenuItem>Aracaju</DropdownMenuItem>
-                <DropdownMenuItem>São Cristóvão</DropdownMenuItem>
-                <DropdownMenuItem>Laranjeiras</DropdownMenuItem>
+                {cityOptions.map((city) => (
+                  <DropdownMenuItem
+                    key={city}
+                    onSelect={() => setSelectedCity(city)}
+                    className="cursor-pointer"
+                  >
+                    {city}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -97,10 +154,10 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
               <Search size={18} />
             </button>
 
-            {/* Links */}
             <div className="flex items-center gap-1 text-[13px] font-medium ml-1">
               {desktopNavItems.map((item) => {
                 const isActive = currentScreen === item.screen;
+
                 if (item.isSos) {
                   return (
                     <button
@@ -110,33 +167,42 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
                       style={{
                         color: '#0D7377',
                         border: '1px solid rgba(224,92,0,0.35)',
-                        backgroundColor: isActive ? 'rgba(224,92,0,0.06)' : undefined,
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = 'rgba(224,92,0,0.08)')
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = isActive
+                        backgroundColor: isActive
                           ? 'rgba(224,92,0,0.06)'
-                          : 'transparent')
-                      }
+                          : 'transparent',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          'rgba(224,92,0,0.08)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = isActive
+                          ? 'rgba(224,92,0,0.06)'
+                          : 'transparent';
+                      }}
                     >
                       {item.label}
                     </button>
                   );
                 }
+
                 return (
                   <button
                     key={item.screen}
                     onClick={() => onNavigate(item.screen)}
                     className="relative min-h-[44px] px-3 flex items-center justify-center border-none bg-transparent cursor-pointer group rounded-lg transition-colors"
-                    style={{ color: isActive ? '#1A1A1A' : '#8A8A8A' }}
-                    onMouseEnter={(e) => !isActive && (e.currentTarget.style.color = '#1A1A1A')}
-                    onMouseLeave={(e) =>
-                      !isActive && (e.currentTarget.style.color = '#8A8A8A')
-                    }
+                    style={{
+                      color: isActive ? '#1A1A1A' : '#8A8A8A',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) e.currentTarget.style.color = '#1A1A1A';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) e.currentTarget.style.color = '#8A8A8A';
+                    }}
                   >
                     {item.label}
+
                     <span
                       className="absolute bottom-[8px] left-3 right-3 h-[2px] rounded-full transition-transform origin-left"
                       style={{
@@ -149,7 +215,11 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
               })}
 
               <div className="ml-2">
-                <PrimaryButton size="sm" onClick={() => onNavigate('login')} style={{ minWidth: '80px' }}>
+                <PrimaryButton
+                  size="sm"
+                  onClick={() => onNavigate('login')}
+                  style={{ minWidth: '80px' }}
+                >
                   {t?.logout || 'Sair'}
                 </PrimaryButton>
               </div>
@@ -159,15 +229,21 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
 
         {/* Mobile Header */}
         <div
-          className="md:hidden flex items-center justify-between px-4 h-[56px] w-full"
+          className="md:hidden flex items-center justify-between px-4 h-[64px] w-full overflow-visible"
           style={{ backgroundColor: '#FFFFFF' }}
         >
           {/* Left: Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer min-w-[44px] min-h-[44px]"
+            className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer min-w-[46px] min-h-[46px] overflow-visible"
           >
-            <SergipanidadeLogo variant="light" iconSize={28} iconOnly={true} />
+            <div className="flex items-center justify-center h-[46px] w-[46px] overflow-visible">
+              <SergipanidadeLogo
+                variant="light"
+                iconSize={24}
+                iconOnly={true}
+              />
+            </div>
           </button>
 
           {/* Center: Location */}
@@ -177,12 +253,20 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
               style={{ color: '#1A1A1A' }}
             >
               <MapPin size={16} color="#0D7377" />
-              Aracaju
+              {selectedCity}
               <ChevronDown size={14} style={{ color: '#8A8A8A' }} />
             </DropdownMenuTrigger>
+
             <DropdownMenuContent>
-              <DropdownMenuItem>Aracaju</DropdownMenuItem>
-              <DropdownMenuItem>São Cristóvão</DropdownMenuItem>
+              {cityOptions.map((city) => (
+                <DropdownMenuItem
+                  key={city}
+                  onSelect={() => setSelectedCity(city)}
+                  className="cursor-pointer"
+                >
+                  {city}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -204,7 +288,7 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
                   <Menu size={24} />
                 </button>
               </SheetTrigger>
-              {/* Drawer — mantém fundo escuro para contraste */}
+
               <SheetContent
                 side="right"
                 className="border-l-[rgba(255,255,255,0.05)] p-0 text-white w-[280px]"
@@ -212,17 +296,25 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
               >
                 <div className="flex flex-col h-full">
                   <div className="px-6 pt-12 pb-6 border-b border-white/8">
-                    <SergipanidadeLogo variant="dark" iconSize={32} showSlogan={true} />
+                    <SergipanidadeLogo
+                      variant="dark"
+                      iconSize={32}
+                      showSlogan={true}
+                    />
                   </div>
 
                   <div className="flex flex-col p-4 gap-1 flex-1 overflow-y-auto">
                     <p className="text-white/35 text-[11px] uppercase font-bold tracking-widest mb-2 px-4">
                       Menu
                     </p>
+
                     {desktopNavItems.map((item) => (
                       <button
                         key={item.screen}
-                        onClick={() => { onNavigate(item.screen); setMobileOpen(false); }}
+                        onClick={() => {
+                          onNavigate(item.screen);
+                          setMobileOpen(false);
+                        }}
                         className={`w-full flex items-center px-4 py-3 rounded-lg bg-transparent border-none cursor-pointer text-left min-h-[44px] text-[15px] transition-colors ${
                           currentScreen === item.screen
                             ? 'bg-[rgba(224,92,0,0.12)] text-[#0D7377] font-medium'
@@ -236,7 +328,10 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
 
                   <div className="p-4 border-t border-white/8">
                     <button
-                      onClick={() => { onNavigate('login'); setMobileOpen(false); }}
+                      onClick={() => {
+                        onNavigate('login');
+                        setMobileOpen(false);
+                      }}
                       className="w-full flex items-center justify-center gap-2 text-white px-4 py-3 rounded-[10px] font-medium text-[15px] cursor-pointer border-none min-h-[48px] transition-colors hover:opacity-90"
                       style={{ backgroundColor: '#0D7377' }}
                     >
@@ -251,7 +346,7 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
         </div>
       </nav>
 
-      {/* ── Mobile Bottom Navigation ── */}
+      {/* Mobile Bottom Navigation */}
       <div
         className="md:hidden fixed bottom-0 left-0 right-0 border-t flex items-center justify-around px-2 z-[900]"
         style={{
@@ -264,6 +359,8 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
       >
         {bottomNavItems.map((item) => {
           const isActive = currentScreen === item.screen;
+          const Icon = item.icon;
+
           return (
             <button
               key={item.screen}
@@ -271,14 +368,17 @@ export function Navbar({ currentScreen, onNavigate, isVisible, language, onChang
               className="flex flex-col items-center justify-center flex-1 h-full gap-1 bg-transparent border-none cursor-pointer min-h-[44px]"
               aria-label={item.label}
             >
-              <item.icon
+              <Icon
                 size={22}
                 color={isActive ? '#0D7377' : '#8A8A8A'}
                 strokeWidth={isActive ? 2.5 : 1.8}
               />
+
               <span
                 className="text-[10px] font-medium tracking-wide"
-                style={{ color: isActive ? '#0D7377' : '#8A8A8A' }}
+                style={{
+                  color: isActive ? '#0D7377' : '#8A8A8A',
+                }}
               >
                 {item.label}
               </span>
