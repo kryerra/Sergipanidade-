@@ -733,12 +733,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
             <div className="bg-white rounded-2xl p-12 max-w-md w-full mx-4 text-center shadow-2xl">
               <div className="mb-8">
-                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-5">
-                  <path d="M47.04 24.5333C47.04 22.6666 46.88 20.7999 46.5866 18.9866H24V29.6133H36.8533C36.2933 32.6533 34.6133 35.3066 32.1066 37.0399V43.6666H39.9466C44.4533 39.4799 47.04 33.3066 47.04 24.5333Z" fill="#4285F4" />
-                  <path d="M24.0009 50C31.4409 50 37.7342 47.5867 39.9476 43.6667L32.1076 37.04C29.9476 38.52 27.1743 39.3867 24.0009 39.3867C16.8009 39.3867 10.6809 35.1467 8.70094 29.2H0.640938V35.9867C2.99427 40.6667 8.32094 43.8667 14.4009 46.5067C17.5476 48.3733 20.7209 50 24.0009 50Z" fill="#34A853" />
-                  <path d="M8.69998 29.2C7.74665 26.16 7.74665 22.8533 8.69998 19.8133V13.0266H0.639984C-1.38668 17.0533 -2.13335 21.4933 1.37331 25.5066C2.34665 26.5866 3.42665 27.56 4.59998 28.4133L8.69998 29.2Z" fill="#FBBC05" />
-                  <path d="M24.0009 10.6133C27.4142 10.56 30.7209 11.84 33.2009 14.2133L40.1076 7.30665C37.5476 4.85332 34.2142 3.45332 30.7209 3.45332C20.7209 3.45332 12.0809 8.95998 8.70094 16.8133L0.640938 19.8133C2.29427 14.0266 6.34761 9.17332 11.7609 6.05332C15.5209 4.05332 19.7342 3.01332 24.0009 3.01332V10.6133Z" fill="#EA4335" />
-                </svg>
+                <img src={googleLogo} alt="Google logo" className="mx-auto mb-5 w-14 h-14 object-contain" />
                 <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-2 tracking-wide">
                   {t.connectingGoogle}
                 </h3>
