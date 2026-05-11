@@ -10,25 +10,26 @@ import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { HeroSlideshow } from '../components/HeroSlideshow';
 import { SERGIPE_CULTURE } from '../data/sergipeImages';
+import imgCultura from '../../imports/img_cultura.jpeg';
 
 // ─── Image Constants ─────────────────────────────────────────
-const IMG_ARTISAN   = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PAINTER   = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PHOTO     = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSIC     = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_DANCE     = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_LACE      = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_RIVER     = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MURAL     = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MARKET    = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_WRITER    = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_HERITAGE  = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CONCERT   = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_SCULPTOR  = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSEUM    = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_THEATER   = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_FESTIVAL  = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CHURCH    = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_PAINTER = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_PHOTO = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_LACE = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MURAL = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MARKET = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_HERITAGE = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_SCULPTOR = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MUSEUM = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 // ─── Types ───────────────────────────────────────────────────
 type CulturaTab = 'artistas' | 'historias' | 'eventos' | 'patrimonio';
@@ -453,31 +454,31 @@ const HERITAGE: Heritage[] = [
 
 // ─── LANGUAGE ICONS MAP ───────────────────────────────────────
 const LINGUA_ICON: Record<ArtistFilter, typeof Music> = {
-  todos:      Shapes,
+  todos: Shapes,
   artesanato: Scissors,
-  pintura:    Palette,
+  pintura: Palette,
   fotografia: Camera,
-  musica:     Music,
+  musica: Music,
   literatura: BookOpen,
-  danca:      Footprints,
-  escultura:  Shapes,
+  danca: Footprints,
+  escultura: Shapes,
 };
 
 const LINGUA_LABEL: Record<ArtistFilter, string> = {
-  todos:      'Todos',
+  todos: 'Todos',
   artesanato: 'Artesanato',
-  pintura:    'Pintura',
+  pintura: 'Pintura',
   fotografia: 'Fotografia',
-  musica:     'Música',
+  musica: 'Música',
   literatura: 'Literatura',
-  danca:      'Dança',
-  escultura:  'Escultura',
+  danca: 'Dança',
+  escultura: 'Escultura',
 };
 
 const EVENT_TYPES = ['Todos', 'Festival', 'Exposição', 'Show', 'Teatro', 'Feira', 'Gastronomia'];
 const EVENT_QUICK = [
   { id: 'semana', label: 'Próximos 7 dias' },
-    { id: 'gratuito', label: 'Gratuitos' },
+  { id: 'gratuito', label: 'Gratuitos' },
   { id: 'presencial', label: 'Presenciais' },
 ];
 
@@ -848,9 +849,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
   // ── Main Screen ────────────────────────────────────────────
   const TABS: { id: CulturaTab; label: string; Icon: LucideIcon }[] = [
-    { id: 'artistas',   label: 'Artistas',   Icon: Palette },
-    { id: 'historias',  label: 'Histórias',  Icon: BookOpen },
-    { id: 'eventos',    label: 'Eventos',    Icon: Tent },
+    { id: 'artistas', label: 'Artistas', Icon: Palette },
+    { id: 'historias', label: 'Histórias', Icon: BookOpen },
+    { id: 'eventos', label: 'Eventos', Icon: Tent },
     { id: 'patrimonio', label: 'Patrimônio', Icon: Landmark },
   ];
 
@@ -866,34 +867,20 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       {/* ── HEADER ESTÁTICO ── */}
       <div className="relative w-full h-[480px] overflow-hidden flex items-center justify-center">
         {/* Foto de fundo */}
-        <ImageWithFallback 
-          src="https://images.unsplash.com/photo-1528000936410-deb9b2dee794?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmF6aWwlMjBjdWx0dXJhbCUyMGRhbmNlfGVufDF8fHx8MTc3ODAyMzA3Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+        <ImageWithFallback
+          src={imgCultura}
           alt="Cultura Sergipana"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        
+
         {/* Overlay escuro */}
-        <div 
-          className="absolute inset-0" 
+        <div
+          className="absolute inset-0"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%)' }}
         />
 
         {/* Conteúdo centralizado */}
         <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-5 sm:px-12 mt-4">
-          
-          {/* Tag superior */}
-          <div 
-            className="flex items-center font-bold mb-4"
-            style={{ 
-              color: '#0D7377', 
-              fontSize: '11px', 
-              textTransform: 'uppercase', 
-              letterSpacing: '2px' 
-            }}
-          >
-            <div className="h-3.5 w-[2px] mr-2.5" style={{ backgroundColor: '#0D7377' }} />
-            CULTURA
-          </div>
 
           {/* Título */}
           <h1
@@ -937,7 +924,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* Transição fade sutil para o conteúdo na parte inferior */}
-        <div 
+        <div
           className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, #F7F6F3 100%)' }}
         />
