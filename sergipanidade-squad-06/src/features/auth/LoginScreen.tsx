@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { SergipanidadeLogo } from '@/components/shared/SergipanidadeLogo';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
 import bgImage from "@/assets/images/caranguejo-login.png";
 import googleLogo from "@/imports/Google_Logo.png";
+import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
@@ -294,7 +294,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
 
           <div className="relative z-10 max-w-[520px]">
             <div className="mb-10">
-              <SergipanidadeLogo variant="dark" iconSize={80} showSlogan={true} />
+              <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-[290px] h-[128px] object-contain filter invert ml-[-50px]" />
             </div>
 
             <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
@@ -313,7 +313,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
           <div className="max-w-[440px] mx-auto w-full">
             {/* Logo */}
             <div className="flex justify-center mb-12">
-              <SergipanidadeLogo variant="light" iconSize={56} showSlogan={false} />
+              <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-[290px] h-[128px] object-contain" />
             </div>
 
             {!showLoginForm ? (
