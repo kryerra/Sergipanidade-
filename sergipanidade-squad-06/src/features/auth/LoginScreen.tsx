@@ -3,6 +3,7 @@ import { SergipanidadeLogo } from '@/components/shared/SergipanidadeLogo';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
 import bgImage from "@/assets/images/caranguejo-login.png";
+import googleLogo from "@/imports/Google_Logo.png";
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
@@ -360,12 +361,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                              hover:border-[#999] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-all duration-200
                              flex items-center justify-center gap-3"
                   >
-                    <svg width="20" height="20" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4" />
-                      <path d="M9.003 18c2.43 0 4.467-.806 5.956-2.18L12.05 13.56c-.806.54-1.836.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.438 15.983 5.482 18 9.003 18z" fill="#34A853" />
-                      <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05" />
-                      <path d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.426 0 9.003 0 5.48 0 2.438 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z" fill="#EA4335" />
-                    </svg>
+                    <img src={googleLogo} alt="Google logo" className="w-5 h-5 object-contain" />
                     {t.loginWithGoogle}
                   </button>
 
@@ -769,12 +765,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden">
               {/* Header */}
               <div className="text-center px-10 pt-10 pb-8 border-b border-[#E0E0E0]">
-                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-5">
-                  <path d="M47.04 24.5333C47.04 22.6666 46.88 20.7999 46.5866 18.9866H24V29.6133H36.8533C36.2933 32.6533 34.6133 35.3066 32.1066 37.0399V43.6666H39.9466C44.4533 39.4799 47.04 33.3066 47.04 24.5333Z" fill="#4285F4" />
-                  <path d="M24.0009 50C31.4409 50 37.7342 47.5867 39.9476 43.6667L32.1076 37.04C29.9476 38.52 27.1743 39.3867 24.0009 39.3867C16.8009 39.3867 10.6809 35.1467 8.70094 29.2H0.640938V35.9867C2.99427 40.6667 8.32094 43.8667 14.4009 46.5067C17.5476 48.3733 20.7209 50 24.0009 50Z" fill="#34A853" />
-                  <path d="M8.69998 29.2C7.74665 26.16 7.74665 22.8533 8.69998 19.8133V13.0266H0.639984C-1.38668 17.0533 -2.13335 21.4933 1.37331 25.5066C2.34665 26.5866 3.42665 27.56 4.59998 28.4133L8.69998 29.2Z" fill="#FBBC05" />
-                  <path d="M24.0009 10.6133C27.4142 10.56 30.7209 11.84 33.2009 14.2133L40.1076 7.30665C37.5476 4.85332 34.2142 3.45332 30.7209 3.45332C20.7209 3.45332 12.0809 8.95998 8.70094 16.8133L0.640938 19.8133C2.29427 14.0266 6.34761 9.17332 11.7609 6.05332C15.5209 4.05332 19.7342 3.01332 24.0009 3.01332V10.6133Z" fill="#EA4335" />
-                </svg>
+                <img src={googleLogo} alt="Google logo" className="mx-auto mb-5 w-14 h-14 object-contain" />
                 <h3 className="text-2xl font-semibold text-[#1A1A1A] mb-2">
                   {t.selectGoogleAccount}
                 </h3>
