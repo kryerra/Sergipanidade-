@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { UserProfile, RoteiroItem, Review } from '../App';
+import { UserProfile, RoteiroItem, Review } from '@/types'; // Fix 6: fonte única de tipos
+import { translations } from '@/constants/translations';
 
 interface AppContextType {
   language: 'pt' | 'en' | 'es';
@@ -28,10 +29,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<'pt' | 'en' | 'es'>('pt');
   const [roteiro, setRoteiro] = useState<RoteiroItem[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  
+
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
-  
+
   const [showGPSModal, setShowGPSModal] = useState(false);
   const [gpsDestinationId, setGpsDestinationId] = useState<string | undefined>();
 
@@ -63,17 +64,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const closeGPS = () => setShowGPSModal(false);
 
   const addToRoteiro = (destinationId: string, note?: string) => {
+    // Fix 3: usa translations[language] — nunca mais hardcoded em PT
+    const t = translations[language];
+
     if (roteiro.find(item => item.destinationId === destinationId)) {
-      handleToast("Já está no seu roteiro!"); // ideal use translations based on language
+      handleToast(t.alreadyInItineraryToast);
       return;
     }
     setRoteiro(prev => [...prev, { destinationId, note }]);
-    handleToast("Adicionado ao roteiro!");
+    handleToast(t.addedToItinerary);
   };
 
   const removeFromRoteiro = (destinationId: string) => {
+    const t = translations[language];
     setRoteiro(roteiro.filter(item => item.destinationId !== destinationId));
-    handleToast("Removido do roteiro!");
+    handleToast(t.removedFromItinerary);
   };
 
   const addReview = (destinationId: string, rating: number, comment: string, userName: string) => {
