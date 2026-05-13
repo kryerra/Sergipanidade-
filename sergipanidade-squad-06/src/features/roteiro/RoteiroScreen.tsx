@@ -49,6 +49,8 @@ import {
 } from "@/constants/periods";
 import { gerarRoteiroLocal } from "@/services/itinerary.service";
 import SergipeCulturalBg from "@/imports/fundo-roteiro.png";
+import { RoteiroEmpty } from "@/features/roteiro/components/RoteiroEmpty";
+import { RoteiroGenerating } from "@/features/roteiro/components/RoteiroGenerating";
 
 const BackgroundWrapper = ({
   children,
@@ -339,7 +341,7 @@ export function RoteiroScreen({
     if (roteiro.length > 0 && viewState === "empty") {
       setViewState("view");
     }
-  }, [roteiro.length]);
+  }, [roteiro.length, viewState]);
 
   /* ── Wizard helpers ── */
   const WHO_OPTIONS = [
@@ -499,67 +501,14 @@ export function RoteiroScreen({
   if (viewState === "empty") {
     return (
       <BackgroundWrapper className="pt-[62px]">
-        <div className="max-w-xl mx-auto px-4 py-16 flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-full bg-[var(--secondary)] flex items-center justify-center mb-6 text-4xl">
-            <MapPin size={24} style={{ color: "#0D7377" }} />
-          </div>
-          <h1 className="font-['Fjalla_One'] text-3xl text-[var(--preto)] mb-3">
-            {t.emptyItinerary}
-          </h1>
-          <p className="text-[var(--cinza-txt)] text-sm mb-8 max-w-sm leading-relaxed">
-            {t.emptyItineraryMessage}
-          </p>
-
-          {/* CTA Card */}
-          <div className="w-full bg-gradient-to-br from-[var(--preto)] to-[#2A2A2E] rounded-[var(--radius)] p-7 text-left mb-6 shadow-[var(--sombra-lg)]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center">
-                <Bot size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="font-['Fjalla_One'] text-white text-lg">
-                  {t.aiItineraryTitle}
-                </p>
-                <p className="text-white/60 text-xs">{t.aiItineraryDesc}</p>
-              </div>
-            </div>
-            <p className="text-white/70 text-sm leading-relaxed mb-5">
-              {language === "pt"
-                ? "Responda 4 perguntas rápidas e nossa IA cria o roteiro ideal para você em Sergipe."
-                : language === "en"
-                  ? "Answer 4 quick questions and our AI creates the ideal itinerary for you in Sergipe."
-                  : "Responde 4 preguntas rápidas y nuestra IA crea el itinerario ideal para ti en Sergipe."}
-            </p>
-            <button
-              onClick={() => {
-                setWizardStep(0);
-                setViewState("wizard");
-              }}
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#004D51] transition-colors min-h-[44px]"
-            >
-              <Sparkles size={18} />
-              {t.generateWithAI}
-            </button>
-          </div>
-
-          <button
-            onClick={() => onNavigate("guia")}
-            className="w-full py-3.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#004D51] transition-colors min-h-[44px] mb-3"
-          >
-            {t.exploreDestinations}
-          </button>
-
-          <button
-            onClick={() => onNavigate("guia")}
-            className="w-full py-2.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-medium text-[13px] hover:bg-[#004D51] transition-colors min-h-[40px]"
-          >
-            {language === "pt"
-              ? "CRIAR ROTEIRO MANUAL"
-              : language === "en"
-                ? "CREATE MANUAL ITINERARY"
-                : "CREAR ITINERARIO MANUAL"}
-          </button>
-        </div>
+        <RoteiroEmpty
+          onCreateWithAI={() => {
+            setWizardStep(0);
+            setViewState("wizard");
+          }}
+          onExploreDestinations={() => onNavigate("guia")}
+          language={language}
+        />
       </BackgroundWrapper>
     );
   }
@@ -570,65 +519,7 @@ export function RoteiroScreen({
   if (viewState === "generating") {
     return (
       <BackgroundWrapper className="pt-[62px] flex items-center justify-center">
-        <div className="text-center px-6 max-w-sm">
-          <div className="relative w-24 h-24 mx-auto mb-7">
-            <div className="absolute inset-0 rounded-full bg-[var(--secondary)] animate-ping opacity-40" />
-            <div className="relative w-24 h-24 rounded-full bg-[var(--primary)] flex items-center justify-center text-4xl shadow-lg">
-              <Bot size={36} className="text-white" />
-            </div>
-          </div>
-          <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-3">
-            {t.aiItineraryTitle}
-          </h2>
-          <p className="text-[var(--cinza-txt)] text-sm mb-6 leading-relaxed">
-            {t.timelineGeneratingMsg}
-          </p>
-          {/* Animated dots */}
-          <div className="flex justify-center gap-2">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-2.5 h-2.5 rounded-full bg-[var(--primary)]"
-                style={{
-                  animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
-                }}
-              />
-            ))}
-          </div>
-          <style>{`@keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } }`}</style>
-          {/* Progress activities */}
-          <div className="mt-8 text-left space-y-2">
-            {[
-              language === "pt"
-                ? "Mapeando pontos de interesse…"
-                : language === "es"
-                  ? "Mapeando puntos de interés…"
-                  : "Mapping points of interest…",
-              language === "pt"
-                ? "Organizando paradas por proximidade…"
-                : language === "es"
-                  ? "Organizando paradas por proximidad…"
-                  : "Organizing stops by proximity…",
-              language === "pt"
-                ? "Adicionando dicas exclusivas…"
-                : language === "es"
-                  ? "Agregando consejos exclusivos…"
-                  : "Adding exclusive tips…",
-            ].map((msg, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 text-sm text-[var(--cinza-txt)] bg-[var(--cinza-leve)] px-4 py-2.5 rounded-[var(--radius-sm)]"
-                style={{
-                  opacity: 1,
-                  animation: `fadeIn 0.5s ease ${0.4 + i * 0.5}s both`,
-                }}
-              >
-                <span>{msg}</span>
-              </div>
-            ))}
-          </div>
-          <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-        </div>
+        <RoteiroGenerating language={language} />
       </BackgroundWrapper>
     );
   }
