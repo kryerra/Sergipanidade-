@@ -21,7 +21,7 @@ export interface Review {
 export interface UserProfile {
   name: string;
   email: string;
-  userType: 'turista' | 'morador' | 'estabelecimento';
+  userType: "turista" | "morador" | "estabelecimento";
   phone?: string;
   notifications?: {
     nearby: boolean;
@@ -29,4 +29,19 @@ export interface UserProfile {
     reminders: boolean;
     events: boolean;
   };
+}
+
+export interface ParadaGerada {
+  destinationId: string;
+  dia: number;
+  periodo: string;
+  dica: string;
+}
+
+export interface WizardData {
+  who: string;
+  days: number;
+  startDate: string;
+  interests: string[];
+  budget: string;
 }
