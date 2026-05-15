@@ -21,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { useAppContext } from '../../context/AppContext';
 
 interface NavbarProps {
   currentScreen: string;
@@ -53,6 +54,7 @@ export function Navbar({
   if (!isVisible) return null;
 
   const t = translations[language] as typeof translations.pt;
+  const { userProfile } = useAppContext();
 
   const bottomNavItems = [
     { label: 'Home', screen: 'home', icon: Home },
@@ -67,10 +69,13 @@ export function Navbar({
     { label: t?.destinations || 'Destinos', screen: 'guia' },
     { label: 'Cultura', screen: 'cultura' },
     { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
-    { label: t?.partner || 'Parceiro', screen: 'parceiro' },
     { label: 'SOS', screen: 'sos', isSos: true },
     { label: t?.profile || 'Perfil', screen: 'perfil' },
   ];
+
+  if (userProfile.userType === 'estabelecimento') {
+    desktopNavItems.splice(4, 0, { label: t?.partner || 'Parceiro', screen: 'parceiro' });
+  }
 
   return (
     <>
