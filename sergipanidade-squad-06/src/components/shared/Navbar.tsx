@@ -15,6 +15,7 @@ import {
   Landmark,
 } from 'lucide-react';
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { useAppContext } from '@/context/AppContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,15 +63,21 @@ export function Navbar({
     { label: t?.profile || 'Perfil', screen: 'perfil', icon: User },
   ];
 
-  const desktopNavItems = [
+  const { userProfile } = useAppContext();
+
+  const desktopNavItems: Array<{ label: string; screen: string; isSos?: boolean }> = [
     { label: 'Home', screen: 'home' },
     { label: t?.destinations || 'Destinos', screen: 'guia' },
     { label: 'Cultura', screen: 'cultura' },
     { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
-    { label: t?.partner || 'Parceiro', screen: 'parceiro' },
     { label: 'SOS', screen: 'sos', isSos: true },
     { label: t?.profile || 'Perfil', screen: 'perfil' },
   ];
+
+  // Show 'Parceiro' only for users with category 'estabelecimento'
+  if (userProfile?.userType === 'estabelecimento') {
+    desktopNavItems.splice(4, 0, { label: t?.partner || 'Parceiro', screen: 'parceiro' });
+  }
 
   return (
     <>
