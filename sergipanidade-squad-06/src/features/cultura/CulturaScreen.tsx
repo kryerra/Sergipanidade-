@@ -10,29 +10,31 @@ import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { HeroSlideshow } from '@/components/shared/HeroSlideshow';
 import { SERGIPE_CULTURE } from "@/constants/sergipeImages";
+import IMG_CULTURA_HERO from "@/imports/Cultura.jpeg";
+import IMG_LAMBE_SUJO3 from "@/assets/images/lambe-sujo3.jpg";
 
 // ─── Image Constants ─────────────────────────────────────────
-const IMG_ARTISAN   = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PAINTER   = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PHOTO     = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSIC     = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_DANCE     = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_LACE      = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_RIVER     = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MURAL     = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MARKET    = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_WRITER    = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_HERITAGE  = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CONCERT   = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_SCULPTOR  = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSEUM    = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_THEATER   = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_FESTIVAL  = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CHURCH    = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_PAINTER = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_PHOTO = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_LACE = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MURAL = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MARKET = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_HERITAGE = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_SCULPTOR = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_MUSEUM = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 // ─── Types ───────────────────────────────────────────────────
 type CulturaTab = 'artistas' | 'historias' | 'eventos' | 'patrimonio';
-type ArtistFilter = 'todos' | 'artesanato' | 'pintura' | 'fotografia' | 'musica' | 'literatura' | 'danca' | 'escultura';
+type ArtistFilter = 'todos';
 
 interface Artist {
   id: string;
@@ -86,6 +88,7 @@ interface Heritage {
   desc: string;
   img: string;
   height?: 'tall' | 'normal';
+  objectPosition?: string;
 }
 
 // ─── Mock Data ───────────────────────────────────────────────
@@ -406,8 +409,9 @@ const HERITAGE: Heritage[] = [
     year: '2009',
     institute: 'IPHAN',
     desc: 'Manifestação cultural única de Laranjeiras que encena simbolicamente a história da escravidão com máscaras, chocalhos e cantos rituais.',
-    img: IMG_DANCE,
+    img: IMG_LAMBE_SUJO3,
     height: 'normal',
+    objectPosition: 'center bottom',
   },
   {
     id: 'museu-gente',
@@ -452,34 +456,9 @@ const HERITAGE: Heritage[] = [
 ];
 
 // ─── LANGUAGE ICONS MAP ───────────────────────────────────────
-const LINGUA_ICON: Record<ArtistFilter, typeof Music> = {
-  todos:      Shapes,
-  artesanato: Scissors,
-  pintura:    Palette,
-  fotografia: Camera,
-  musica:     Music,
-  literatura: BookOpen,
-  danca:      Footprints,
-  escultura:  Shapes,
-};
 
-const LINGUA_LABEL: Record<ArtistFilter, string> = {
-  todos:      'Todos',
-  artesanato: 'Artesanato',
-  pintura:    'Pintura',
-  fotografia: 'Fotografia',
-  musica:     'Música',
-  literatura: 'Literatura',
-  danca:      'Dança',
-  escultura:  'Escultura',
-};
 
-const EVENT_TYPES = ['Todos', 'Festival', 'Exposição', 'Show', 'Teatro', 'Feira', 'Gastronomia'];
-const EVENT_QUICK = [
-  { id: 'semana', label: 'Próximos 7 dias' },
-    { id: 'gratuito', label: 'Gratuitos' },
-  { id: 'presencial', label: 'Presenciais' },
-];
+
 
 // ─── COMPONENT ───────────────────────────────────────────────
 interface CulturaScreenProps {
@@ -489,9 +468,8 @@ interface CulturaScreenProps {
 
 export function CulturaScreen({ onToast }: CulturaScreenProps) {
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
-  const [artistFilter, setArtistFilter] = useState<ArtistFilter>('todos');
-  const [eventType, setEventType] = useState('Todos');
-  const [eventQuick, setEventQuick] = useState<string[]>([]);
+
+
   const [eventsView, setEventsView] = useState<'lista' | 'calendario'>('lista');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
@@ -504,21 +482,13 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
   }, [selectedArtist, selectedStory]);
 
   const filteredArtists = ARTISTS.filter((a) => {
-    const matchFilter = artistFilter === 'todos' || a.linguagem === artistFilter;
     const matchSearch = !searchTerm || a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.city.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchFilter && matchSearch;
+    return matchSearch;
   });
 
   const filteredEvents = EVENTS.filter((e) => {
-    const matchType = eventType === 'Todos' || e.type === eventType;
-    const matchQuick = eventQuick.every((q) => {
-      if (q === 'semana') return e.thisWeek;
-      if (q === 'gratuito') return e.free;
-      if (q === 'presencial') return !e.online;
-      return true;
-    });
     const matchSearch = !searchTerm || e.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchType && matchQuick && matchSearch;
+    return matchSearch;
   });
 
   const filteredStories = STORIES.filter((s) =>
@@ -545,7 +515,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             style={{ color: '#0D7377', fontSize: '14px' }}
           >
             <ArrowLeft size={18} />
-            Voltar aos artistas
+            Voltar para Sergipanidade
           </button>
         </div>
 
@@ -572,7 +542,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                   className="px-3 py-1 rounded-full text-white font-bold uppercase tracking-wider"
                   style={{ backgroundColor: '#0D7377', fontSize: '11px' }}
                 >
-                  {LINGUA_LABEL[selectedArtist.linguagem as ArtistFilter]}
+                  {selectedArtist.linguagem.toUpperCase()}
                 </span>
               </div>
             </div>
@@ -668,7 +638,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                 </div>
                 <div className="p-4">
                   <p className="font-semibold" style={{ color: '#1A1A1A', fontSize: '14px' }}>{a.name}</p>
-                  <p style={{ color: '#8A8A8A', fontSize: '12px' }}>{LINGUA_LABEL[a.linguagem as ArtistFilter]} · {a.city}</p>
+                  <p style={{ color: '#8A8A8A', fontSize: '12px' }}>{a.linguagem} · {a.city}</p>
                 </div>
               </button>
             ))}
@@ -848,9 +818,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
   // ── Main Screen ────────────────────────────────────────────
   const TABS: { id: CulturaTab; label: string; Icon: LucideIcon }[] = [
-    { id: 'artistas',   label: 'Artistas',   Icon: Palette },
-    { id: 'historias',  label: 'Histórias',  Icon: BookOpen },
-    { id: 'eventos',    label: 'Eventos',    Icon: Tent },
+    { id: 'artistas', label: 'Sergipanidade', Icon: Palette },
+    { id: 'historias', label: 'Histórias', Icon: BookOpen },
+    { id: 'eventos', label: 'Eventos', Icon: Tent },
     { id: 'patrimonio', label: 'Patrimônio', Icon: Landmark },
   ];
 
@@ -866,29 +836,29 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       {/* ── HEADER ESTÁTICO ── */}
       <div className="relative w-full h-[480px] overflow-hidden flex items-center justify-center">
         {/* Foto de fundo */}
-        <ImageWithFallback 
-          src="https://images.unsplash.com/photo-1528000936410-deb9b2dee794?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmF6aWwlMjBjdWx0dXJhbCUyMGRhbmNlfGVufDF8fHx8MTc3ODAyMzA3Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+        <ImageWithFallback
+          src={IMG_CULTURA_HERO}
           alt="Cultura Sergipana"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        
+
         {/* Overlay escuro */}
-        <div 
-          className="absolute inset-0" 
+        <div
+          className="absolute inset-0"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%)' }}
         />
 
         {/* Conteúdo centralizado */}
         <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-5 sm:px-12 mt-4">
-          
+
           {/* Tag superior */}
-          <div 
+          <div
             className="flex items-center font-bold mb-4"
-            style={{ 
-              color: '#0D7377', 
-              fontSize: '11px', 
-              textTransform: 'uppercase', 
-              letterSpacing: '2px' 
+            style={{
+              color: '#0D7377',
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
             }}
           >
             <div className="h-3.5 w-[2px] mr-2.5" style={{ backgroundColor: '#0D7377' }} />
@@ -935,12 +905,6 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             </button>
           </div>
         </div>
-
-        {/* Transição fade sutil para o conteúdo na parte inferior */}
-        <div 
-          className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, #F7F6F3 100%)' }}
-        />
       </div>
 
       {/* ── STICKY TABS ── */}
@@ -988,38 +952,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         {/* ── ARTISTAS ── */}
         {activeTab === 'artistas' && (
           <div>
-            <div className="mb-8">
-              <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
-                Talentos de Sergipe
-              </h2>
-              <p style={{ color: '#4A4A4A', fontSize: '15px' }}>
-                Artistas locais que carregam a identidade cultural sergipana em cada obra
-              </p>
-            </div>
 
-            {/* Filter pills */}
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-8">
-              {(Object.keys(LINGUA_LABEL) as ArtistFilter[]).map((key) => {
-                const Icon = LINGUA_ICON[key];
-                const isActive = artistFilter === key;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setArtistFilter(key)}
-                    className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full border whitespace-nowrap cursor-pointer transition-all min-h-[40px]"
-                    style={{
-                      backgroundColor: isActive ? '#0D7377' : '#FFFFFF',
-                      borderColor: isActive ? '#0D7377' : '#D9D9D9',
-                      color: isActive ? '#FFFFFF' : '#4A4A4A',
-                      fontSize: '13px',
-                    }}
-                  >
-                    <Icon size={13} />
-                    {LINGUA_LABEL[key]}
-                  </button>
-                );
-              })}
-            </div>
+
+
 
             {/* Artists grid */}
             {filteredArtists.length === 0 ? (
@@ -1047,7 +982,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         className="absolute top-3 left-3 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider"
                         style={{ backgroundColor: '#EEEDE9', color: '#1A1A1A', fontSize: '10px' }}
                       >
-                        {LINGUA_LABEL[artist.linguagem as ArtistFilter]}
+                        {artist.linguagem.toUpperCase()}
                       </div>
                     </div>
 
@@ -1183,54 +1118,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               </div>
             </div>
 
-            {/* Quick filters */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {EVENT_QUICK.map(({ id, label }) => {
-                const isActive = eventQuick.includes(id);
-                return (
-                  <button
-                    key={id}
-                    onClick={() =>
-                      setEventQuick((prev) =>
-                        isActive ? prev.filter((q) => q !== id) : [...prev, id]
-                      )
-                    }
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border cursor-pointer transition-all min-h-[38px]"
-                    style={{
-                      backgroundColor: isActive ? '#E6F4F4' : '#FFFFFF',
-                      borderColor: isActive ? '#0D7377' : '#D9D9D9',
-                      color: isActive ? '#0D7377' : '#4A4A4A',
-                      fontSize: '13px',
-                      fontWeight: isActive ? 600 : 400,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
 
-            {/* Type filter pills */}
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-8">
-              {EVENT_TYPES.map((type) => {
-                const isActive = eventType === type;
-                return (
-                  <button
-                    key={type}
-                    onClick={() => setEventType(type)}
-                    className="flex-shrink-0 px-4 py-2 rounded-full border whitespace-nowrap cursor-pointer transition-all min-h-[38px]"
-                    style={{
-                      backgroundColor: isActive ? '#1A1A1A' : '#FFFFFF',
-                      borderColor: isActive ? '#1A1A1A' : '#D9D9D9',
-                      color: isActive ? '#FFFFFF' : '#4A4A4A',
-                      fontSize: '13px',
-                    }}
-                  >
-                    {type}
-                  </button>
-                );
-              })}
-            </div>
 
             {eventsView === 'lista' ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1380,6 +1268,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                       src={item.img}
                       alt={item.name}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      style={{ objectPosition: item.objectPosition || 'center' }}
                     />
                   </div>
                   <div className="p-5">
