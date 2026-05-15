@@ -9,7 +9,6 @@ import {
   Route,
   User,
   LogOut,
-  Search,
   ChevronDown,
   MapPin,
   Landmark,
@@ -38,10 +37,10 @@ export function Navbar({
   language,
 }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('Aracaju');
+  const [selectedCity, setSelectedCity] = useState('Aracaju (SE)');
 
   const cities = [
-    'Aracaju',
+    'Aracaju (SE)',
     'São Cristóvão',
     'Laranjeiras',
     'Canindé',
@@ -69,7 +68,6 @@ export function Navbar({
     { label: t?.destinations || 'Destinos', screen: 'guia' },
     { label: 'Cultura', screen: 'cultura' },
     { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
-    { label: 'SOS', screen: 'sos', isSos: true },
     { label: t?.profile || 'Perfil', screen: 'perfil' },
   ];
 
@@ -109,28 +107,10 @@ export function Navbar({
             className="flex items-center gap-1.5 text-[13px]"
             style={{ color: '#8A8A8A' }}
           >
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
-              Brasil
-            </span>
-
-            <span style={{ color: '#D9D9D9' }}>›</span>
-
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
-              Sergipe (SE)
-            </span>
-
-            <span style={{ color: '#D9D9D9' }}>›</span>
-
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="flex items-center gap-1 font-medium outline-none cursor-pointer bg-transparent border-none transition-colors min-h-[44px]"
                 style={{ color: '#1A1A1A' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#0D7377';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#1A1A1A';
-                }}
               >
                 {selectedCity}
                 <ChevronDown size={14} className="opacity-60" />
@@ -152,13 +132,6 @@ export function Navbar({
 
           {/* Right: Actions */}
           <div className="flex items-center gap-4">
-            <button
-              className="p-2 bg-transparent border-none cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors rounded-lg hover:bg-[#EEEDE9]"
-              style={{ color: '#8A8A8A' }}
-            >
-              <Search size={18} />
-            </button>
-
             <div className="flex items-center gap-1 text-[13px] font-medium ml-1">
               {desktopNavItems.map((item) => {
                 const isActive = currentScreen === item.screen;
