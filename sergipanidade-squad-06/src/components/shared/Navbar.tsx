@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { SergipanidadeLogo } from '@/components/shared/SergipanidadeLogo';
-import { translations } from "@/constants/translations";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SergipanidadeLogo } from './SergipanidadeLogo';
+import { translations } from '../../constants/translations';
+import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import {
   Menu,
   Home,
@@ -14,13 +14,13 @@ import {
   MapPin,
   Landmark,
 } from 'lucide-react';
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { PrimaryButton } from '../ui/PrimaryButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '../ui/dropdown-menu';
 
 interface NavbarProps {
   currentScreen: string;
@@ -270,14 +270,8 @@ export function Navbar({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Right: Search + Hamburger */}
+           {/* Right: Hamburger */}
           <div className="flex items-center">
-            <button
-              className="p-2 bg-transparent border-none cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
-              style={{ color: '#8A8A8A' }}
-            >
-              <Search size={20} />
-            </button>
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
