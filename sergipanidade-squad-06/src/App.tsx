@@ -47,9 +47,6 @@ export default function App() {
       case 'perfil':
         navigate('/perfil');
         break;
-      case 'sos':
-        navigate('/sos');
-        break;
       case 'cultura':
         navigate('/cultura');
         break;
@@ -77,7 +74,6 @@ export default function App() {
   else if (currentPath.includes('/roteiro')) currentScreen = 'roteiro';
   else if (currentPath.includes('/parceiro')) currentScreen = 'parceiro';
   else if (currentPath.includes('/perfil')) currentScreen = 'perfil';
-  else if (currentPath.includes('/sos')) currentScreen = 'sos';
   else if (currentPath.includes('/cultura')) currentScreen = 'cultura';
 
   const isNavbarVisible = currentScreen !== 'login';

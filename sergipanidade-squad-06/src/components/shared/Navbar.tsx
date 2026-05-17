@@ -9,12 +9,10 @@ import {
   Route,
   User,
   LogOut,
-  Search,
   ChevronDown,
   MapPin,
   Landmark,
 } from 'lucide-react';
-import { PrimaryButton } from '../ui/PrimaryButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,8 +67,8 @@ export function Navbar({
     { label: t?.destinations || 'Destinos', screen: 'guia' },
     { label: 'Cultura', screen: 'cultura' },
     { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
-    { label: 'SOS', screen: 'sos', isSos: true },
     { label: t?.profile || 'Perfil', screen: 'perfil' },
+    { label: t?.logout || 'Sair', screen: 'login', isLogout: true },
   ];
 
   if (userProfile.userType === 'estabelecimento') {
@@ -90,36 +88,19 @@ export function Navbar({
       >
         {/* Desktop Header */}
         <div className="hidden md:flex items-center justify-between px-8 h-[76px] w-full mx-auto overflow-visible">
-          {/* Left: Logo */}
-          <button
-            onClick={() => onNavigate('home')}
-            className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
-          >
-            <div className="flex items-center justify-center h-[56px] w-[150px] overflow-visible">
-              <SergipanidadeLogo
-                variant="light"
-                iconSize={30}
-                showSlogan={false}
-              />
-            </div>
-          </button>
-
-          {/* Center: Breadcrumb */}
-          <div
-            className="flex items-center gap-1.5 text-[13px]"
-            style={{ color: '#8A8A8A' }}
-          >
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
-              Brasil
-            </span>
-
-            <span style={{ color: '#D9D9D9' }}>›</span>
-
-            <span className="cursor-pointer hover:text-[#1A1A1A] transition-colors">
-              Sergipe (SE)
-            </span>
-
-            <span style={{ color: '#D9D9D9' }}>›</span>
+          <div className="flex items-center gap-5 min-w-[260px]">
+            <button
+              onClick={() => onNavigate('home')}
+              className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
+            >
+              <div className="flex items-center justify-center h-[56px] w-[150px] overflow-visible">
+                <SergipanidadeLogo
+                  variant="light"
+                  iconSize={30}
+                  showSlogan={false}
+                />
+              </div>
+            </button>
 
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -150,64 +131,28 @@ export function Navbar({
             </DropdownMenu>
           </div>
 
-          {/* Right: Actions */}
-          <div className="flex items-center gap-4">
-            <button
-              className="p-2 bg-transparent border-none cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors rounded-lg hover:bg-[#EEEDE9]"
-              style={{ color: '#8A8A8A' }}
-            >
-              <Search size={18} />
-            </button>
+          <div className="flex items-center flex-1 justify-between gap-2">
+            {desktopNavItems.map((item) => {
+              const isActive = currentScreen === item.screen;
 
-            <div className="flex items-center gap-1 text-[13px] font-medium ml-1">
-              {desktopNavItems.map((item) => {
-                const isActive = currentScreen === item.screen;
+              return (
+                <button
+                  key={item.screen}
+                  onClick={() => onNavigate(item.screen)}
+                  className="relative flex-1 min-h-[44px] min-w-0 px-3 py-2 flex items-center justify-center border-none bg-transparent cursor-pointer rounded-lg transition-colors"
+                  style={{
+                    color: isActive ? '#1A1A1A' : '#8A8A8A',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.color = '#1A1A1A';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.color = '#8A8A8A';
+                  }}
+                >
+                  {item.label}
 
-                if (item.isSos) {
-                  return (
-                    <button
-                      key={item.screen}
-                      onClick={() => onNavigate(item.screen)}
-                      className="relative min-h-[44px] px-3 ml-1 flex items-center justify-center rounded-lg bg-transparent cursor-pointer transition-colors text-[13px]"
-                      style={{
-                        color: '#0D7377',
-                        border: '1px solid rgba(224,92,0,0.35)',
-                        backgroundColor: isActive
-                          ? 'rgba(224,92,0,0.06)'
-                          : 'transparent',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor =
-                          'rgba(224,92,0,0.08)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = isActive
-                          ? 'rgba(224,92,0,0.06)'
-                          : 'transparent';
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                }
-
-                return (
-                  <button
-                    key={item.screen}
-                    onClick={() => onNavigate(item.screen)}
-                    className="relative min-h-[44px] px-3 flex items-center justify-center border-none bg-transparent cursor-pointer group rounded-lg transition-colors"
-                    style={{
-                      color: isActive ? '#1A1A1A' : '#8A8A8A',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.color = '#1A1A1A';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.color = '#8A8A8A';
-                    }}
-                  >
-                    {item.label}
-
+                  {!item.isLogout && (
                     <span
                       className="absolute bottom-[8px] left-3 right-3 h-[2px] rounded-full transition-transform origin-left"
                       style={{
@@ -215,20 +160,10 @@ export function Navbar({
                         transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
                       }}
                     />
-                  </button>
-                );
-              })}
-
-              <div className="ml-2">
-                <PrimaryButton
-                  size="sm"
-                  onClick={() => onNavigate('login')}
-                  style={{ minWidth: '80px' }}
-                >
-                  {t?.logout || 'Sair'}
-                </PrimaryButton>
-              </div>
-            </div>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
