@@ -88,7 +88,7 @@ export function Navbar({
           </div>
 
           <div className="flex items-end flex-1 justify-between gap-2 h-full pb-1">
-            <div className="flex items-center flex-1 gap-3">
+            <div className="flex items-center gap-3 ml-auto">
               {desktopNavItems.map((item) => {
                 const isActive = currentScreen === item.screen;
 
@@ -96,7 +96,7 @@ export function Navbar({
                   <button
                     key={item.screen}
                     onClick={() => onNavigate(item.screen)}
-                    className={`relative flex-1 min-h-[60px] min-w-[120px] px-5 py-3 flex items-center justify-center border-none rounded-full transition-all duration-200 ease-out text-[18px] font-semibold bg-white ${
+                    className={`relative min-h-[60px] min-w-[120px] px-5 py-3 flex items-center justify-center border-none rounded-full transition-all duration-200 ease-out text-[18px] font-semibold bg-white ${
                       isActive
                         ? 'text-[#1A1A1A]'
                         : 'text-[#6B7280] hover:bg-[#F8FAFC] hover:text-[#0F1820]'
@@ -113,7 +113,7 @@ export function Navbar({
               })}
             </div>
 
-            <div className="relative z-[1100] ml-auto self-end">
+            <div className="relative z-[1100] self-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
@@ -134,11 +134,7 @@ export function Navbar({
                         <span className="text-[12px] text-[#6B7280]">
                           {userProfile.userType === 'turista'
                             ? t?.touristLabel || 'Turista'
-                            : userProfile.userType === 'morador'
-                            ? t?.residentLabel || 'Morador'
-                            : userProfile.userType === 'estabelecimento'
-                            ? t?.establishmentLabel || 'Estabelecimento'
-                            : userProfile.userType}
+                            : t?.establishmentLabel || 'Estabelecimento'}
                         </span>
                       </div>
                     </div>
