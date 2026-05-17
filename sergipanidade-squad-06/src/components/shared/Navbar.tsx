@@ -2,13 +2,10 @@ import { useState } from 'react';
 import { SergipanidadeLogo } from './SergipanidadeLogo';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import {
-  Menu,
   Home,
   Map as MapIcon,
   Route,
-  User,
   Landmark,
   ChevronDown,
 } from 'lucide-react';
@@ -158,98 +155,56 @@ export function Navbar({
           </div>
         </div>
 
-        {/* Mobile Header */}
-        <div
-          className="md:hidden flex items-center justify-between px-4 h-[64px] w-full overflow-visible"
-          style={{ backgroundColor: '#FFFFFF' }}
-        >
+        {/* Mobile Header — mirror desktop: logo, nav items, profile */}
+        <div className="md:hidden flex items-center px-4 h-[64px] w-full overflow-visible" style={{ backgroundColor: '#FFFFFF' }}>
           {/* Left: Logo */}
-          <button
-            onClick={() => onNavigate('home')}
-            className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer min-w-[46px] min-h-[46px] overflow-visible"
-          >
+          <button onClick={() => onNavigate('home')} className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer min-w-[46px] min-h-[46px] overflow-visible">
             <div className="flex items-center justify-center h-[46px] w-[46px] overflow-visible">
-              <SergipanidadeLogo
-                variant="light"
-                iconSize={24}
-                iconOnly={true}
-              />
+              <SergipanidadeLogo variant="light" iconSize={24} iconOnly={true} />
             </div>
           </button>
 
-          {/* Right: Hamburger */}
-          <div className="flex items-center">
-
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild>
+          {/* Middle: nav items (scrollable) */}
+          <div className="flex items-center gap-2 mx-3 overflow-x-auto no-scrollbar">
+            {desktopNavItems.map((item) => {
+              const isActive = currentScreen === item.screen;
+              return (
                 <button
-                  className="p-2 bg-transparent border-none cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
-                  style={{ color: '#1A1A1A' }}
+                  key={item.screen}
+                  onClick={() => onNavigate(item.screen)}
+                  className={`relative min-h-[44px] px-3 py-2 flex items-center justify-center border-none rounded-full transition-all duration-200 ease-out text-[15px] font-semibold bg-white ${
+                    isActive ? 'text-[#1A1A1A]' : 'text-[#6B7280] hover:bg-[#F8FAFC] hover:text-[#0F1820]'
+                  }`}
                 >
-                  <Menu size={24} />
+                  <span className="relative z-10">{item.label}</span>
                 </button>
-              </SheetTrigger>
+              );
+            })}
+          </div>
 
-              <SheetContent
-                side="right"
-                className="border-l-[rgba(255,255,255,0.05)] p-0 text-white w-[280px]"
-                style={{ backgroundColor: '#111111' }}
-              >
-                <div className="flex flex-col h-full">
-                  <div className="px-6 pt-12 pb-6 border-b border-white/8">
-                    <SergipanidadeLogo
-                      variant="dark"
-                      iconSize={32}
-                      showSlogan={true}
-                    />
-                  </div>
-
-                  <div className="flex flex-col p-4 gap-1 flex-1 overflow-y-auto">
-                    <p className="text-white/35 text-[11px] uppercase font-bold tracking-widest mb-2 px-4">
-                      Menu
-                    </p>
-
-                    {desktopNavItems.map((item) => (
-                      <button
-                        key={item.screen}
-                        onClick={() => {
-                          onNavigate(item.screen);
-                          setMobileOpen(false);
-                        }}
-                        className={`w-full flex items-center px-4 py-3 rounded-lg bg-transparent border-none cursor-pointer text-left min-h-[44px] text-[15px] transition-colors ${
-                          currentScreen === item.screen
-                            ? 'bg-[rgba(224,92,0,0.12)] text-[#0D7377] font-medium'
-                            : 'text-white/65 hover:bg-white/5 hover:text-white/90'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-
-                    <div className="border-t border-white/10 mt-4 pt-4">
-                      <button
-                        onClick={() => {
-                          onNavigate('perfil');
-                          setMobileOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-3 rounded-lg bg-transparent border-none cursor-pointer text-[15px] text-white/80 hover:bg-white/5"
-                      >
-                        {t?.profile || 'Perfil'}
-                      </button>
-                      <button
-                        onClick={() => {
-                          onNavigate('login');
-                          setMobileOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-3 rounded-lg bg-transparent border-none cursor-pointer text-[15px] text-[#f87171] hover:bg-white/5"
-                      >
-                        {t?.logout || 'Sair'}
-                      </button>
+          {/* Right: profile dropdown */}
+          <div className="relative z-[1100] ml-auto self-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center justify-between min-h-[44px] px-3 py-2 bg-white border border-[#E5E7EB] rounded-full text-left transition-colors hover:bg-[#F8FAFC]"
+                  type="button"
+                >
+                  <div className="flex items-center gap-2">
+                    <UserAvatar name={userProfile.name || t?.profile || 'Perfil'} size={36} bgColor="#0D7377" textColor="#FFFFFF" />
+                    <div className="flex flex-col items-start gap-0.5">
+                      <span className="text-[13px] font-medium text-[#1A1A1A]">{userProfile.name || t?.profile || 'Perfil'}</span>
                     </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                  <ChevronDown size={14} />
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent sideOffset={8} className="min-w-[180px] z-[1100]">
+                <DropdownMenuItem onSelect={() => onNavigate('perfil')}>{t?.profile || 'Perfil'}</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onSelect={() => onNavigate('login')}>{t?.logout || 'Sair'}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </nav>
