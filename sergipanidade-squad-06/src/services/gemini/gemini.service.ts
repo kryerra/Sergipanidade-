@@ -4,15 +4,15 @@
  */
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_API_KEY = "AIzaSyDnk8hppYIUf-REqRfHATFDf2c9wLkKP2o";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
 
 /**
- * Extracts the suggested retry delay (in milliseconds) from a 429 error
- * Returns null if no retry delay is found
+ * Extracts the suggested retry delay (in milliseconds) from a 429 error.
+ * Returns null if no retry delay is found.
  */
-export function parseRetryDelayMs(error: any): number | null {
+export function parseRetryDelayMs(error: unknown): number | null {
   try {
-    const message: string = error?.message ?? '';
+    const message = (error as { message?: string })?.message ?? '';
     const match = message.match(/retry in ([\d.]+)s/i);
     if (match) {
       return Math.ceil(parseFloat(match[1])) * 1000;
@@ -22,10 +22,10 @@ export function parseRetryDelayMs(error: any): number | null {
 }
 
 /**
- * Checks if error indicates daily/total quota exhausted (no useful retry)
+ * Checks if error indicates daily/total quota exhausted (no useful retry).
  */
-export function isDailyQuotaExhausted(error: any): boolean {
-  const message: string = error?.message ?? '';
+export function isDailyQuotaExhausted(error: unknown): boolean {
+  const message = (error as { message?: string })?.message ?? '';
   return (
     message.includes('generate_content_free_tier_requests') &&
     message.includes('PerDayPerProjectPerModel')
@@ -33,51 +33,57 @@ export function isDailyQuotaExhausted(error: any): boolean {
 }
 
 /**
- * Makes a call to Gemini API with the provided prompt
- * Throws error if API call fails
+ * Internal: makes a single call to the Gemini API.
+ * Throws if the API key is missing or the call fails.
  */
 async function chamarGemini(prompt: string): Promise<string> {
+  if (!GEMINI_API_KEY) {
+    throw new Error(
+      'VITE_GEMINI_API_KEY não definida. Crie um arquivo .env com a chave do Gemini.'
+    );
+  }
+ 
   const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
+ 
   const result = await model.generateContent(prompt);
   const response = result.response;
-  
+ 
   if (!response) {
     throw new Error('Empty response from Gemini API');
   }
-
+ 
   return response.text();
 }
+ 
 
 /**
- * Public interface for generating itinerary with AI
- * Handles retries for rate limiting (429 errors)
- * Falls back gracefully if daily quota exceeded
- * 
+ * Public interface for generating content with Gemini AI.
+ * Handles retries for rate limiting (429 errors).
+ * Falls back gracefully if daily quota is exceeded.
+ *
  * @param prompt The full prompt to send to Gemini
  * @returns Promise<string> The AI response text
- * @throws Error if API call fails
+ * @throws Error if API call fails after retry
  */
 export async function gerarRoteiroComIA(prompt: string): Promise<string> {
   try {
-    // Try the API call
     return await chamarGemini(prompt);
-  } catch (apiError: any) {
-    const is429 = String(apiError?.message ?? '').includes('429');
-
+  } catch (apiError: unknown) {
+    const message = (apiError as { message?: string })?.message ?? '';
+    const is429 = message.includes('429');
+ 
     if (is429 && !isDailyQuotaExhausted(apiError)) {
-      // Rate limit per minute: wait suggested delay and retry once
       const delayMs = parseRetryDelayMs(apiError) ?? 15000;
-      
+ 
       if (delayMs <= 30000) {
         console.info(`Gemini rate-limit 429 — retrying in ${delayMs / 1000}s…`);
         await new Promise(r => setTimeout(r, delayMs));
-        
+ 
         try {
           return await chamarGemini(prompt);
-        } catch (retryError: any) {
-          console.warn('Retry failed:', retryError?.message ?? retryError);
+        } catch (retryError: unknown) {
+          console.warn('Retry failed:', (retryError as { message?: string })?.message ?? retryError);
           throw retryError;
         }
       } else {
@@ -85,8 +91,7 @@ export async function gerarRoteiroComIA(prompt: string): Promise<string> {
         throw apiError;
       }
     } else {
-      // Daily quota exhausted or other error
-      console.warn('Gemini API unavailable:', apiError?.message ?? apiError);
+      console.warn('Gemini API unavailable:', message);
       throw apiError;
     }
   }
