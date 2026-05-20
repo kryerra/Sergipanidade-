@@ -37,31 +37,52 @@ import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { getDestinationById, destinations } from "@/constants/destinations";
 import type { Destination } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
-import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
+import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
+import { ParadaGerada, WizardData } from "@/types";
+import { normalizeString } from "@/utils/string";
+import { haversine, travelLabel } from "@/utils/geo";
+import { INTEREST_CATEGORY_MAP } from "@/constants/interests";
+import {
+  PERIODO_TIME,
+  PERIODO_DUR,
+  getPeriodLabels,
+} from "@/constants/periods";
+import { gerarRoteiroLocal } from "@/services/itinerary.service";
 import SergipeCulturalBg from "@/imports/fundo-roteiro.png";
+import { RoteiroEmpty } from "@/features/roteiro/components/RoteiroEmpty";
+import { RoteiroGenerating } from "@/features/roteiro/components/RoteiroGenerating";
 
-const BackgroundWrapper = ({ children, className = "" }: { children: ReactNode, className?: string }) => {
+const BackgroundWrapper = ({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
     <div
       className={`relative w-full min-h-screen bg-[#F7F6F3] ${className}`}
       style={{
         backgroundImage: `url(${SergipeCulturalBg})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       {/* Semi-transparent overlay for readability */}
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           inset: 0,
-          background: 'rgba(247, 246, 243, 0.70)',
+          background: "rgba(247, 246, 243, 0.70)",
           zIndex: 0,
         }}
       />
       {/* Content layer */}
-      <div style={{ position: 'relative', zIndex: 1 }} className="w-full h-full flex flex-col min-h-screen">
+      <div
+        style={{ position: "relative", zIndex: 1 }}
+        className="w-full h-full flex flex-col min-h-screen"
+      >
         {children}
       </div>
     </div>
@@ -69,26 +90,6 @@ const BackgroundWrapper = ({ children, className = "" }: { children: ReactNode, 
 };
 
 /* ─────────────────── Types ─────────────────── */
-interface RoteiroItem {
-  destinationId: string;
-  time?: string;
-  note?: string;
-}
-
-interface ParadaGerada {
-  destinationId: string;
-  dia: number;
-  periodo: string;
-  dica: string;
-}
-
-interface WizardData {
-  who: string;
-  days: number;
-  startDate: string;
-  interests: string[];
-  budget: string;
-}
 
 interface RoteiroScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
@@ -101,90 +102,18 @@ interface RoteiroScreenProps {
   language: "pt" | "en" | "es";
 }
 
-/* ─────────────── Interest mapping ─────────────── */
-const INTEREST_CAT_MAP: Array<{ kw: string[]; cat: string }> = [
-  { kw: ["praia", "beach", "playa", "praias"], cat: "PRAIA" },
-  { kw: ["gastro", "food", "comida", "compras", "shopping", "mercado"], cat: "GASTRONOMIA" },
-  { kw: ["cultur", "arte", "art", "musica", "music", "música"], cat: "CULTURA" },
-  { kw: ["histor", "history", "historia", "patrimoni"], cat: "HISTÓRIA" },
-  { kw: ["nature", "naturez", "natural", "eco", "foto", "photo"], cat: "NATUREZA" },
-  { kw: ["pet", "animal", "bicho"], cat: "PET FRIENDLY" },
-];
-
-function norm(s: string) {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-/* ─────────────── Local itinerary generator ─────────────── */
-function generateLocal(data: WizardData, lang: "pt" | "en" | "es"): ParadaGerada[] {
-  const numParadas = Math.min(data.days * 3, destinations.length);
-  const matched = new Set<string>();
-  data.interests.forEach((i) => {
-    const n = norm(i);
-    INTEREST_CAT_MAP.forEach(({ kw, cat }) => {
-      if (kw.some((k) => n.includes(k))) matched.add(cat);
-    });
-  });
-  const scored = destinations.map((d) => ({
-    d,
-    score: matched.size > 0 && [...matched].some((c) => d.category.toUpperCase().includes(c)) ? 2 : 1,
-  }));
-  scored.sort((a, b) => b.score - a.score);
-  const selected = scored.slice(0, numParadas).map((s) => s.d);
-  const periodos: Record<string, string[]> = {
-    pt: ["manhã", "tarde", "noite"],
-    en: ["morning", "afternoon", "evening"],
-    es: ["mañana", "tarde", "noche"],
-  };
-  return selected.map((d, i) => {
-    const dia = Math.floor(i / 3) + 1;
-    const periodo = periodos[lang][i % 3];
-    const rawTip =
-      lang === "en" ? d.tip_en || d.tip : lang === "es" ? d.tip_es || d.tip : d.tip;
-    const dica = (rawTip.split(/(?<=[.!?])\s/)[0] || rawTip).trim();
-    return { destinationId: d.id, dia, periodo, dica };
-  });
-}
-
-/* ─────────────── Time/distance helpers ─────────────── */
-const PERIODO_TIME: Record<string, string> = {
-  manhã: "09:00", morning: "09:00", mañana: "09:00",
-  tarde: "14:00", afternoon: "14:00",
-  noite: "19:00", evening: "19:00", noche: "19:00",
-};
-const PERIODO_DUR: Record<string, string> = {
-  manhã: "2h", morning: "2h", mañana: "2h",
-  tarde: "1h 30min", afternoon: "1h 30min",
-  noite: "2h", evening: "2h", noche: "2h",
-};
-
-function haversine(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
-    Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function travelLabel(d1: Destination, d2: Destination) {
-  const km = haversine(d1.lat, d1.lon, d2.lat, d2.lon);
-  const mins = Math.round((km / 35) * 60);
-  const kmStr = km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)} km`;
-  const mStr = mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)}h ${mins % 60 > 0 ? `${mins % 60}min` : ""}`.trim();
-  return `${mStr} · ${kmStr}`;
-}
+/* ─────────────── Utility Functions ─────────────── */
+/* Note: Consolidated into /utils and /constants for reusability */
 
 function formatDayDate(startDate: string, dayOffset: number, lang: string) {
   const base = startDate ? new Date(startDate + "T12:00:00") : new Date();
   base.setDate(base.getDate() + dayOffset);
   const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US";
-  return base.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" });
+  return base.toLocaleDateString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 }
 
 function capitalize(s: string) {
@@ -204,7 +133,8 @@ function RoteiroMapSVG({ stops }: { stops: Destination[] }) {
     );
   }
 
-  const W = 380, H = 440;
+  const W = 380,
+    H = 440;
   const lats = stops.map((s) => s.lat);
   const lons = stops.map((s) => s.lon);
   const minLat = Math.min(...lats);
@@ -232,12 +162,33 @@ function RoteiroMapSVG({ stops }: { stops: Destination[] }) {
       {/* Background land */}
       <rect width={W} height={H} fill="#EEF3EA" />
       {/* Water stripe right */}
-      <rect x={W * 0.8} y={0} width={W * 0.2} height={H} fill="#C8DFF0" opacity="0.7" />
+      <rect
+        x={W * 0.8}
+        y={0}
+        width={W * 0.2}
+        height={H}
+        fill="#C8DFF0"
+        opacity="0.7"
+      />
       {/* Grid */}
       {[0.25, 0.5, 0.75].map((f) => (
         <g key={f}>
-          <line x1={W * f} y1={0} x2={W * f} y2={H} stroke="#D5DFCF" strokeWidth="0.8" />
-          <line x1={0} y1={H * f} x2={W} y2={H * f} stroke="#D5DFCF" strokeWidth="0.8" />
+          <line
+            x1={W * f}
+            y1={0}
+            x2={W * f}
+            y2={H}
+            stroke="#D5DFCF"
+            strokeWidth="0.8"
+          />
+          <line
+            x1={0}
+            y1={H * f}
+            x2={W}
+            y2={H * f}
+            stroke="#D5DFCF"
+            strokeWidth="0.8"
+          />
         </g>
       ))}
       {/* Route shadow */}
@@ -264,7 +215,9 @@ function RoteiroMapSVG({ stops }: { stops: Destination[] }) {
         const nx = stops[i + 1];
         const mx = (px(s.lon) + px(nx.lon)) / 2;
         const my = (py(s.lat) + py(nx.lat)) / 2;
-        const angle = (Math.atan2(py(nx.lat) - py(s.lat), px(nx.lon) - px(s.lon)) * 180) / Math.PI;
+        const angle =
+          (Math.atan2(py(nx.lat) - py(s.lat), px(nx.lon) - px(s.lon)) * 180) /
+          Math.PI;
         return (
           <text
             key={i}
@@ -321,7 +274,15 @@ function RoteiroMapSVG({ stops }: { stops: Destination[] }) {
       {/* Compass */}
       <g transform={`translate(${W - 28}, 22)`}>
         <circle r={14} fill="white" fillOpacity="0.9" />
-        <text textAnchor="middle" y={-4} fontSize="8" fill="#F06030" fontWeight="700">N</text>
+        <text
+          textAnchor="middle"
+          y={-4}
+          fontSize="8"
+          fill="#F06030"
+          fontWeight="700"
+        >
+          N
+        </text>
         <line x1={0} y1={-10} x2={0} y2={10} stroke="#ddd" strokeWidth="1" />
         <line x1={-10} y1={0} x2={10} y2={0} stroke="#ddd" strokeWidth="1" />
       </g>
@@ -337,7 +298,9 @@ function WizardProgress({ step, total }: { step: number; total: number }) {
         <div
           key={i}
           className="flex-1 h-1.5 rounded-full transition-all duration-300"
-          style={{ backgroundColor: i <= step ? "var(--primary)" : "var(--cinza-med)" }}
+          style={{
+            backgroundColor: i <= step ? "var(--primary)" : "var(--cinza-med)",
+          }}
         />
       ))}
     </div>
@@ -359,7 +322,7 @@ export function RoteiroScreen({
 
   type ViewState = "empty" | "wizard" | "generating" | "view";
   const [viewState, setViewState] = useState<ViewState>(() =>
-    roteiro.length > 0 ? "view" : "empty"
+    roteiro.length > 0 ? "view" : "empty",
   );
   const [wizardStep, setWizardStep] = useState(0);
   const [wizardData, setWizardData] = useState<WizardData>({
@@ -378,31 +341,82 @@ export function RoteiroScreen({
     if (roteiro.length > 0 && viewState === "empty") {
       setViewState("view");
     }
-  }, [roteiro.length]);
+  }, [roteiro.length, viewState]);
 
   /* ── Wizard helpers ── */
   const WHO_OPTIONS = [
     { value: "solo", icon: <User size={24} />, label: t.options.who.alone },
     { value: "casal", icon: <Heart size={24} />, label: t.options.who.couple },
-    { value: "familia", icon: <Users size={24} />, label: t.options.who.family },
-    { value: "grupo", icon: <UserPlus size={24} />, label: t.options.who.friends },
+    {
+      value: "familia",
+      icon: <Users size={24} />,
+      label: t.options.who.family,
+    },
+    {
+      value: "grupo",
+      icon: <UserPlus size={24} />,
+      label: t.options.who.friends,
+    },
   ];
 
   const INTEREST_OPTIONS = [
-    { value: "praias", icon: <Waves size={18} />, label: t.options.interests.beaches },
-    { value: "cultura", icon: <Landmark size={18} />, label: t.options.interests.culture },
-    { value: "gastronomia", icon: <UtensilsCrossed size={18} />, label: t.options.interests.gastronomy },
-    { value: "natureza", icon: <TreePine size={18} />, label: t.options.interests.nature },
-    { value: "compras", icon: <ShoppingBag size={18} />, label: t.interestCompras },
+    {
+      value: "praias",
+      icon: <Waves size={18} />,
+      label: t.options.interests.beaches,
+    },
+    {
+      value: "cultura",
+      icon: <Landmark size={18} />,
+      label: t.options.interests.culture,
+    },
+    {
+      value: "gastronomia",
+      icon: <UtensilsCrossed size={18} />,
+      label: t.options.interests.gastronomy,
+    },
+    {
+      value: "natureza",
+      icon: <TreePine size={18} />,
+      label: t.options.interests.nature,
+    },
+    {
+      value: "compras",
+      icon: <ShoppingBag size={18} />,
+      label: t.interestCompras,
+    },
     { value: "musica", icon: <Music size={18} />, label: t.interestMusica },
-    { value: "fotografia", icon: <Camera size={18} />, label: t.interestFotografia },
-    { value: "pet", icon: <PawPrint size={18} />, label: t.options.interests.pet },
+    {
+      value: "fotografia",
+      icon: <Camera size={18} />,
+      label: t.interestFotografia,
+    },
+    {
+      value: "pet",
+      icon: <PawPrint size={18} />,
+      label: t.options.interests.pet,
+    },
   ];
 
   const BUDGET_OPTIONS = [
-    { value: "economico", icon: <PiggyBank size={18} />, label: t.budgetEco, desc: t.budgetEcoDesc },
-    { value: "moderado", icon: <Wallet size={18} />, label: t.budgetMod, desc: t.budgetModDesc },
-    { value: "premium", icon: <Gem size={18} />, label: t.budgetPremium, desc: t.budgetPremiumDesc },
+    {
+      value: "economico",
+      icon: <PiggyBank size={18} />,
+      label: t.budgetEco,
+      desc: t.budgetEcoDesc,
+    },
+    {
+      value: "moderado",
+      icon: <Wallet size={18} />,
+      label: t.budgetMod,
+      desc: t.budgetModDesc,
+    },
+    {
+      value: "premium",
+      icon: <Gem size={18} />,
+      label: t.budgetPremium,
+      desc: t.budgetPremiumDesc,
+    },
   ];
 
   const canAdvance = () => {
@@ -416,7 +430,7 @@ export function RoteiroScreen({
   const handleGenerate = async () => {
     setViewState("generating");
     generateTimerRef.current = setTimeout(() => {
-      const paradas = generateLocal(wizardData, language);
+      const paradas = gerarRoteiroLocal(wizardData, language);
       setGeneratedParadas(paradas);
       const newRoteiro = paradas.map((p) => ({
         destinationId: p.destinationId,
@@ -424,11 +438,7 @@ export function RoteiroScreen({
       }));
       if (onSetRoteiro) onSetRoteiro(newRoteiro);
       else newRoteiro.forEach((r) => onAddToRoteiro(r.destinationId, r.note));
-      setOpenDays(
-        Array.from(
-          new Set(paradas.map((p) => `day-${p.dia}`))
-        )
-      );
+      setOpenDays(Array.from(new Set(paradas.map((p) => `day-${p.dia}`))));
       onToast(t.itineraryGenerated);
       setViewState("view");
     }, 2200);
@@ -436,37 +446,50 @@ export function RoteiroScreen({
 
   /* Cleanup on unmount */
   useEffect(() => {
-    return () => { if (generateTimerRef.current) clearTimeout(generateTimerRef.current); };
+    return () => {
+      if (generateTimerRef.current) clearTimeout(generateTimerRef.current);
+    };
   }, []);
 
   /* ── Timeline derived data ── */
-  const timelineParadas: (ParadaGerada & { destination: Destination })[] = (() => {
-    if (generatedParadas.length > 0 && generatedParadas.length === roteiro.length) {
-      return generatedParadas
-        .map((p) => ({ ...p, destination: getDestinationById(p.destinationId)! }))
-        .filter((p) => p.destination);
-    }
-    // Fallback: build from roteiro with default day/period
-    return roteiro
-      .map((item, i) => {
-        const dest = getDestinationById(item.destinationId);
-        if (!dest) return null;
-        const per = ["manhã", "tarde", "noite"][i % 3];
-        return {
-          destinationId: item.destinationId,
-          dia: Math.floor(i / 3) + 1,
-          periodo: per,
-          dica: item.note || "",
-          destination: dest,
-        };
-      })
-      .filter(Boolean) as (ParadaGerada & { destination: Destination })[];
-  })();
+  const timelineParadas: (ParadaGerada & { destination: Destination })[] =
+    (() => {
+      if (
+        generatedParadas.length > 0 &&
+        generatedParadas.length === roteiro.length
+      ) {
+        return generatedParadas
+          .map((p) => ({
+            ...p,
+            destination: getDestinationById(p.destinationId)!,
+          }))
+          .filter((p) => p.destination);
+      }
+      // Fallback: build from roteiro with default day/period
+      return roteiro
+        .map((item, i) => {
+          const dest = getDestinationById(item.destinationId);
+          if (!dest) return null;
+          const per = ["manhã", "tarde", "noite"][i % 3];
+          return {
+            destinationId: item.destinationId,
+            dia: Math.floor(i / 3) + 1,
+            periodo: per,
+            dica: item.note || "",
+            destination: dest,
+          };
+        })
+        .filter(Boolean) as (ParadaGerada & { destination: Destination })[];
+    })();
 
-  const days = Array.from(new Set(timelineParadas.map((p) => p.dia))).sort((a, b) => a - b);
-  const startDate = wizardData.startDate || new Date().toISOString().slice(0, 10);
+  const days = Array.from(new Set(timelineParadas.map((p) => p.dia))).sort(
+    (a, b) => a - b,
+  );
+  const startDate =
+    wizardData.startDate || new Date().toISOString().slice(0, 10);
 
-  const allDayStops = (day: number) => timelineParadas.filter((p) => p.dia === day);
+  const allDayStops = (day: number) =>
+    timelineParadas.filter((p) => p.dia === day);
 
   const headerSubtitle = wizardData.who
     ? `Aracaju · ${wizardData.days} ${language === "pt" ? "dias" : language === "es" ? "días" : "days"} · ${WHO_OPTIONS.find((o) => o.value === wizardData.who)?.label || ""}`
@@ -478,58 +501,14 @@ export function RoteiroScreen({
   if (viewState === "empty") {
     return (
       <BackgroundWrapper className="pt-[62px]">
-        <div className="max-w-xl mx-auto px-4 py-16 flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-full bg-[var(--secondary)] flex items-center justify-center mb-6 text-4xl">
-            <MapPin size={24} style={{ color: '#0D7377' }} />
-          </div>
-          <h1 className="font-['Fjalla_One'] text-3xl text-[var(--preto)] mb-3">
-            {t.emptyItinerary}
-          </h1>
-          <p className="text-[var(--cinza-txt)] text-sm mb-8 max-w-sm leading-relaxed">
-            {t.emptyItineraryMessage}
-          </p>
-
-          {/* CTA Card */}
-          <div className="w-full bg-gradient-to-br from-[var(--preto)] to-[#2A2A2E] rounded-[var(--radius)] p-7 text-left mb-6 shadow-[var(--sombra-lg)]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center">
-                <Bot size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="font-['Fjalla_One'] text-white text-lg">{t.aiItineraryTitle}</p>
-                <p className="text-white/60 text-xs">{t.aiItineraryDesc}</p>
-              </div>
-            </div>
-            <p className="text-white/70 text-sm leading-relaxed mb-5">
-              {language === "pt"
-                ? "Responda 4 perguntas rápidas e nossa IA cria o roteiro ideal para você em Sergipe."
-                : language === "en"
-                ? "Answer 4 quick questions and our AI creates the ideal itinerary for you in Sergipe."
-                : "Responde 4 preguntas rápidas y nuestra IA crea el itinerario ideal para ti en Sergipe."}
-            </p>
-            <button
-              onClick={() => { setWizardStep(0); setViewState("wizard"); }}
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#004D51] transition-colors min-h-[44px]"
-            >
-              <Sparkles size={18} />
-              {t.generateWithAI}
-            </button>
-          </div>
-
-          <button
-            onClick={() => onNavigate("guia")}
-            className="w-full py-3.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#004D51] transition-colors min-h-[44px] mb-3"
-          >
-            {t.exploreDestinations}
-          </button>
-
-          <button
-            onClick={() => onNavigate("guia")}
-            className="w-full py-2.5 bg-[#006064] text-white rounded-[var(--radius-sm)] font-medium text-[13px] hover:bg-[#004D51] transition-colors min-h-[40px]"
-          >
-            {language === "pt" ? "CRIAR ROTEIRO MANUAL" : language === "en" ? "CREATE MANUAL ITINERARY" : "CREAR ITINERARIO MANUAL"}
-          </button>
-        </div>
+        <RoteiroEmpty
+          onCreateWithAI={() => {
+            setWizardStep(0);
+            setViewState("wizard");
+          }}
+          onExploreDestinations={() => onNavigate("guia")}
+          language={language}
+        />
       </BackgroundWrapper>
     );
   }
@@ -540,48 +519,7 @@ export function RoteiroScreen({
   if (viewState === "generating") {
     return (
       <BackgroundWrapper className="pt-[62px] flex items-center justify-center">
-        <div className="text-center px-6 max-w-sm">
-          <div className="relative w-24 h-24 mx-auto mb-7">
-            <div className="absolute inset-0 rounded-full bg-[var(--secondary)] animate-ping opacity-40" />
-            <div className="relative w-24 h-24 rounded-full bg-[var(--primary)] flex items-center justify-center text-4xl shadow-lg">
-              <Bot size={36} className="text-white" />
-            </div>
-          </div>
-          <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-3">
-            {t.aiItineraryTitle}
-          </h2>
-          <p className="text-[var(--cinza-txt)] text-sm mb-6 leading-relaxed">
-            {t.timelineGeneratingMsg}
-          </p>
-          {/* Animated dots */}
-          <div className="flex justify-center gap-2">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-2.5 h-2.5 rounded-full bg-[var(--primary)]"
-                style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
-              />
-            ))}
-          </div>
-          <style>{`@keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } }`}</style>
-          {/* Progress activities */}
-          <div className="mt-8 text-left space-y-2">
-            {[
-              language === "pt" ? "Mapeando pontos de interesse…" : language === "es" ? "Mapeando puntos de interés…" : "Mapping points of interest…",
-              language === "pt" ? "Organizando paradas por proximidade…" : language === "es" ? "Organizando paradas por proximidad…" : "Organizing stops by proximity…",
-              language === "pt" ? "Adicionando dicas exclusivas…" : language === "es" ? "Agregando consejos exclusivos…" : "Adding exclusive tips…",
-            ].map((msg, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 text-sm text-[var(--cinza-txt)] bg-[var(--cinza-leve)] px-4 py-2.5 rounded-[var(--radius-sm)]"
-                style={{ opacity: 1, animation: `fadeIn 0.5s ease ${0.4 + i * 0.5}s both` }}
-              >
-                <span>{msg}</span>
-              </div>
-            ))}
-          </div>
-          <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-        </div>
+        <RoteiroGenerating language={language} />
       </BackgroundWrapper>
     );
   }
@@ -618,14 +556,18 @@ export function RoteiroScreen({
               <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-1">
                 {t.wizardWhoRegional}
               </h2>
-              <p className="text-[var(--cinza-txt)] text-sm mb-6">{t.questions.who}</p>
+              <p className="text-[var(--cinza-txt)] text-sm mb-6">
+                {t.questions.who}
+              </p>
               <div className="grid grid-cols-2 gap-3">
                 {WHO_OPTIONS.map((opt) => {
                   const sel = wizardData.who === opt.value;
                   return (
                     <button
                       key={opt.value}
-                      onClick={() => setWizardData((d) => ({ ...d, who: opt.value }))}
+                      onClick={() =>
+                        setWizardData((d) => ({ ...d, who: opt.value }))
+                      }
                       className={`flex flex-col items-center justify-center gap-3 p-6 rounded-[var(--radius)] border-2 transition-all min-h-[120px] ${
                         sel
                           ? "border-[var(--primary)] bg-[var(--secondary)]"
@@ -633,7 +575,9 @@ export function RoteiroScreen({
                       }`}
                     >
                       <span className="text-4xl">{opt.icon}</span>
-                      <span className={`text-sm font-bold ${sel ? "text-[var(--primary)]" : "text-[var(--preto)]"}`}>
+                      <span
+                        className={`text-sm font-bold ${sel ? "text-[var(--primary)]" : "text-[var(--preto)]"}`}
+                      >
                         {opt.label}
                       </span>
                       {sel && (
@@ -654,22 +598,26 @@ export function RoteiroScreen({
               <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-1">
                 {t.wizardDaysTitle}
               </h2>
-              <p className="text-[var(--cinza-txt)] text-sm mb-8">{t.questions.days}</p>
+              <p className="text-[var(--cinza-txt)] text-sm mb-8">
+                {t.questions.days}
+              </p>
 
               {/* Big number */}
               <div className="text-center mb-6">
-                <div
-                  className="font-['Fjalla_One'] text-[80px] leading-none text-[var(--primary)]"
-                >
+                <div className="font-['Fjalla_One'] text-[80px] leading-none text-[var(--primary)]">
                   {wizardData.days}
                 </div>
-                <p className="text-[var(--cinza-txt)] text-sm">{t.wizardDaysLabel}</p>
+                <p className="text-[var(--cinza-txt)] text-sm">
+                  {t.wizardDaysLabel}
+                </p>
               </div>
 
               {/* Slider */}
               <SliderPrimitive.Root
                 value={[wizardData.days]}
-                onValueChange={([v]) => setWizardData((d) => ({ ...d, days: v }))}
+                onValueChange={([v]) =>
+                  setWizardData((d) => ({ ...d, days: v }))
+                }
                 min={1}
                 max={7}
                 step={1}
@@ -686,7 +634,9 @@ export function RoteiroScreen({
                 {[1, 2, 3, 4, 5, 6, 7].map((d) => (
                   <button
                     key={d}
-                    onClick={() => setWizardData((prev) => ({ ...prev, days: d }))}
+                    onClick={() =>
+                      setWizardData((prev) => ({ ...prev, days: d }))
+                    }
                     className={`w-8 h-8 rounded-full text-xs font-bold transition-colors ${
                       wizardData.days === d
                         ? "bg-[var(--primary)] text-white"
@@ -709,7 +659,10 @@ export function RoteiroScreen({
                     value={wizardData.startDate}
                     min={new Date().toISOString().slice(0, 10)}
                     onChange={(e) =>
-                      setWizardData((d) => ({ ...d, startDate: e.target.value }))
+                      setWizardData((d) => ({
+                        ...d,
+                        startDate: e.target.value,
+                      }))
                     }
                     className="w-full px-3 py-2.5 border border-[var(--cinza-med)] rounded-[var(--radius-sm)] text-sm bg-white focus:border-[var(--primary)] outline-none"
                   />
@@ -740,7 +693,9 @@ export function RoteiroScreen({
               <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-1">
                 {t.wizardInterestsTitle}
               </h2>
-              <p className="text-[var(--cinza-txt)] text-sm mb-6">{t.wizardInterestsHint}</p>
+              <p className="text-[var(--cinza-txt)] text-sm mb-6">
+                {t.wizardInterestsHint}
+              </p>
               <div className="flex flex-wrap gap-3">
                 {INTEREST_OPTIONS.map((opt) => {
                   const sel = wizardData.interests.includes(opt.value);
@@ -769,7 +724,12 @@ export function RoteiroScreen({
               </div>
               {wizardData.interests.length > 0 && (
                 <p className="mt-4 text-xs text-[var(--verde)] font-bold">
-                  ✓ {wizardData.interests.length} {language === "pt" ? "selecionados" : language === "es" ? "seleccionados" : "selected"}
+                  ✓ {wizardData.interests.length}{" "}
+                  {language === "pt"
+                    ? "selecionados"
+                    : language === "es"
+                      ? "seleccionados"
+                      : "selected"}
                 </p>
               )}
             </div>
@@ -788,7 +748,9 @@ export function RoteiroScreen({
                   return (
                     <button
                       key={opt.value}
-                      onClick={() => setWizardData((d) => ({ ...d, budget: opt.value }))}
+                      onClick={() =>
+                        setWizardData((d) => ({ ...d, budget: opt.value }))
+                      }
                       className={`w-full flex items-center gap-4 p-5 rounded-[var(--radius)] border-2 transition-all min-h-[72px] text-left ${
                         sel
                           ? "border-[var(--primary)] bg-[var(--secondary)]"
@@ -797,10 +759,14 @@ export function RoteiroScreen({
                     >
                       <span className="text-3xl shrink-0">{opt.icon}</span>
                       <div className="flex-1">
-                        <p className={`font-bold text-base ${sel ? "text-[var(--primary)]" : "text-[var(--preto)]"}`}>
+                        <p
+                          className={`font-bold text-base ${sel ? "text-[var(--primary)]" : "text-[var(--preto)]"}`}
+                        >
                           {opt.label}
                         </p>
-                        <p className="text-xs text-[var(--cinza-txt)]">{opt.desc}</p>
+                        <p className="text-xs text-[var(--cinza-txt)]">
+                          {opt.desc}
+                        </p>
                       </div>
                       {sel && (
                         <div className="w-6 h-6 rounded-full bg-[var(--primary)] flex items-center justify-center shrink-0">
@@ -847,7 +813,9 @@ export function RoteiroScreen({
                 </button>
               )}
               <button
-                onClick={() => { if (canAdvance()) setWizardStep((s) => s + 1); }}
+                onClick={() => {
+                  if (canAdvance()) setWizardStep((s) => s + 1);
+                }}
                 disabled={!canAdvance()}
                 className={`flex-1 py-3 rounded-[var(--radius-sm)] font-bold text-sm min-h-[44px] transition-all ${
                   canAdvance()
@@ -855,7 +823,7 @@ export function RoteiroScreen({
                     : "bg-[var(--cinza-med)] text-[var(--cinza-txt)] cursor-not-allowed"
                 }`}
               >
-                {t.wizardNext} 
+                {t.wizardNext}
               </button>
             </div>
           )}
@@ -877,7 +845,6 @@ export function RoteiroScreen({
   ════════════════════════════════════════════ */
   return (
     <BackgroundWrapper className="pt-[62px] pb-16">
-
       {/* ── Header ── */}
       <div className="bg-gradient-to-r from-[var(--preto)] to-[#2C2C30] px-4 sm:px-8 py-8">
         <div className="max-w-7xl mx-auto">
@@ -913,14 +880,21 @@ export function RoteiroScreen({
                 className="flex items-center gap-1.5 px-3 py-2 bg-white/10 text-white rounded-[var(--radius-sm)] text-xs font-bold hover:bg-white/20 transition-colors min-h-[36px] backdrop-blur-sm"
               >
                 <Calendar size={14} />
-                <span className="hidden sm:inline">{t.timelineCalendarBtn}</span>
+                <span className="hidden sm:inline">
+                  {t.timelineCalendarBtn}
+                </span>
               </button>
               <button
-                onClick={() => { setWizardStep(0); setViewState("wizard"); }}
+                onClick={() => {
+                  setWizardStep(0);
+                  setViewState("wizard");
+                }}
                 className="flex items-center gap-1.5 px-3 py-2 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[#0A5D61] transition-colors min-h-[36px]"
               >
                 <RefreshCcw size={14} />
-                <span className="hidden sm:inline">{t.timelineRegenerateBtn}</span>
+                <span className="hidden sm:inline">
+                  {t.timelineRegenerateBtn}
+                </span>
               </button>
             </div>
           </div>
@@ -930,7 +904,6 @@ export function RoteiroScreen({
       {/* ── Content: Timeline + Map ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-
           {/* LEFT: Accordion days */}
           <div className="flex-1 min-w-0">
             <AccordionPrimitive.Root
@@ -959,7 +932,12 @@ export function RoteiroScreen({
                               {capitalize(dayDate)}
                             </p>
                             <p className="text-xs text-[var(--cinza-txt)]">
-                              {stops.length} {language === "pt" ? "paradas" : language === "es" ? "paradas" : "stops"}
+                              {stops.length}{" "}
+                              {language === "pt"
+                                ? "paradas"
+                                : language === "es"
+                                  ? "paradas"
+                                  : "stops"}
                             </p>
                           </div>
                         </div>
@@ -1009,7 +987,9 @@ export function RoteiroScreen({
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-start justify-between gap-2 mb-1">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                          <span className="text-lg">{dest.icon}</span>
+                                          <span className="text-lg">
+                                            {dest.icon}
+                                          </span>
                                           <h4 className="font-bold text-sm text-[var(--preto)]">
                                             {dest.name}
                                           </h4>
@@ -1030,7 +1010,9 @@ export function RoteiroScreen({
                                         </div>
                                         <div className="flex items-center gap-1 text-xs text-[var(--cinza-txt)]">
                                           <span>⏱</span>
-                                          <span>{dur} {t.timelineEstDuration}</span>
+                                          <span>
+                                            {dur} {t.timelineEstDuration}
+                                          </span>
                                         </div>
                                       </div>
                                       {parada.dica && (
@@ -1051,14 +1033,18 @@ export function RoteiroScreen({
                                       {t.navigate}
                                     </button>
                                     <button
-                                      onClick={() => onNavigate("detalhe", dest.id)}
+                                      onClick={() =>
+                                        onNavigate("detalhe", dest.id)
+                                      }
                                       className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--cinza-med)] text-[var(--preto)] rounded-[6px] text-xs font-bold hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors min-h-[36px] bg-white"
                                     >
                                       <Eye size={12} />
                                       {t.viewDetails}
                                     </button>
                                     <button
-                                      onClick={() => onRemoveFromRoteiro(dest.id)}
+                                      onClick={() =>
+                                        onRemoveFromRoteiro(dest.id)
+                                      }
                                       className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-[var(--cinza-txt)] rounded-[6px] text-xs hover:text-[var(--vermelho)] hover:bg-[#FEE2E2] transition-colors min-h-[36px]"
                                     >
                                       <Trash2 size={12} />
@@ -1073,7 +1059,9 @@ export function RoteiroScreen({
                                   <div className="h-0.5 w-4 bg-[var(--cinza-med)]" />
                                   <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--cinza-leve)] rounded-full text-xs text-[var(--cinza-txt)]">
                                     <Car size={12} />
-                                    <span>{travel} · {t.timelineTravelIndicator}</span>
+                                    <span>
+                                      {travel} · {t.timelineTravelIndicator}
+                                    </span>
                                   </div>
                                 </div>
                               )}
@@ -1113,7 +1101,6 @@ export function RoteiroScreen({
           {/* RIGHT: Sticky Map */}
           <div className="w-full lg:w-[380px] shrink-0">
             <div className="lg:sticky lg:top-[82px] space-y-4">
-
               {/* Map header */}
               <div className="bg-white border border-[var(--cinza-med)] rounded-[var(--radius)] overflow-hidden shadow-[var(--sombra-sm)]">
                 <div className="flex items-center gap-2 px-4 py-3.5 border-b border-[var(--cinza-med)]">
@@ -1122,22 +1109,36 @@ export function RoteiroScreen({
                     {t.timelineMapTitle}
                   </h3>
                   <span className="ml-auto text-xs text-[var(--cinza-txt)] bg-[var(--cinza-leve)] px-2 py-0.5 rounded-full">
-                    {timelineParadas.length} {language === "pt" ? "paradas" : language === "es" ? "paradas" : "stops"}
+                    {timelineParadas.length}{" "}
+                    {language === "pt"
+                      ? "paradas"
+                      : language === "es"
+                        ? "paradas"
+                        : "stops"}
                   </span>
                 </div>
                 <div className="p-3" style={{ height: "420px" }}>
-                  <RoteiroMapSVG stops={timelineParadas.map((p) => p.destination)} />
+                  <RoteiroMapSVG
+                    stops={timelineParadas.map((p) => p.destination)}
+                  />
                 </div>
               </div>
 
               {/* Stop legend */}
               <div className="bg-white border border-[var(--cinza-med)] rounded-[var(--radius)] p-4 shadow-[var(--sombra-sm)]">
                 <h4 className="font-bold text-sm text-[var(--preto)] mb-3">
-                  {language === "pt" ? "Legenda do Roteiro" : language === "es" ? "Leyenda del Itinerario" : "Route Legend"}
+                  {language === "pt"
+                    ? "Legenda do Roteiro"
+                    : language === "es"
+                      ? "Leyenda del Itinerario"
+                      : "Route Legend"}
                 </h4>
                 <div className="space-y-2">
                   {timelineParadas.map((p, i) => (
-                    <div key={p.destinationId + i} className="flex items-center gap-3">
+                    <div
+                      key={p.destinationId + i}
+                      className="flex items-center gap-3"
+                    >
                       <div className="w-6 h-6 rounded-full bg-[var(--primary)] text-white flex items-center justify-center text-xs font-bold shrink-0">
                         {i + 1}
                       </div>
@@ -1151,7 +1152,6 @@ export function RoteiroScreen({
                   ))}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
