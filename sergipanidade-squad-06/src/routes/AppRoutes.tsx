@@ -16,7 +16,6 @@ const DetalheScreen = React.lazy(() => import("@/features/detalhe/DetalheScreen"
 const RoteiroScreen = React.lazy(() => import("@/features/roteiro/RoteiroScreen").then(m => ({ default: m.RoteiroScreen })));
 const ParceiroScreen = React.lazy(() => import("@/features/parceiro/ParceiroScreen").then(m => ({ default: m.ParceiroScreen })));
 const PerfilScreen = React.lazy(() => import("@/features/perfil/PerfilScreen").then(m => ({ default: m.PerfilScreen })));
-const SOSScreen = React.lazy(() => import("@/features/sos/SOSScreen").then(m => ({ default: m.SOSScreen })));
 const CulturaScreen = React.lazy(() => import("@/features/cultura/CulturaScreen").then(m => ({ default: m.CulturaScreen })));
 
 export interface AppRoutesProps {
@@ -119,10 +118,6 @@ export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: A
             userProfile={userProfile}
             onUpdateProfile={setUserProfile}
           />
-        } />
-
-        <Route path="/sos" element={
-          <SOSScreen onToast={onToast} language={language} />
         } />
 
         <Route path="/cultura" element={

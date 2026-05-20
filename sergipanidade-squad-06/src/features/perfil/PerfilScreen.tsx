@@ -292,13 +292,11 @@ export function PerfilScreen({
   // ── Badge config ──
   const badgeMap: Record<string, string> = {
     turista: 'TURISTA',
-    morador: 'MORADOR',
     estabelecimento: 'PARCEIRO',
   };
 
   const badgeBg: Record<string, string> = {
     turista: 'var(--primary)',
-    morador: '#16A34A',
     estabelecimento: '#7C3AED',
   };
 
@@ -367,11 +365,7 @@ export function PerfilScreen({
             </div>
             <p className="text-white/50" style={{ fontSize: '14px' }}>
               {userProfile.email}&nbsp;·&nbsp;
-              {userProfile.userType === 'turista'
-                ? t.touristLabel
-                : userProfile.userType === 'morador'
-                ? t.residentLabel
-                : t.establishmentLabel}
+              {userProfile.userType === 'turista' ? t.touristLabel : t.establishmentLabel}
               &nbsp;·&nbsp;
               {t.memberSince} Jan 2024
             </p>

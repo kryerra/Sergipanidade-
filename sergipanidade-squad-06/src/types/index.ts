@@ -21,7 +21,7 @@ export interface Review {
 export interface UserProfile {
   name: string;
   email: string;
-  userType: "turista" | "morador" | "estabelecimento";
+  userType: 'turista' | 'estabelecimento';
   phone?: string;
   notifications?: {
     nearby: boolean;

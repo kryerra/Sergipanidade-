@@ -141,13 +141,27 @@ export function HomeScreen({
   userProfile,
 }: HomeScreenProps) {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showCityMenu, setShowCityMenu] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("Aracaju");
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [experienciaIndex, setExperienciaIndex] = useState(0);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
+  const cityMenuRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language] as typeof translations.pt;
+
+  const cities = [
+    'Aracaju',
+    'São Cristóvão',
+    'Laranjeiras',
+    'Canindé',
+    'Lagarto',
+    'Itabaiana',
+  ];
+
+  const cityOptions = cities.filter((city) => city !== selectedCity);
 
   const experienciasSlides = [
     {
@@ -221,6 +235,23 @@ export function HomeScreen({
     return () => document.removeEventListener("mousedown", handler);
   }, [showLanguageMenu]);
 
+  // Fechar menu de cidade ao clicar fora
+  useEffect(() => {
+    if (!showCityMenu) return;
+
+    const handler = (e: MouseEvent) => {
+      if (
+        cityMenuRef.current &&
+        !cityMenuRef.current.contains(e.target as Node)
+      ) {
+        setShowCityMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showCityMenu]);
+
   const langPillLabel = () => {
     if (language === "pt") return "Sergipanês";
     if (language === "en") return "English";
@@ -268,7 +299,7 @@ export function HomeScreen({
 
   return (
     <div
-      className="pt-14 md:pt-16 min-h-screen"
+      className="min-h-screen"
       style={{ backgroundColor: "var(--branco)" }}
     >
       {/* SEÇÃO 1 — HERO COM SLIDESHOW */}
@@ -278,6 +309,49 @@ export function HomeScreen({
         overlayOpacity={0.52}
       >
         <>
+          <div
+            className="absolute left-5 top-5 z-20"
+            ref={cityMenuRef}
+          >
+            <button
+              onClick={() => setShowCityMenu(!showCityMenu)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
+                         border border-white/20 rounded-full text-white text-[13px] font-medium
+                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-[44px]"
+            >
+              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
+              <span>{selectedCity}</span>
+              <ChevronDown
+                size={14}
+                className={`opacity-60 transition-transform ${
+                  showCityMenu ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {showCityMenu && (
+              <div
+                className="absolute top-full left-0 mt-2 bg-white rounded-[var(--radius-sm)]
+                           shadow-[var(--sombra-md)] border border-[var(--cinza-med)]
+                           overflow-hidden min-w-[170px] z-20"
+              >
+                {cityOptions.map((city) => (
+                  <button
+                    key={city}
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setShowCityMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-[14px] text-[var(--cinza-escuro)]
+                               hover:bg-[var(--cinza-mais-claro)] transition-colors"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div
             className="absolute top-5 right-5 sm:right-8 z-20"
             ref={langMenuRef}
