@@ -25,6 +25,47 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+const PROFILE_STORAGE_KEY = 'sergipanidade_currentProfile';
+
+const getInitialUserProfile = (): UserProfile => {
+  if (typeof window === 'undefined') {
+    return {
+      name: 'Marina Andrade',
+      email: 'marina.andrade@email.com',
+      userType: 'turista',
+      phone: '(79) 98765-4321',
+      notifications: {
+        nearby: true,
+        promotions: true,
+        reminders: false,
+        events: false,
+      },
+    };
+  }
+
+  try {
+    const stored = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored) as UserProfile;
+    }
+  } catch (error) {
+    console.error('Failed to load user profile from localStorage:', error);
+  }
+
+  return {
+    name: 'Marina Andrade',
+    email: 'marina.andrade@email.com',
+    userType: 'turista',
+    phone: '(79) 98765-4321',
+    notifications: {
+      nearby: true,
+      promotions: true,
+      reminders: false,
+      events: false,
+    },
+  };
+};
+
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<'pt' | 'en' | 'es'>('pt');
   const [roteiro, setRoteiro] = useState<RoteiroItem[]>([]);
@@ -36,18 +77,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [showGPSModal, setShowGPSModal] = useState(false);
   const [gpsDestinationId, setGpsDestinationId] = useState<string | undefined>();
 
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: 'Marina Andrade',
-    email: 'marina.andrade@email.com',
-    userType: 'turista',
-    phone: '(79) 98765-4321',
-    notifications: {
-      nearby: true,
-      promotions: true,
-      reminders: false,
-      events: false,
-    },
-  });
+  const [userProfile, setUserProfile] = useState<UserProfile>(getInitialUserProfile);
 
   const handleToast = (message: string) => {
     setToastMessage(message);
@@ -55,6 +85,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const hideToast = () => setShowToast(false);
+
+  React.useEffect(() => {
+    try {
+      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(userProfile));
+    } catch (error) {
+      console.error('Failed to save user profile to localStorage:', error);
+    }
+  }, [userProfile]);
 
   const openGPS = (destinationId?: string) => {
     setGpsDestinationId(destinationId);
