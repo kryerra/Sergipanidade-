@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Logo } from './Logo';
 import { SergipanidadeLogo } from './SergipanidadeLogo';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
@@ -7,6 +7,7 @@ import {
   Map as MapIcon,
   Route,
   Landmark,
+  Award,
   ChevronDown,
 } from 'lucide-react';
 import {
@@ -31,8 +32,6 @@ export function Navbar({
   isVisible,
   language,
 }: NavbarProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-
   if (!isVisible) return null;
 
   const t = translations[language] as typeof translations.pt;
@@ -42,8 +41,13 @@ export function Navbar({
     { label: 'Home', screen: 'home', icon: Home },
     { label: t?.destinations || 'Destinos', screen: 'guia', icon: MapIcon },
     { label: 'Cultura', screen: 'cultura', icon: Landmark },
-    { label: t?.itinerary || 'Roteiro', screen: 'roteiro', icon: Route },
   ];
+
+  if (userProfile.userType === 'estabelecimento') {
+    bottomNavItems.push({ label: t?.partner || 'Parceiro', screen: 'parceiro', icon: Award });
+  }
+
+  bottomNavItems.push({ label: t?.itinerary || 'Roteiro', screen: 'roteiro', icon: Route });
 
   const desktopNavItems = [
     { label: 'Home', screen: 'home' },
@@ -155,57 +159,51 @@ export function Navbar({
           </div>
         </div>
 
-        {/* Mobile Header — mirror desktop: logo, nav items, profile */}
-        <div className="md:hidden flex items-center px-4 h-[64px] w-full overflow-visible" style={{ backgroundColor: '#FFFFFF' }}>
-          {/* Left: Logo */}
-          <button onClick={() => onNavigate('home')} className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer min-w-[46px] min-h-[46px] overflow-visible">
-            <div className="flex items-center justify-center h-[46px] w-[46px] overflow-visible">
-              <SergipanidadeLogo variant="light" iconSize={24} iconOnly={true} />
-            </div>
+        {/* Mobile Header */}
+        <div
+          className="md:hidden flex items-center justify-between px-4 h-[56px] w-full overflow-visible"
+        >
+          <button
+            onClick={() => onNavigate('home')}
+            className="flex items-center justify-start gap-2 p-0 bg-transparent border-none cursor-pointer min-h-[44px] overflow-visible"
+          >
+            <Logo
+              variant="light"
+              width={110}
+              height={38}
+              showSlogan={false}
+              className="max-h-[38px]"
+            />
           </button>
 
-          {/* Middle: nav items (scrollable) */}
-          <div className="flex items-center gap-2 mx-3 overflow-x-auto no-scrollbar">
-            {desktopNavItems.map((item) => {
-              const isActive = currentScreen === item.screen;
-              return (
-                <button
-                  key={item.screen}
-                  onClick={() => onNavigate(item.screen)}
-                  className={`relative min-h-[44px] px-3 py-2 flex items-center justify-center border-none rounded-full transition-all duration-200 ease-out text-[15px] font-semibold bg-white ${
-                    isActive ? 'text-[#1A1A1A]' : 'text-[#6B7280] hover:bg-[#F8FAFC] hover:text-[#0F1820]'
-                  }`}
-                >
-                  <span className="relative z-10">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="flex items-center justify-between min-h-[44px] px-3 py-2 bg-white border border-[#E5E7EB] rounded-full transition-colors hover:bg-[#F8FAFC]"
+                type="button"
+              >
+                <UserAvatar
+                  name={userProfile.name || t?.profile || 'Perfil'}
+                  size={32}
+                  bgColor="#0D7377"
+                  textColor="#FFFFFF"
+                />
+                <ChevronDown size={14} className="ml-2" />
+              </button>
+            </DropdownMenuTrigger>
 
-          {/* Right: profile dropdown */}
-          <div className="relative z-[1100] ml-auto self-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="flex items-center justify-between min-h-[44px] px-3 py-2 bg-white border border-[#E5E7EB] rounded-full text-left transition-colors hover:bg-[#F8FAFC]"
-                  type="button"
-                >
-                  <div className="flex items-center gap-2">
-                    <UserAvatar name={userProfile.name || t?.profile || 'Perfil'} size={36} bgColor="#0D7377" textColor="#FFFFFF" />
-                    <div className="flex flex-col items-start gap-0.5">
-                      <span className="text-[13px] font-medium text-[#1A1A1A]">{userProfile.name || t?.profile || 'Perfil'}</span>
-                    </div>
-                  </div>
-                  <ChevronDown size={14} />
-                </button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent sideOffset={8} className="min-w-[180px] z-[1100]">
-                <DropdownMenuItem onSelect={() => onNavigate('perfil')}>{t?.profile || 'Perfil'}</DropdownMenuItem>
-                <DropdownMenuItem variant="destructive" onSelect={() => onNavigate('login')}>{t?.logout || 'Sair'}</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+            <DropdownMenuContent sideOffset={8} className="min-w-[180px] z-[1100]">
+              <DropdownMenuItem onSelect={() => onNavigate('perfil')}>
+                {t?.profile || 'Perfil'}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => onNavigate('login')}
+              >
+                {t?.logout || 'Sair'}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </nav>
 
