@@ -199,9 +199,24 @@ export function PerfilScreen({
   };
 
   // ── Form state ──
-  const [fullName, setFullName] = useState(userProfile.name);
-  const [email, setEmail] = useState(userProfile.email);
-  const [phone, setPhone] = useState(userProfile.phone || '(79) 98765-4321');
+  const isEstabelecimento =
+    (userProfile as UserProfile & { role?: string }).role === 'estabelecimento' ||
+    userProfile.userType === 'estabelecimento';
+
+  const [fullName, setFullName] = useState(
+    isEstabelecimento ? 'Miauteria Cat Café' : userProfile.name
+  );
+  const [email, setEmail] = useState(
+    isEstabelecimento ? 'contato@miauteriacafe.com.br' : userProfile.email
+  );
+  const [phone, setPhone] = useState(
+    isEstabelecimento
+      ? '(79) 98765-4321'
+      : userProfile.phone || '(79) 98765-4321'
+  );
+  const [cnpj, setCnpj] = useState(
+    isEstabelecimento ? '12.345.678/0001-95' : ''
+  );
 
   // ── Password change ──
   const [showPassword, setShowPassword] = useState(false);
@@ -261,7 +276,7 @@ export function PerfilScreen({
   };
 
   const handleDownloadData = () => {
-    const data = JSON.stringify({ fullName, email, phone }, null, 2);
+    const data = JSON.stringify({ fullName, email, phone, cnpj }, null, 2);
     const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
     const a = document.createElement('a');
     a.href = url;
@@ -462,23 +477,41 @@ export function PerfilScreen({
                 ))}
               </div>
 
-              {/* Phone — half width */}
-              <div className="sm:w-1/2 mb-5">
-                <label
-                  className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
-                >
-                  {t.phone}
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                             bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
-                             focus:border-[var(--primary)] focus:bg-white transition-all"
-                  style={{ fontSize: '14px' }}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                  <label
+                    className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
+                    style={{ fontSize: '11px', fontWeight: 700 }}
+                  >
+                    {t.phone}
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
+                               bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
+                               focus:border-[var(--primary)] focus:bg-white transition-all"
+                    style={{ fontSize: '14px' }}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
+                    style={{ fontSize: '11px', fontWeight: 700 }}
+                  >
+                    CNPJ
+                  </label>
+                  <input
+                    type="text"
+                    value={cnpj}
+                    onChange={(e) => setCnpj(e.target.value)}
+                    className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
+                               bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
+                               focus:border-[var(--primary)] focus:bg-white transition-all"
+                    style={{ fontSize: '14px' }}
+                  />
+                </div>
               </div>
 
               <button
