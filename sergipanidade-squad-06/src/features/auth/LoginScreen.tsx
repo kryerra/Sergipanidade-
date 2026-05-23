@@ -770,15 +770,15 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                 
 
                 <button
-                  onClick={() => handleAccountSelect('Pedro Costa', 'pedro.costa@gmail.com', 'estabelecimento')}
+                  onClick={() => handleAccountSelect('Miauteria', 'contato@miauteriacafe.com.br', 'estabelecimento')}
                   className="w-full px-8 py-4 flex items-center gap-4 hover:bg-[#F7F6F3] transition-all border-none bg-transparent cursor-pointer text-left"
                 >
                   <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base flex-shrink-0">
-                    PC
+                    M
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-[#1A1A1A] truncate">Pedro Costa</div>
-                    <div className="text-xs text-[#777] truncate">pedro.costa@gmail.com</div>
+                    <div className="text-sm font-semibold text-[#1A1A1A] truncate">Miauteria Cat Café</div>
+                    <div className="text-xs text-[#777] truncate">contato@miauteriacafe.com.br</div>
                     <div className="text-xs text-[#0D7377] font-medium mt-1 flex items-center gap-1">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
