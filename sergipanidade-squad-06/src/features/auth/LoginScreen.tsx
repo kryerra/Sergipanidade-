@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
-import bgImage from "@/assets/images/caranguejo-login.png";
+import bgImage from "@/assets/images/Login teste.png";
 import googleLogo from "@/imports/Google_Logo.png";
 import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
 
@@ -32,7 +32,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'turista' as 'turista' | 'morador' | 'estabelecimento',
+    userType: 'turista' as 'turista' | 'estabelecimento',
     acceptTerms: false,
   });
 
@@ -133,9 +133,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     const userTypeMessage =
       registerData.userType === 'turista'
         ? t.touristAccountCreated
-        : registerData.userType === 'morador'
-          ? t.residentAccountCreated
-          : t.establishmentAccountCreated;
+        : t.establishmentAccountCreated;
 
     setRegisterData({
       name: '',
@@ -160,7 +158,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     setShowGoogleAccountSelector(true);
   };
 
-  const handleAccountSelect = (accountName: string, accountEmail: string, accountType: 'turista' | 'morador' | 'estabelecimento') => {
+  const handleAccountSelect = (accountName: string, accountEmail: string, accountType: 'turista' | 'estabelecimento') => {
     setShowGoogleAccountSelector(false);
     setShowGoogleAuth(true);
 
@@ -282,15 +280,10 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         {/* Left Panel */}
         <div className="hidden md:flex bg-[#0D7377] px-8 sm:px-12 md:px-16 py-16 md:py-24 flex-col justify-center relative overflow-hidden"
           style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url(${bgImage})`,
+            backgroundImage: `url(${bgImage})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'left center'
           }}>
-          <div className="absolute bottom-[-40px] right-[-30px] font-['Fjalla_One'] text-[280px]
-                        text-[rgba(255,255,255,0.03)] leading-none pointer-events-none tracking-[-12px]
-                        select-none">
-            SE
-          </div>
 
           <div className="relative z-10 max-w-[520px]">
             <div className="mb-10">
@@ -298,13 +291,11 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             </div>
 
             <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
-                         tracking-wide">
+                         tracking-wide"
+                         style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.20)' }}>
               {t.loginHeroLine1}<br />{t.loginHeroLine2}<br />
               <span className="text-[#F7F6F3] opacity-90">{t.loginHeroHighlight}</span>
             </h1>
-            <p className="text-[16px] text-white/70 leading-relaxed max-w-[420px] font-light">
-              {t.loginHeroDesc}
-            </p>
           </div>
         </div>
 
@@ -583,27 +574,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                     </svg>
                     <span className="text-sm font-semibold text-[#1A1A1A]">{t.tourist}</span>
                   </label>
-                  <label
-                    className={`flex-1 flex flex-col items-center justify-center gap-2 px-4 py-5 border-2 rounded-xl
-                              cursor-pointer transition-all ${registerData.userType === 'morador'
-                        ? 'border-[#0D7377] bg-[#0D7377]/5 shadow-sm'
-                        : 'border-[#E0E0E0] bg-white hover:border-[#0D7377]'
-                      }`}
-                  >
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="morador"
-                      checked={registerData.userType === 'morador'}
-                      onChange={(e) => setRegisterData({ ...registerData, userType: e.target.value as any })}
-                      className="hidden"
-                    />
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#0D7377]">
-                      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                    <span className="text-sm font-semibold text-[#1A1A1A]">{t.resident}</span>
-                  </label>
+                  
                   <label
                     className={`flex-1 flex flex-col items-center justify-center gap-2 px-4 py-5 border-2 rounded-xl
                               cursor-pointer transition-all ${registerData.userType === 'estabelecimento'
@@ -628,7 +599,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                 </div>
                 <p className="text-xs text-[#999] mt-3 leading-relaxed">
                   {registerData.userType === 'turista' && t.touristDesc}
-                  {registerData.userType === 'morador' && t.residentDesc}
                   {registerData.userType === 'estabelecimento' && t.establishmentDesc}
                 </p>
               </div>
@@ -790,24 +760,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   </div>
                 </button>
 
-                <button
-                  onClick={() => handleAccountSelect('Maria Santos', 'maria.santos@gmail.com', 'morador')}
-                  className="w-full px-8 py-4 flex items-center gap-4 hover:bg-[#F7F6F3] transition-all border-none bg-transparent cursor-pointer text-left"
-                >
-                  <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base flex-shrink-0">
-                    MS
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-[#1A1A1A] truncate">Maria Santos</div>
-                    <div className="text-xs text-[#777] truncate">maria.santos@gmail.com</div>
-                    <div className="text-xs text-[#0D7377] font-medium mt-1 flex items-center gap-1">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      </svg>
-                      {t.resident}
-                    </div>
-                  </div>
-                </button>
+                
 
                 <button
                   onClick={() => handleAccountSelect('Pedro Costa', 'pedro.costa@gmail.com', 'estabelecimento')}
