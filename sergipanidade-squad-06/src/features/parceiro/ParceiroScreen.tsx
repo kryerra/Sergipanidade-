@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   Eye,
   MapPin,
@@ -14,9 +14,10 @@ import {
   ChevronRight,
   BarChart2,
   Award,
-  ShieldCheck,
   TrendingUp,
 } from "lucide-react";
+import defaultProfilePhoto from "../../assets/images/miauteriapf.jpeg";
+import partnerBackground from "../../assets/images/miaufundo2.jpeg";
 import { translations } from "@/constants/translations";
 
 /* ─────────── Tipos ─────────── */
@@ -214,6 +215,16 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
     "Cafeteria pet friendly com adoção de gatos"
   );
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [profilePhoto, setProfilePhoto] = useState<string>(defaultProfilePhoto);
+  const profilePhotoObjectUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (profilePhotoObjectUrlRef.current) {
+        URL.revokeObjectURL(profilePhotoObjectUrlRef.current);
+      }
+    };
+  }, []);
 
   /* Inline review reply */
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
@@ -242,7 +253,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
     onToast(t.profileUpdated);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setSelectedFiles(Array.from(e.target.files));
   };
 
@@ -251,6 +262,15 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
       onToast("📸 Selecione fotos primeiro");
       return;
     }
+
+    if (profilePhotoObjectUrlRef.current) {
+      URL.revokeObjectURL(profilePhotoObjectUrlRef.current);
+    }
+
+    const newProfileUrl = URL.createObjectURL(selectedFiles[0]);
+    profilePhotoObjectUrlRef.current = newProfileUrl;
+    setProfilePhoto(newProfileUrl);
+
     setShowPhotoModal(false);
     setSelectedFiles([]);
     onToast(`${t.photosAdded}`);
@@ -276,11 +296,17 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
 
       {/* ══════ HEADER BRANCO COM IMAGEM DE FUNDO ══════ */}
       <div
-        className="pt-[62px] relative overflow-hidden"
+        className="relative overflow-hidden"
         style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #E5E7EB' }}
       >
-        
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-12 relative z-10">
+        <img
+          src={partnerBackground}
+          alt="Portal background"
+          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-80"
+          style={{ zIndex: 0 }}
+        />
+        <div className="absolute inset-0 bg-white/70" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-20 relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <div>
               <h1
@@ -295,7 +321,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 -mt-4 pb-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 mt-6 pb-20">
 
         {/* ══════ CARD ESTABELECIMENTO ══════ */}
         <div
@@ -309,7 +335,15 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             <div
               className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-gradient-to-br from-[#ED2100] to-[#1A0050] flex items-center justify-center"
             >
-              <Camera size={36} className="text-white" />
+              {profilePhoto ? (
+                <img
+                  src={profilePhoto}
+                  alt="Foto da Miauteria"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Camera size={36} className="text-white" />
+              )}
             </div>
 
             {/* Info */}
@@ -324,7 +358,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                   </h2>
                   <div className="flex items-center gap-1.5 text-sm mb-2" style={{ color: '#64748B' }}>
                     <MapPin size={14} className="shrink-0" style={{ color: '#0D7C84' }} strokeWidth={2.5} />
-                    <span>Rua João Pessoa, 280 — Centro, Aracaju/SE</span>
+                    <span>Av. Dr. Edelzio Vieira de Melo, 1337 - Pereira Lobo, Aracaju - SE</span>
                   </div>
                   {/* Category pills */}
                   <div className="flex flex-wrap gap-1.5 mb-3">

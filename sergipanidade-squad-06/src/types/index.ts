@@ -30,3 +30,18 @@ export interface UserProfile {
     events: boolean;
   };
 }
+
+export interface ParadaGerada {
+  destinationId: string;
+  dia: number;
+  periodo: string;
+  dica: string;
+}
+
+export interface WizardData {
+  who: string;
+  days: number;
+  startDate: string;
+  interests: string[];
+  budget: string;
+}
