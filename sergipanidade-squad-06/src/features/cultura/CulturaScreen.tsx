@@ -14,6 +14,11 @@ import IMG_VERAO_SERGIPE from "@/imports/verão-sergipe.png";
 import IMG_ARRAIA_DO_POVO from "@/imports/arraia-do-povo.jpg";
 import IMG_FASC from "@/imports/fasc.jpeg";
 import IMG_NATAL_ILUMINADO from "@/imports/natal-iluminado-se.jpg";
+import IMG_FOZ_RIOSÃOFRANCISCO from "@/assets/images/foz_riosãofrancisco.jpg";
+import IMG_RENDA_IRLANDESA from "@/imports/renda_irlandesa.png";
+import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa.png";
+import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
+import IMG_ALZIRA_RENDEIRA from "@/imports/Alzira_rendeira.png";
 
 // ─── Image Constants ─────────────────────────────────────────
 const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -96,60 +101,6 @@ interface Heritage {
 // ─── Mock Data ───────────────────────────────────────────────
 const ARTISTS: Artist[] = [
   {
-    id: 'cicero',
-    name: 'Cícero Brites',
-    city: 'Aracaju · SE',
-    linguagem: 'artesanato',
-    bio: 'Artesão sergipano que transforma argila e fibras naturais em expressões da alma nordestina. Referência em cerâmica utilitária e decorativa.',
-    bioFull: 'Cícero Brites nasceu em 1975, em Aracaju, e desde os 8 anos observava as mãos da avó moldando o barro. Aprendeu o ofício nas margens do Rio Sergipe, onde a terra vermelha servia de matéria-prima e a imaginação, de molde. Ao longo de mais de 30 anos, desenvolveu uma linguagem própria que mistura técnicas ancestrais da cerâmica nordestina com formas contemporâneas. Suas peças já foram expostas em mostras nacionais e integram acervos do Museu da Gente Sergipana. Hoje, Cícero mantém um ateliê aberto no bairro Industrial onde ensina o ofício a jovens da comunidade.',
-    photo: IMG_ARTISAN,
-    coverPhoto: IMG_MARKET,
-    awards: ' Prêmio Cultura SE 2023',
-    years: '30+ anos de trajetória',
-    instagram: '@cicero.brites.arte',
-    works: [
-      { title: 'Série Caatinga', year: '2023', img: IMG_ARTISAN, desc: 'Conjunto de vasos que retrata a exuberância do bioma caatinga em formas orgânicas.', tecnica: 'Cerâmica vidrada' },
-      { title: 'Memória do Rio', year: '2022', img: IMG_LACE, desc: 'Instalação que evoca a relação dos sergipanos com o Rio São Francisco.', tecnica: 'Argila e fibra natural' },
-      { title: 'Corpus Sertão', year: '2021', img: IMG_SCULPTOR, desc: 'Esculturas que representam figuras do cotidiano sertanejo com traço expressionista.', tecnica: 'Terracota' },
-    ],
-  },
-  {
-    id: 'maria',
-    name: 'Maria das Graças Santos',
-    city: 'Lagarto · SE',
-    linguagem: 'pintura',
-    bio: 'Pintora autodidata cujas telas capturam a luz única do sertão sergipano e os rostos marcados pela sabedoria popular.',
-    bioFull: 'Maria das Graças Santos começou a pintar aos 35 anos, depois de criar três filhos e trabalhar durante décadas como professora rural em Lagarto. Sem formação acadêmica formal, desenvolveu um estilo expressivo e intimista que mistura cores vibrantes com retratos humanos de grande potência emocional. Suas obras já foram adquiridas por colecionadores de São Paulo, Rio de Janeiro e Portugal.',
-    photo: IMG_PAINTER,
-    coverPhoto: IMG_MURAL,
-    awards: ' Menção Honrosa — FUNESC 2022',
-    years: '15 anos de trajetória',
-    instagram: '@mariagraca.arte',
-    works: [
-      { title: 'Olhares do Sertão', year: '2024', img: IMG_PAINTER, desc: 'Série de retratos de mulheres sertanejas com olhar direto e cores quentes.', tecnica: 'Óleo sobre tela' },
-      { title: 'Roça em Festa', year: '2023', img: IMG_FESTIVAL, desc: 'Cena de festa junina captada em traços livres e alegres.', tecnica: 'Acrílica sobre madeira' },
-      { title: 'Cabeça d\'Água', year: '2022', img: IMG_RIVER, desc: 'Abstração das cheias do rio São Francisco com paleta azul-terrosa.', tecnica: 'Técnica mista' },
-    ],
-  },
-  {
-    id: 'fabricio',
-    name: 'Fabrício Souza',
-    city: 'Aracaju · SE',
-    linguagem: 'fotografia',
-    bio: 'Fotógrafo documental especializado em comunidades quilombolas e manifestações religiosas afro-sergipanas.',
-    bioFull: 'Fabrício Souza usa a fotografia como ferramenta de memória e resistência. Ao longo de 18 anos, documentou mais de 40 comunidades quilombolas em Sergipe, criando um acervo único de mais de 60 mil imagens. Seu trabalho foi publicado pelo Ministério da Cultura e exposto em Brasília, São Paulo e na Bienal de Arte do Nordeste.',
-    photo: IMG_PHOTO,
-    coverPhoto: IMG_MUSEUM,
-    awards: ' Prêmio Vladimir Carvalho 2021',
-    years: '18 anos de trajetória',
-    instagram: '@fabricio.foto.se',
-    works: [
-      { title: 'Mocambo — A Maior Quilombola', year: '2023', img: IMG_PHOTO, desc: 'Ensaio visual sobre a vida cotidiana no Quilombo Mocambo, o maior de Sergipe.', tecnica: 'Fotografia digital P&B' },
-      { title: 'Terreiros de Sergipe', year: '2022', img: IMG_DANCE, desc: 'Registros de cerimônias sagradas do candomblé nagô sergipano.', tecnica: 'Fotografia analógica colorida' },
-      { title: 'Orla — Retratos da Cidade', year: '2021', img: IMG_MURAL, desc: 'Série sobre os personagens que habitam a Orla de Atalaia ao entardecer.', tecnica: 'Fotografia urbana' },
-    ],
-  },
-  {
     id: 'ana',
     name: 'Ana Lima',
     city: 'Itabaiana · SE',
@@ -222,22 +173,20 @@ const ARTISTS: Artist[] = [
     ],
   },
   {
-    id: 'beatriz',
-    name: 'Beatriz Campos',
-    city: 'Estância · SE',
+    id: 'Alzira-Alves',
+    name: 'Alzira Alves',
+    city: 'Divina Pastora · SE',
     linguagem: 'artesanato',
-    bio: 'Rendeira de bilro que mantém viva a tradição da renda de agulha estanciana, técnica que corre o risco de desaparecer.',
-    bioFull: 'Beatriz Campos é a mais jovem mestra de renda de bilro de Sergipe. Aprendeu a técnica com sua bisavó e transformou o artesanato em sua principal fonte de renda, além de lecionar em oficinas pelo Estado. Fundou a Associação de Rendeiras de Estância em 2018 e hoje coordena 40 artesãs.',
-    photo: IMG_LACE,
-    coverPhoto: IMG_ARTISAN,
-    awards: ' Artesã do Ano — SEBRAE SE 2024',
-    years: '12 anos de trajetória',
-    instagram: '@beatriz.renda.se',
+    bio: 'Artesã de Renda Irlandesa que mantém viva a tradição, técnica que corre o risco de desaparecer.',
+    bioFull: 'Alzira Alves é Mestra e guardiã da memória e identidade da Renda Irlandesa de Divina Pastora, tem 78 anos e faz Renda Irlandesa desde os 10 anos de idade.',
+    photo: IMG_ALZIRA_ALVES,
+    coverPhoto: IMG_RENDA_IRLANDESA,
+    awards: ' Artesã desde os 10 anos de idade.',
+    years: 'Mais de 68 anos de trajetória',
+    instagram: '@alziraalves25',
     works: [
-      { title: 'Coleção "Mangue"', year: '2024', img: IMG_LACE, desc: 'Peças de renda inspiradas nos padrões e formas dos manguezais sergipanos.', tecnica: 'Renda de bilro' },
-      { title: 'Véu Nupcial "Canavieira"', year: '2023', img: IMG_ARTISAN, desc: 'Véu artesanal com motivos da paisagem canavieira do sul de Sergipe.', tecnica: 'Renda de agulha e bilro' },
-      { title: 'Instalação "Malha"', year: '2022', img: IMG_MARKET, desc: 'Instalação artística de grande escala com renda de bilro para exposição na BIENAL-NE.', tecnica: 'Renda de bilro / Arte contemporânea' },
-    ],
+      { title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa' },
+      ],
   },
 ];
 
@@ -254,10 +203,10 @@ const STORIES: Story[] = [
       'As comunidades quilombolas do entorno preservam rituais de agradecimento ao rio realizados semestralmente. Barcos enfeitados com flores e velas saem das margens ao entardecer enquanto rezas e cantos embalados pelo som do zabumba pedem pela fartura da pesca.',
     ],
     author: 'Equipe Sergipanidade',
-    date: '12 mai 2025',
+    date: '24 mai 2026',
     img: IMG_RIVER,
     imgCaption: 'A foz do Rio São Francisco, entre Sergipe e Alagoas — um dos encontros mais singulares da natureza brasileira.',
-    relatedImg: IMG_ARTISAN,
+    relatedImg: IMG_FOZ_RIOSÃOFRANCISCO,
   },
   {
     id: 'candomble-nago',
@@ -277,21 +226,21 @@ const STORIES: Story[] = [
     relatedImg: IMG_FESTIVAL,
   },
   {
-    id: 'renda-bilro',
-    category: 'TRADIÇÃO',
-    title: 'A Renda de Bilro de Estância: tecendo memória com linha e paciência',
-    intro: 'Nas mãos de mestras como Beatriz Campos, filamentos de algodão se transformam em rendas delicadas que contam a história das mulheres do litoral sul sergipano.',
+    id: 'A-Renda-Irlandesa',
+    category: 'PATRIMÔNIO IMATERIAL',
+    title: 'A renda irlandesa é um artesanato luxuoso de fios e agulhas, Patrimônio Cultural Imaterial do Brasil. O município sergipano de Divina Pastora é o grande polo produtor',
+    intro: 'Nas mãos de mestras artesãs locais, filamentos de algodão se transformam em rendas delicadas que contam a história das mulheres rendeiras.',
     body: [
-      'A renda de bilro chegou ao litoral sergipano com os colonizadores portugueses no século XVIII, mas foi nas mãos das mulheres de Estância e Indiaroba que ganhou sua identidade única. Diferentemente da renda europeia, a renda sergipana incorpora motivos locais: folhas de mangue, flores do agreste, peixes e estrelas-do-mar.',
-      'O processo é laborioso. Sobre uma almofada cilíndrica, a rendeira manipula dezenas de bilros — pequenos bastões de madeira com linhas enroladas — trançando-os em sequências precisas que formam padrões transmitidos de geração em geração apenas pela memória visual.',
-      'Nos anos 1980, o risco de extinção era real. Com a chegada dos rendados industriais baratos, muitas mestras abandonaram o ofício. Foi a organização em associações comunitárias, apoiada pelo SEBRAE e pela FUNESC, que reverteu esse processo ao criar mercados regionais e nacionais para a renda artesanal.',
-      'Hoje, a Associação de Rendeiras de Estância tem 40 membros e lista de espera para novos cursos. A renda voltou a ser orgulho — e renda.',
+      'Detalhes e Origem',
+      'A renda irlandesa se tornou Patrimônio Cultural do Brasil em 2009, além de constar no livro de registro de saberes do Instituto do Patrimônio Histórico e Artístico Nacional (Iphan).',
+      'Como é feita: Produzida manualmente com linha, agulha e um cordão chamado lacê. Os desenhos são feitos sobre papel-manteiga e contornados pelo lacê, formando pontos como redinha, abacaxi e aranha',
+      'Origem: Introduzida na região em meados do século XX por imigrantes europeus, a técnica ganhou identidade própria nas mãos das rendeiras sergipanas.',
+      'Onde ver de perto: Divina Pastora (SE): Localizada a aproximadamente 40 km de Aracaju. É a terra-natal do ofício e sede de associações de rendeiras que mantêm a tradição e comercializam as peças diretamente.',
     ],
-    author: 'Equipe Sergipanidade',
-    date: '05 mai 2025',
-    img: IMG_LACE,
-    imgCaption: 'Mãos de mestra rendeira em Estância: o trabalho de horas que se transforma em arte delicada.',
-    relatedImg: IMG_ARTISAN,
+    date: '24 mai 2026',
+    img: IMG_RENDA_IRLANDESA,
+    imgCaption: 'Mãos de mestras rendeiras: o trabalho de horas que se transforma em arte delicada',
+    relatedImg: IMG_NATANZINHO_RENDA_IRLANDESA,
   },
   {
     id: 'culinaria-sergipana',
@@ -836,10 +785,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               textTransform: 'uppercase',
               letterSpacing: '2px'
             }}
-          >
-            <div className="h-3.5 w-[2px] mr-2.5" style={{ backgroundColor: '#0D7377' }} />
-            CULTURA
-          </div>
+          ></div>
 
           {/* Título */}
           <h1
