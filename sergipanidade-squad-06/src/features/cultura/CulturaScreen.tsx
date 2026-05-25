@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   Search, MapPin, ArrowRight, ArrowLeft, ChevronRight,
-  Instagram, Globe, Mail, X, Calendar, Music, Palette,
-  Camera, BookOpen, Footprints, Shapes, Scissors, Award,
-  Eye, ExternalLink, Clock, Users, Star, Landmark,
-  BookMarked, Ticket, BookHeart, Tent,
+  Instagram, Globe, Mail, X, Palette,
+  BookOpen, Shapes, 
+  Eye, Landmark,
+  Ticket, Tent,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
@@ -18,7 +18,8 @@ import IMG_FOZ_RIOSÃOFRANCISCO from "@/assets/images/foz_riosãofrancisco.jpg";
 import IMG_RENDA_IRLANDESA from "@/imports/renda_irlandesa.png";
 import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa.png";
 import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
-import IMG_ALZIRA_RENDEIRA from "@/imports/Alzira_rendeira.png";
+import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
+import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
 
 // ─── Image Constants ─────────────────────────────────────────
 const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -245,19 +246,21 @@ const STORIES: Story[] = [
   {
     id: 'culinaria-sergipana',
     category: 'GASTRONOMIA',
-    title: 'O Dendê e a Culinária Sergipana: entre o mar e o sertão',
-    intro: 'A comida sergipana é uma síntese da diversidade do Estado: o frutos do mar do litoral, o bode e o cará do sertão, e o dendê que veio da África para ficar.',
+    title: 'A culinária de Sergipe mistura tradições litorâneas e sertanejas.',
+    intro: 'om forte uso de frutos do mar, mandioca, carne de sol e coco. O estado destaca-se pela abundância de crustáceos.',
     body: [
       'Poucos estados brasileiros têm uma culinária tão genuinamente híbrida quanto Sergipe. Em menos de 280 km, passamos da culinária litorânea — farta em crustáceos, frutos do mar e leite de coco — para a cozinha sertaneja, baseada no milho, no feijão e na carne seca.',
-      'O elemento que une essas cozinhas é o dendê, óleo extraído do fruto da palmeira azeeiro, trazido pelos africanos escravizados. Em Sergipe, o dendê aparece no moqueca, no sarapatel, no arroz-de-coco e em inúmeras preparações que não têm nomes nos dicionários mas estão gravadas no paladar de qualquer sergipano.',
-      'A "moqueca sergipana" é um ponto de honra local. Diferente da capixaba e da baiana, usa menos azeite-de-dendê e incorpora o coco-de-bode (fruto nativo) como espessante. O resultado é um caldo mais leve mas igualmente perfumado.',
+      'Caranguejada: Carro-chefe da gastronomia local, principalmente na capital Aracaju. O crustáceo é cozido inteiro em um caldo temperado com leite de coco, cheiro-verde, tomate e pimentão, geralmente servido com pirão e farofa.',
+      'Moqueca Sergipana: Diferente da versão baiana, a moqueca sergipana costuma ser mais leve no azeite de dendê, mas rica em leite de coco e peixes frescos da região, como robalo e pescada.',
+      'Amendoim Verde Cozido: Reconhecido como Patrimônio Imaterial de Sergipe, é uma das comidas de rua mais populares, encontrado facilmente em tabuleiros e praias.',
+      'Sertão (Buchada e Sarapatel): Na região mais seca, a culinária é robusta, com forte presença da carne de bode, carne de sol com macaxeira, além de pratos com miúdos como a tradicional buchada e o sarapatel.',
       'No Mercado Municipal Thales Ferraz, em Aracaju, as barracas da Avenida da Cultura são o melhor laboratório para entender essa riqueza. Buchada, sarapatel, carne de sol com manteiga de garrafa, mungunzá de milho verde — uma aula de história em cada prato.',
     ],
     author: 'Equipe Sergipanidade',
-    date: '18 abr 2025',
-    img: IMG_MARKET,
+    date: '25 maio 2026',
+    img: IMG_FESTIVAL_CARANGUEJO,
     imgCaption: 'O Mercado Municipal Thales Ferraz, em Aracaju: a alma gastronômica de Sergipe.',
-    relatedImg: IMG_RIVER,
+    relatedImg: IMG_AMENDOIM,
   },
 ];
 
