@@ -20,6 +20,8 @@ import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa
 import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
 import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
 import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
+import IMG_QUADRILHA_JUNINA from "@/assets/images/quadrilha_junina.jpg";
+
 
 // ─── Image Constants ─────────────────────────────────────────
 const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -210,21 +212,17 @@ const STORIES: Story[] = [
     relatedImg: IMG_FOZ_RIOSÃOFRANCISCO,
   },
   {
-    id: 'candomble-nago',
+  id: 'Quadrilhas-Juninas',
     category: 'TRADIÇÃO',
-    title: 'Candomblé Nagô em Sergipe: a força de uma tradição viva',
-    intro: 'Os terreiros nagôs de Sergipe são um dos pilares da cultura afro-brasileira no Nordeste. Conheça a história da resistência e da espiritualidade que sobreviveu séculos de perseguição.',
+    title: 'As quadrilhas juninas em Sergipe são uma das maiores expressões culturais do "País do Forró"',
+    intro: 'Quadrilhas se preparam para mostrar toda a beleza e a tradição dos festejos juninos.',
     body: [
-      'Em Sergipe, o candomblé nagô chegou com os africanos escravizados trazidos da região do atual Benim e da Nigéria. Com eles vieram os orixás, as cantigas, os ritmos, as folhas sagradas e toda uma cosmologia que resistiu a séculos de perseguição religiosa.',
-      'Os mais antigos terreiros conhecidos do Estado datam do século XIX, localizados nos bairros históricas de Aracaju. Diferentemente do candomblé baiano, mais conhecido pelo grande público, o candomblé nagô sergipano manteve características muito particulares nos ritmos, nas vestimentas e na forma de conduzir os rituais.',
-      'O pesquisador e babalorixá Pai Ilê de Aracaju explica que a preservação desses elementos deve-se à relativa menor pressão sofrida pelos terreiros sergipanos em comparação com outras regiões, o que permitiu uma transmissão mais fiel dos conhecimentos ancestrais.',
-      'Hoje, o Candomblé Nagô de Sergipe está em processo de reconhecimento como patrimônio imaterial pelo IPHAN, numa vitória que representa décadas de luta de mães e pais de santo pela legitimação de suas práticas.',
+      'Faltam poucos dias para o início dos festejos juninos em Sergipe. Assim, às vésperas da mais representativa manifestação da cultura sergipana, as quadrilhas juninas estão em ritmo acelerado de ensaios. Querem fazer bonito nas apresentações, que são bastante esperadas e elogiadas por turistas que vêm ao estado em busca de entretenimento e também de conhecer as tradições culturais que embalam o ‘País do Forró’ no período junino. Vale ressaltar que serão 60 dias de festejos, com uma extensa programação artística e cultural no Arraiá do Povo e na Vila do Forró, na Orla de Atalaia.',
     ],
-    author: 'Colaboração especial — Profa. Dra. Josefa Nascimento',
-    date: '28 abr 2025',
-    img: IMG_DANCE,
-    imgCaption: 'Cerimônia de candomblé nagô em um dos terreiros históricos de Aracaju.',
-    relatedImg: IMG_FESTIVAL,
+    author: 'Governo de Sergipe',
+    date: '29 maio 2026',
+    img: IMG_QUADRILHA_JUNINA,
+    relatedImg: IMG_ARRAIA_DO_POVO,
   },
   {
     id: 'A-Renda-Irlandesa',
