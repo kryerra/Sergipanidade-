@@ -635,7 +635,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
           BARRA DE FILTROS STICKY
       ════════════════════════════════════════════════════════════ */}
       <div
-        className="sticky z-[800] bg-white"
+        className="z-[800] bg-white"
         style={{
           top: 'max(56px, env(safe-area-inset-top, 0px) + 56px)',
           boxShadow: '0 2px 16px rgba(24,24,27,0.08)',

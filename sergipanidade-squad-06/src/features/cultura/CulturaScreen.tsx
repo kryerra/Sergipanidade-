@@ -833,7 +833,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       {/* ── STICKY TABS ── */}
       <div
         ref={tabsRef}
-        className="sticky z-[80] bg-white overflow-x-auto"
+        className="z-[80] bg-white overflow-x-auto"
         style={{
           top: 'calc(56px + env(safe-area-inset-top))',
           borderBottom: '1px solid #D9D9D9',
