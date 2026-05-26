@@ -581,53 +581,18 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
   const currentSort = SORT_OPTIONS.find(s => s.value === sortOrder) ?? SORT_OPTIONS[0];
 
   return (
-    <div className="min-h-screen pt-14 md:pt-16" style={{ backgroundColor: 'var(--branco)' }}>
+    <div className="min-h-screen pt-[56px] md:pt-[76px]" style={{ backgroundColor: 'var(--branco)' }}>
 
       {/* ════════════════════════════════════════════════════════════
           HEADER COM SLIDESHOW
       ════════════════════════════════════════════════════════════ */}
-      <HeroSlideshow images={SERGIPE_BEACHES} height="320px" overlayOpacity={0.55}>
-        <div className="max-w-[1200px] mx-auto px-5 sm:px-10 w-full">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 mb-4">
-            <button
-              onClick={() => onNavigate('home')}
-              className="text-white/40 hover:text-white/70 text-[12px] bg-transparent border-none
-                         cursor-pointer p-0 transition-colors flex items-center gap-1"
-            >
-              <ArrowLeft size={12} />
-              Home
-            </button>
-            <span className="text-white/25 text-[12px]">›</span>
-            <span className="text-white/70 text-[12px]">Guia de Destinos</span>
-          </div>
-
+      <HeroSlideshow images={SERGIPE_BEACHES} height="580px" overlayOpacity={0.55} fit="cover">
           <h1
-            className="font-['Fjalla_One'] text-white tracking-wide mb-2"
+            className="font-['Fjalla_One'] text-white tracking-wide"
             style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}
           >
             {t.guideTitle ?? 'Guia de Destinos'}
           </h1>
-          <p className="text-white/50" style={{ fontSize: '15px' }}>
-            {t.guideSubtitle ?? 'Explore os melhores pontos turísticos de Sergipe'}
-          </p>
-
-          {/* Contador de resultados */}
-          <div className="flex items-center gap-2 mt-4">
-            <span
-              className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(240,96,48,0.18)', color: 'var(--primary)', border: '1px solid rgba(240,96,48,0.28)' }}
-            >
-              {destinations.length} destinos cadastrados
-            </span>
-            <span
-              className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.12)' }}
-            >
-              {VERIFIED_IDS.size} verificados <CheckCircle2 size={10} strokeWidth={2.5} className="inline-block ml-0.5" />
-            </span>
-          </div>
-        </div>
       </HeroSlideshow>
 
       {/* ════════════════════════════════════════════════════════════
