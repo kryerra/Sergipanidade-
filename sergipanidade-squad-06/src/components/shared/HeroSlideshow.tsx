@@ -11,6 +11,7 @@ interface HeroSlideshowProps {
   children?: React.ReactNode;
   height?: string;
   overlayOpacity?: number;
+  fit?: 'cover' | 'contain';
 }
 
 export function HeroSlideshow({
@@ -18,6 +19,7 @@ export function HeroSlideshow({
   children,
   height = '500px',
   overlayOpacity = 0.5,
+  fit = 'cover',
 }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -32,19 +34,27 @@ export function HeroSlideshow({
   }, [images.length]);
 
   return (
-    <div className="relative overflow-hidden" style={{ height }}>
+    <div className="relative overflow-hidden bg-black" style={{ height }}>
       {/* Slideshow de imagens */}
       {images.map((img, index) => (
         <div
           key={index}
-          className="absolute inset-0 transition-opacity duration-1000"
-          style={{
-            opacity: index === currentIndex ? 1 : 0,
-            backgroundImage: `url(${img})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+          className="absolute inset-0 transition-opacity duration-1000 overflow-hidden"
+          style={{ opacity: index === currentIndex ? 1 : 0 }}
+        >
+          {fit === 'cover' ? (
+            <div
+              className="absolute inset-0 bg-top bg-no-repeat bg-cover"
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ) : (
+            <img
+              src={img}
+              alt=""
+              className="absolute inset-0 m-auto w-full h-full object-contain object-top"
+            />
+          )}
+        </div>
       ))}
 
       {/* Overlay escuro semitransparente */}

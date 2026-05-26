@@ -1,3 +1,9 @@
+import IMG_NEG7 from '@/assets/images/neg7.jpg';
+import IMG_HOMEMBRANCO from '@/assets/images/homembranco.jpg';
+import IMG_ORLA_PSOL from '@/assets/images/orla-psol.jpg';
+import IMG_BOIAZUL from '@/imports/boiazul.png';
+import IMG_ARRAIA from '@/imports/arraia-do-povo.jpg';
+
 /**
  * Imagens de Sergipe para slideshows dos headers
  * Fotos reais de paisagens, cultura e festas folclóricas
@@ -5,11 +11,11 @@
 
 // ── Praias e Paisagens de Sergipe ──
 export const SERGIPE_BEACHES = [
-  'https://images.unsplash.com/photo-1732066811253-b34c81d58e45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTZXJnaXBlJTIwQnJhemlsJTIwYmVhY2glMjBjb2FzdCUyMHRyb3BpY2FsfGVufDF8fHx8MTc3Nzk1MjAwOHww&ixlib=rb-4.1.0&q=80&w=1080',
-  'https://images.unsplash.com/photo-1583214582490-1485cb37b04b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxTZXJnaXBlJTIwQnJhemlsJTIwYmVhY2glMjBjb2FzdCUyMHRyb3BpY2FsfGVufDF8fHx8MTc3Nzk1MjAwOHww&ixlib=rb-4.1.0&q=80&w=1080',
-  'https://images.unsplash.com/photo-1641231767593-1184d3f32890?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw2fHxTZXJnaXBlJTIwQnJhemlsJTIwYmVhY2glMjBjb2FzdCUyMHRyb3BpY2FsfGVufDF8fHx8MTc3Nzk1MjAwOHww&ixlib=rb-4.1.0&q=80&w=1080',
-  'https://images.unsplash.com/photo-1622410623173-a485a44721c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw3fHxTZXJnaXBlJTIwQnJhemlsJTIwYmVhY2glMjBjb2FzdCUyMHRyb3BpY2FsfGVufDF8fHx8MTc3Nzk1MjAwOHww&ixlib=rb-4.1.0&q=80&w=1080',
-  'https://images.unsplash.com/photo-1610398076668-32028a1bf5d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw0fHxTZXJnaXBlJTIwQnJhemlsJTIwYmVhY2glMjBjb2FzdCUyMHRyb3BpY2FsfGVufDF8fHx8MTc3Nzk1MjAwOHww&ixlib=rb-4.1.0&q=80&w=1080',
+  IMG_NEG7,
+  IMG_HOMEMBRANCO,
+  IMG_ORLA_PSOL,
+  IMG_BOIAZUL,
+  IMG_ARRAIA,
 ];
 
 // ── Cultura e Festas Folclóricas ──
