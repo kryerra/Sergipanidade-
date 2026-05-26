@@ -20,8 +20,7 @@ import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa
 import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
 import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
 import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
-import IMG_QUADRILHA_JUNINA from "@/assets/images/quadrilha_junina.jpg";
-
+import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
 
 // ─── Image Constants ─────────────────────────────────────────
 const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -221,7 +220,7 @@ const STORIES: Story[] = [
     ],
     author: 'Governo de Sergipe',
     date: '29 maio 2026',
-    img: IMG_QUADRILHA_JUNINA,
+    img: IMG_QUADRILHA,
     relatedImg: IMG_ARRAIA_DO_POVO,
   },
   {
