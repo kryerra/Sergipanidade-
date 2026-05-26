@@ -541,7 +541,7 @@ interface GuiaScreenProps {
 }
 
 export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScreenProps) {
-  const [activeRegion, setActiveRegion]   = useState('Aracaju');
+  const [activeRegion, setActiveRegion]   = useState('Todos');
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchTerm, setSearchTerm]       = useState('');
   const [sortOrder, setSortOrder]         = useState('relevance');
@@ -549,7 +549,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
   const [showSortMenu, setShowSortMenu]   = useState(false);
 
   const t      = translations[language] as any;
-  const tabs   = ['Aracaju', 'Interior', 'Litoral Norte', 'Litoral Sul'];
   const sortRef = useRef<HTMLDivElement>(null);
 
   // Fechar sort menu ao clicar fora
@@ -582,53 +581,18 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
   const currentSort = SORT_OPTIONS.find(s => s.value === sortOrder) ?? SORT_OPTIONS[0];
 
   return (
-    <div className="min-h-screen pt-14 md:pt-16" style={{ backgroundColor: 'var(--branco)' }}>
+    <div className="min-h-screen pt-[56px] md:pt-[76px]" style={{ backgroundColor: 'var(--branco)' }}>
 
       {/* ════════════════════════════════════════════════════════════
           HEADER COM SLIDESHOW
       ════════════════════════════════════════════════════════════ */}
-      <HeroSlideshow images={SERGIPE_BEACHES} height="320px" overlayOpacity={0.55}>
-        <div className="max-w-[1200px] mx-auto px-5 sm:px-10 w-full">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 mb-4">
-            <button
-              onClick={() => onNavigate('home')}
-              className="text-white/40 hover:text-white/70 text-[12px] bg-transparent border-none
-                         cursor-pointer p-0 transition-colors flex items-center gap-1"
-            >
-              <ArrowLeft size={12} />
-              Home
-            </button>
-            <span className="text-white/25 text-[12px]">›</span>
-            <span className="text-white/70 text-[12px]">Guia de Destinos</span>
-          </div>
-
+      <HeroSlideshow images={SERGIPE_BEACHES} height="580px" overlayOpacity={0.55} fit="cover">
           <h1
-            className="font-['Fjalla_One'] text-white tracking-wide mb-2"
+            className="font-['Fjalla_One'] text-white tracking-wide"
             style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}
           >
             {t.guideTitle ?? 'Guia de Destinos'}
           </h1>
-          <p className="text-white/50" style={{ fontSize: '15px' }}>
-            {t.guideSubtitle ?? 'Explore os melhores pontos turísticos de Sergipe'}
-          </p>
-
-          {/* Contador de resultados */}
-          <div className="flex items-center gap-2 mt-4">
-            <span
-              className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(240,96,48,0.18)', color: 'var(--primary)', border: '1px solid rgba(240,96,48,0.28)' }}
-            >
-              {destinations.length} destinos cadastrados
-            </span>
-            <span
-              className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.12)' }}
-            >
-              {VERIFIED_IDS.size} verificados <CheckCircle2 size={10} strokeWidth={2.5} className="inline-block ml-0.5" />
-            </span>
-          </div>
-        </div>
       </HeroSlideshow>
 
       {/* ════════════════════════════════════════════════════════════
@@ -644,33 +608,8 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
       >
         <div className="max-w-[1200px] mx-auto">
 
-          {/* ── Linha 1: Tabs de Região ── */}
-          <div className="flex items-center gap-0 px-5 sm:px-8 border-b border-[var(--cinza-med)] overflow-x-auto no-scrollbar">
-            {tabs.map((tab) => {
-              const isActive = activeRegion === tab;
-              return (
-                <button
-                  key={tab}
-                  onClick={() => {
-                    setActiveRegion(tab);
-                    onToast(`Região: ${tab}`);
-                  }}
-                  className="flex-shrink-0 px-4 py-3.5 text-[13px] font-medium border-none bg-transparent
-                             cursor-pointer transition-all duration-150 whitespace-nowrap relative"
-                  style={{ color: isActive ? 'var(--preto)' : 'var(--cinza-txt)' }}
-                >
-                  {tab}
-                  {isActive && (
-                    <span
-                      className="absolute bottom-0 left-2 right-2 h-[2.5px] rounded-t-full"
-                      style={{ backgroundColor: 'var(--primary)' }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
+          {/* ── Linha 1: (Região removida) ── */}
+          <div className="hidden" />
           {/* ── Linha 2: Pills de Categoria ── */}
           <div className="flex items-center gap-2 px-5 sm:px-8 py-3 overflow-x-auto no-scrollbar border-b border-[var(--cinza-med)]">
             {FILTER_CATEGORIES.map((cat) => {
@@ -856,7 +795,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                 Tente outra região, categoria ou termo de busca
               </p>
               <button
-                onClick={() => { setSearchTerm(''); setActiveCategory('Todos'); setActiveRegion('Aracaju'); }}
+                onClick={() => { setSearchTerm(''); setActiveCategory('Todos'); setActiveRegion('Todos'); }}
                 className="px-6 py-3 rounded-[10px] text-white font-['Fjalla_One'] text-[13px]
                            tracking-wider uppercase cursor-pointer border-none transition-all
                            hover:opacity-90 min-h-[44px]"
