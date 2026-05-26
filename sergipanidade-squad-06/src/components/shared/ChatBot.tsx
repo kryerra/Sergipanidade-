@@ -20,7 +20,9 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
     { text: t.chatBotSuggestion, isBot: true },
   ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
 
   useEffect(() => {
     setMessages([
@@ -35,22 +37,89 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
 
   if (!isVisible) return null;
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    const userMessage: Message = { text: input, isBot: false };
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    const userText = input.trim();
+    const userMessage: Message = { text: userText, isBot: false };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
-    const keyword =
-      Object.keys(t.chatResponses).find((k) => input.toLowerCase().includes(k)) || 'default';
+    if (!apiKey) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: 'Chave da API não configurada. Verifique o arquivo .env.',
+          isBot: true,
+        },
+      ]);
+      return;
+    }
 
-    setTimeout(() => {
-      const botMessage: Message = {
-        text: t.chatResponses[keyword as keyof typeof t.chatResponses],
-        isBot: true,
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 600);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          temperature: 0.4,
+          max_tokens: 512,
+          messages: [
+            {
+              role: 'system',
+              content: `Você é o assistente oficial do Hub Sergipanidade.
+Sua função é responder EXCLUSIVAMENTE sobre temas
+relacionados ao Hub Sergipanidade, incluindo:
+- Cultura, história e identidade sergipana
+- Produtos, artesanato, natureza, passeios e gastronomia de Sergipe
+- Empreendedores e projetos do Hub
+- Eventos, programações e parceiros do Hub
+
+Regras obrigatórias:
+1. NUNCA responda perguntas fora desses temas.
+2. Se a pergunta for fora do escopo, responda:
+  "Só posso ajudar com temas do Hub Sergipanidade."
+3. Use tom acolhedor, cultural e sergipano.
+4. Cite exemplos reais de Sergipe sempre que possível.`,
+            },
+            { role: 'user', content: userText },
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      const botReply = response.ok && data?.choices?.length
+        ? data.choices[0]?.message?.content
+            .replace(/\*\*/g, "")
+            .replace(/\*/g, "")
+        : null;
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: botReply ??
+            t.chatResponses[
+              (Object.keys(t.chatResponses).find((key) => userText.toLowerCase().includes(key)) || 'default') as keyof typeof t.chatResponses
+            ],
+          isBot: true,
+        },
+      ]);
+    } catch (error) {
+      console.error('ChatBot error:', error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: 'Desculpe, não consegui conectar ao serviço de IA no momento.',
+          isBot: true,
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -60,10 +129,10 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Fechar chat' : 'Abrir chat de ajuda'}
         className="fixed right-6 z-[800] w-[56px] h-[56px] rounded-full border-none cursor-pointer
-                   bg-[var(--primary)] flex items-center justify-center
-                   shadow-[0_4px_20px_rgba(0,0,128,0.50)]
-                   transition-all duration-200 hover:scale-110
-                   hover:shadow-[0_8px_32px_rgba(0,0,128,0.65)]"
+                  bg-[var(--primary)] flex items-center justify-center
+                  shadow-[0_4px_20px_rgba(0,0,128,0.50)]
+                  transition-all duration-200 hover:scale-110
+                  hover:shadow-[0_8px_32px_rgba(0,0,128,0.65)]"
         style={{ bottom: 'calc(1.75rem + env(safe-area-inset-bottom))' }}
       >
         {isOpen ? (
@@ -76,7 +145,7 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
         {!isOpen && (
           <span
             className="absolute top-0 right-0 w-3 h-3 rounded-full bg-[var(--amarelo)]
-                       border-2 border-[var(--branco)]"
+                      border-2 border-[var(--branco)]"
           />
         )}
       </button>
@@ -85,8 +154,8 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
       {isOpen && (
         <div
           className="fixed right-6 z-[801] w-[320px] bg-[var(--branco)] rounded-[var(--radius)]
-                     shadow-[var(--sombra-lg)] flex flex-col overflow-hidden
-                     border border-[var(--cinza-med)]"
+                    shadow-[var(--sombra-lg)] flex flex-col overflow-hidden
+                    border border-[var(--cinza-med)]"
           style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
         >
           {/* Header */}
@@ -112,8 +181,8 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
             <button
               onClick={() => setIsOpen(false)}
               className="bg-transparent border-none text-white/60 cursor-pointer
-                         hover:text-white transition-colors p-1 rounded-full
-                         hover:bg-white/10 min-w-[32px] min-h-[32px] flex items-center justify-center"
+                        hover:text-white transition-colors p-1 rounded-full
+                        hover:bg-white/10 min-w-[32px] min-h-[32px] flex items-center justify-center"
               aria-label="Fechar chat"
             >
               <X size={16} strokeWidth={2.5} />
@@ -146,19 +215,19 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder={t.chatInputPlaceholder}
               className="flex-1 px-3 py-2 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                         text-[13px] outline-none text-[var(--preto)] bg-[var(--cinza-leve)]
-                         focus:border-[var(--azul)] focus:bg-white transition-colors"
+                        text-[13px] outline-none text-[var(--preto)] bg-[var(--cinza-leve)]
+                        focus:border-[var(--azul)] focus:bg-white transition-colors"
             />
             <button
               onClick={handleSend}
-              disabled={!input.trim()}
+              disabled={isLoading || !input.trim()}
               className="w-10 h-10 flex items-center justify-center
-                         bg-[var(--primary)] text-white border-none rounded-[var(--radius-sm)]
-                         cursor-pointer hover:bg-[#000060] transition-colors
-                         disabled:bg-[var(--cinza-med)] disabled:cursor-not-allowed flex-shrink-0"
+                        bg-[var(--primary)] text-white border-none rounded-[var(--radius-sm)]
+                        cursor-pointer hover:bg-[#000060] transition-colors
+                        disabled:bg-[var(--cinza-med)] disabled:cursor-not-allowed flex-shrink-0"
               aria-label="Enviar mensagem"
             >
-              <Send size={16} strokeWidth={2} />
+              {isLoading ? <span className="text-[12px]">...</span> : <Send size={16} strokeWidth={2} />}
             </button>
           </div>
         </div>
