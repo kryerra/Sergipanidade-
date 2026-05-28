@@ -1,12 +1,10 @@
 /**
- * Serviço de IA do OpenRouter — Sergipanidade
- * Substitui o serviço direto do Gemini para permitir o uso de chaves gratuitas do OpenRouter
- * que NÃO exigem pré-pagamento ou dados de cartão de crédito.
+ * Serviço de IA do Google Gemini — Sergipanidade
+ * Utiliza a API oficial do Google AI Studio diretamente para maior velocidade (1-2s) e gratuidade.
  */
 
-const API_KEY = (import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_GEMINI_API_KEY) as string;
-const MODELO_IA = (import.meta.env.VITE_OPENROUTER_MODEL || "openrouter/free") as string;
-
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+const MODELO_IA = "gemini-2.5-flash"; // Modelo padrão rápido e gratuito do Gemini
 
 /**
  * Extrai o tempo de espera sugerido (em milissegundos) a partir de um erro de limite de requisições (429).
@@ -35,34 +33,36 @@ export function isCotaDiariaEsgotada(erro: unknown): boolean {
 }
 
 /**
- * Faz a chamada HTTP para a API do OpenRouter.
+ * Faz a chamada HTTP para a API oficial do Google AI Studio (Gemini).
+ * Retorna em 1-2 segundos e é 100% gratuito (15 requisições por minuto).
  */
-async function chamarOpenRouter(prompt: string): Promise<string> {
+async function chamarGoogleAIStudio(prompt: string): Promise<string> {
   if (!API_KEY) {
     throw new Error(
-      'Chave de API não definida. Crie um arquivo .env com VITE_OPENROUTER_API_KEY ou VITE_GEMINI_API_KEY.'
+      'Chave de API do Gemini não definida. Crie um arquivo .env com VITE_GEMINI_API_KEY.'
     );
   }
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`,
-      "HTTP-Referer": "https://sergipanidade.com.br", // Requerido pelo OpenRouter
-      "X-Title": "Sergipanidade", // Requerido pelo OpenRouter
-    },
-    body: JSON.stringify({
-      model: MODELO_IA,
-      messages: [
-        {
-          role: "user",
-          content: prompt,
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODELO_IA}:generateContent?key=${API_KEY}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          responseMimeType: "application/json", // Força o Gemini a retornar JSON estruturado puro
         },
-      ],
-      temperature: 0.7,
-    }),
-  });
+      }),
+    }
+  );
 
   if (!response.ok) {
     let detalheErro = "";
@@ -72,26 +72,26 @@ async function chamarOpenRouter(prompt: string): Promise<string> {
     } catch {
       detalheErro = response.statusText;
     }
-    throw new Error(`Erro na chamada da API OpenRouter (Status ${response.status}): ${detalheErro}`);
+    throw new Error(`Erro na chamada da API Google AI Studio (Status ${response.status}): ${detalheErro}`);
   }
 
   const data = await response.json();
-  const respostaTexto = data.choices?.[0]?.message?.content;
+  const respostaTexto = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!respostaTexto) {
-    throw new Error('Resposta vazia da API do OpenRouter');
+    throw new Error('Resposta vazia da API do Google AI Studio');
   }
 
   return respostaTexto;
 }
 
 /**
- * Interface pública para geração de conteúdo com a IA do OpenRouter.
+ * Interface pública para geração de conteúdo com a IA.
  * Trata tentativas automáticas (retries) em caso de limite de requisições (erros 429).
  */
 export async function gerarRoteiroComIA(prompt: string): Promise<string> {
   try {
-    return await chamarOpenRouter(prompt);
+    return await chamarGoogleAIStudio(prompt);
   } catch (erroApi: unknown) {
     const mensagem = (erroApi as { message?: string })?.message ?? '';
     const is429 = mensagem.includes('429') || mensagem.includes('Too Many Requests');
@@ -104,7 +104,7 @@ export async function gerarRoteiroComIA(prompt: string): Promise<string> {
         await new Promise(r => setTimeout(r, tempoEsperaMs));
 
         try {
-          return await chamarOpenRouter(prompt);
+          return await chamarGoogleAIStudio(prompt);
         } catch (erroTentativa: unknown) {
           console.warn('Falha na nova tentativa:', (erroTentativa as { message?: string })?.message ?? erroTentativa);
           throw erroTentativa;
