@@ -581,7 +581,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
   const currentSort = SORT_OPTIONS.find(s => s.value === sortOrder) ?? SORT_OPTIONS[0];
 
   return (
-    <div className="min-h-screen pt-[56px] md:pt-[76px]" style={{ backgroundColor: 'var(--branco)' }}>
+    <div className="min-h-screen pt-[56px] md:pt-[0px]" style={{ backgroundColor: 'var(--branco)' }}>
 
       {/* ════════════════════════════════════════════════════════════
           HEADER COM SLIDESHOW
