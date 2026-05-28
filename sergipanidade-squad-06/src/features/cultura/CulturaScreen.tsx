@@ -20,16 +20,17 @@ import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
 import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
 import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
 import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
+import IMG_VEIO from "@/imports/veio.png";
+import IMG_VEIO_ITAU from "@/imports/veio_itau.jpg";
+import IMG_VEIO_ENTALHES from "@/imports/veio_entalhes.png";
+
 
 // ─── Image Constants ─────────────────────────────────────────
-const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-
 const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_SCULPTOR = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -137,22 +138,33 @@ const ARTISTS: Artist[] = [
     ],
   },
   {
-    id: 'manoel',
-    name: 'Manoel Ribeiro',
-    city: 'Laranjeiras · SE',
+    id: 'Véio',
+    name: 'Cícero Alves dos Santos',
+    city: 'Nossa Senhora da Glória·SE',
     linguagem: 'escultura',
-    bio: 'Escultor em pedra-sabão e madeira que recria a imaginária religiosa e os santos populares do catolicismo popular sergipano.',
-    bioFull: 'Manoel Ribeiro aprendeu a esculpir com seu pai, que era entalhador de retábulos em igrejas coloniais do Vale do Cotinguiba. Hoje, aos 68 anos, é um dos últimos mestres vivos da imaginária popular sergipana. Suas obras integram acervos de museus e igrejas históricas do Brasil e do exterior.',
-    photo: IMG_SCULPTOR,
-    coverPhoto: IMG_CHURCH,
-    awards: ' Mestre da Cultura Sergipana — SECULT 2018',
-    years: '45 anos de trajetória',
-    instagram: '@manoel.imaginaria.se',
+    bio: 'Véio Escultor internacionalmente reconhecido que utiliza madeira morta do sertão.',
+    bioFull: 'Cicero Alves dos Santos, o Véio é escultor e criador do Museu do Sertão, que conta com um acervo de cerca de 17 mil obras. O artista plástico sergipano utiliza madeira morta como matéria-prima para suas esculturas.',
+    photo: IMG_VEIO,
+    coverPhoto: IMG_VEIO_ITAU,
+    awards: ' Doutor Honoris Causa pela Universidade Federal de Sergipe, ao longo de sua trajetória Véio participou de diversas exposições, como uma retrospectiva da sua obra, em 2018, com curadoria de Carlos Augusto Calil e Agnaldo Farias, no Itaú Cultural, instituição que também o reconheceu com o Prêmio Itaú Cultural 30 anos, por suas contribuições para a arte brasileira.',
+    years: 'Mais de 65 anos de trajetória.',
+    instagram: '@artistaveio',
     works: [
-      { title: 'São Francisco do Sertão', year: '2024', img: IMG_SCULPTOR, desc: 'Escultura em cedro representando São Francisco de Assis com motivos sertanejos.', tecnica: 'Madeira entalhada e policromada' },
-      { title: 'Nossa Senhora das Dores', year: '2023', img: IMG_CHURCH, desc: 'Imagem sacra em pedra-sabão encomendada para a Igreja de Laranjeiras.', tecnica: 'Pedra-sabão' },
-      { title: 'Presépio do Rio São Francisco', year: '2022', img: IMG_ARTISAN, desc: 'Presépio com figuras que vestem roupas típicas do cangaço e da vida ribeirinha.', tecnica: 'Argila e tinta acrílica' },
-    ],
+      {
+        title: 'Prêmio ABCA',
+        year: '2024',
+        img: IMG_VEIO_ENTALHES,
+        desc: 'Vencedor na categoria Destaque Regional (Nordeste) pela Associação Brasileira de Críticos de Arte.',
+        tecnica: 'Entalhes - Arte Popular Brasileira',
+      },
+      {
+        title: 'Prêmio Itaú Cultural 30 Anos',
+        year: '2017',
+        img: IMG_VEIO_ITAU,
+        desc: 'Reconhecimento pelas suas contribuições para a arte brasileira.',
+        tecnica: 'Esculturas de madeira.',
+      },
+    ]
   },
   {
     id: 'Alzira-Alves',
