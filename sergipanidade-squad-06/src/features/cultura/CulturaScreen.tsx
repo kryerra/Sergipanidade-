@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  Search, MapPin, ArrowRight, ArrowLeft, ChevronRight,
+  Search, MapPin, ArrowRight, ArrowLeft,
   Instagram, Globe, Mail, X, Palette,
   BookOpen, Shapes, 
   Eye,
@@ -9,7 +9,6 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import IMG_CULTURA_HERO from "@/imports/Cultura.jpeg";
-import IMG_LAMBE_SUJO3 from "@/assets/images/lambe-sujo3.jpg";
 import IMG_VERAO_SERGIPE from "@/imports/verão-sergipe.png";
 import IMG_ARRAIA_DO_POVO from "@/imports/arraia-do-povo.jpg";
 import IMG_FASC from "@/imports/fasc.jpeg";
@@ -24,26 +23,19 @@ import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
 
 // ─── Image Constants ─────────────────────────────────────────
 const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PAINTER = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PHOTO = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
+
 const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_LACE = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MURAL = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MARKET = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_HERITAGE = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_SCULPTOR = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSEUM = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 // ─── Types ───────────────────────────────────────────────────
 type CulturaTab = 'artistas' | 'historias' | 'eventos';
-type ArtistFilter = 'todos';
 
 interface Artist {
   id: string;
@@ -62,7 +54,7 @@ interface Artist {
 
 interface Story {
   id: string;
-  category: 'FOLCLORE' | 'TRADIÇÃO' | 'PERSONALIDADE' | 'GASTRONOMIA';
+  category: 'FOLCLORE' | 'TRADIÇÃO' | 'PERSONALIDADE' | 'GASTRONOMIA' | 'PATRIMÔNIO IMATERIAL';
   title: string;
   intro: string;
   body: string[];
@@ -175,7 +167,10 @@ const ARTISTS: Artist[] = [
     years: 'Mais de 68 anos de trajetória',
     instagram: '@alziraalves25',
     works: [
-      { title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa' },
+      {
+        title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa',
+        year: ''
+      },
       ],
   },
 ];
@@ -199,7 +194,7 @@ const STORIES: Story[] = [
     relatedImg: IMG_FOZ_RIOSÃOFRANCISCO,
   },
   {
-  id: 'Quadrilhas-Juninas',
+    id: 'Quadrilhas-Juninas',
     category: 'TRADIÇÃO',
     title: 'As quadrilhas juninas em Sergipe são uma das maiores expressões culturais do "País do Forró"',
     intro: 'Quadrilhas se preparam para mostrar toda a beleza e a tradição dos festejos juninos.',
@@ -210,6 +205,7 @@ const STORIES: Story[] = [
     date: '29 maio 2026',
     img: IMG_QUADRILHA,
     relatedImg: IMG_ARRAIA_DO_POVO,
+    imgCaption: ''
   },
   {
     id: 'A-Renda-Irlandesa',
@@ -227,6 +223,7 @@ const STORIES: Story[] = [
     img: IMG_RENDA_IRLANDESA,
     imgCaption: 'Mãos de mestras rendeiras: o trabalho de horas que se transforma em arte delicada',
     relatedImg: IMG_NATANZINHO_RENDA_IRLANDESA,
+    author: ''
   },
   {
     id: 'culinaria-sergipana',
@@ -301,6 +298,7 @@ const EVENTS: CulturaEvent[] = [
     free: true,
     online: false,
     thisWeek: false,
+    day: ''
   },
 ];
 
