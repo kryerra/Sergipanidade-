@@ -287,12 +287,12 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
 
           <div className="relative z-10 max-w-[520px]">
             <div className="mb-10">
-              <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-[290px] h-[128px] object-contain filter invert ml-[-50px]" />
+              <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-[290px] h-[128px] object-contain filter invert ml-[-50px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.90)]" />
             </div>
 
             <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
                          tracking-wide"
-                         style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.20)' }}>
+                         style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.50)' }}>
               {t.loginHeroLine1}<br />{t.loginHeroLine2}<br />
               <span className="text-[#F7F6F3] opacity-90">{t.loginHeroHighlight}</span>
             </h1>
@@ -348,7 +348,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   <button
                     onClick={handleGoogleLogin}
                     className="w-full px-6 py-4 bg-white text-[#333] font-semibold text-base
-                             rounded-xl border border-[#E0E0E0] shadow-[0_1px_3px_rgba(0,0,0,0.08)]
+                             rounded-xl border border-[#E0E0E0] shadow-[0_1px_3px_rgba(0,0,0,0.015)]
                              hover:border-[#999] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-all duration-200
                              flex items-center justify-center gap-3"
                   >
