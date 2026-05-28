@@ -57,8 +57,8 @@ export const destinations: Destination[] = [
     tip: 'Vá ao final da tarde para ver o pôr do sol espetacular. Alugue uma bicicleta e explore toda a orla. Não perca o Oceanário de Aracaju!',
     tip_en: 'Go in the late afternoon to see the spectacular sunset. Rent a bike and explore the entire boardwalk. Don\'t miss the Aracaju Oceanarium!',
     tip_es: 'Ve al final de la tarde para ver el atardecer espectacular. Alquila una bicicleta y explora todo el paseo marítimo. ¡No te pierdas el Oceanario de Aracaju!',
-    lat: -10.9876,
-    lon: -37.0548,
+    lat: -10.9889,
+    lon: -37.0483,
   },
   {
     id: 'miauteria',
@@ -87,8 +87,8 @@ export const destinations: Destination[] = [
     tip: 'Chegue cedo nos finais de semana! O espaço fica cheio e você terá mais tempo com os gatinhos. Não esqueça de perguntar sobre os pets disponíveis para adoção.',
     tip_en: 'Arrive early on weekends! The space gets full and you\'ll have more time with the kittens. Don\'t forget to ask about pets available for adoption.',
     tip_es: '¡Llega temprano los fines de semana! El espacio se llena y tendrás más tiempo con los gatitos. No olvides preguntar sobre las mascotas disponibles para adopción.',
-    lat: -10.9115,
-    lon: -37.0648,
+    lat: -10.9232,
+    lon: -37.0626,
   },
   {
     id: 'museu-gente',
@@ -117,8 +117,8 @@ export const destinations: Destination[] = [
     tip: 'Reserve pelo menos 2 horas para explorar todas as exposições interativas. A entrada é gratuita! Perfeito para ir com a família.',
     tip_en: 'Reserve at least 2 hours to explore all interactive exhibitions. Admission is free! Perfect to go with family.',
     tip_es: 'Reserva al menos 2 horas para explorar todas las exposiciones interactivas. ¡La entrada es gratuita! Perfecto para ir con la familia.',
-    lat: -10.9183,
-    lon: -37.0578,
+    lat: -10.9175,
+    lon: -37.0476,
   },
   {
     id: 'canion-xingo',
@@ -147,8 +147,8 @@ export const destinations: Destination[] = [
     tip: 'Chegue cedo para pegar o primeiro passeio de catamarã. Leve protetor solar, chapéu e água. O passeio dura cerca de 3 horas.',
     tip_en: 'Arrive early to catch the first catamaran tour. Bring sunscreen, hat and water. The tour lasts about 3 hours.',
     tip_es: 'Llega temprano para tomar el primer paseo en catamarán. Lleva protector solar, sombrero y agua. El paseo dura cerca de 3 horas.',
-    lat: -9.6378,
-    lon: -37.7938,
+    lat: -9.6585,
+    lon: -37.7778,
   },
   {
     id: 'mercado-thales',
@@ -177,8 +177,8 @@ export const destinations: Destination[] = [
     tip: 'Vá com fome! Experimente o caranguejo no box do Seu José e a tapioca de coco. Chegue antes das 11h para evitar filas.',
     tip_en: 'Go hungry! Try the crab at Seu José\'s box and the coconut tapioca. Arrive before 11am to avoid lines.',
     tip_es: '¡Ve con hambre! Prueba el cangrejo en el box de Seu José y la tapioca de coco. Llega antes de las 11h para evitar filas.',
-    lat: -10.9147,
-    lon: -37.0642,
+    lat: -10.9069,
+    lon: -37.0485,
   },
   {
     id: 'centro-historico',
@@ -207,8 +207,8 @@ export const destinations: Destination[] = [
     tip: 'Faça o passeio guiado gratuito que sai da Praça São Francisco. Use calçados confortáveis para caminhar nas ruas de pedra.',
     tip_en: 'Take the free guided tour that starts from São Francisco Square. Wear comfortable shoes to walk on cobblestone streets.',
     tip_es: 'Haz el recorrido guiado gratuito que sale de la Plaza São Francisco. Usa calzado cómodo para caminar por las calles de piedra.',
-    lat: -11.0139,
-    lon: -37.2064,
+    lat: -11.0137,
+    lon: -37.2054,
   },
   {
     id: 'parque-sementeira',
@@ -237,8 +237,8 @@ export const destinations: Destination[] = [
     tip: 'Vá ao nascer do sol para ver os pássaros e aproveitar a temperatura mais fresca. Leve água e repelente. Perfeito para caminhadas matinais.',
     tip_en: 'Go at sunrise to see the birds and enjoy the cooler temperature. Bring water and repellent. Perfect for morning walks.',
     tip_es: 'Ve al amanecer para ver los pájaros y disfrutar de la temperatura más fresca. Lleva agua y repelente. Perfecto para caminatas matutinas.',
-    lat: -10.9345,
-    lon: -37.0456,
+    lat: -10.9443,
+    lon: -37.0533,
   },
   {
     id: 'centro-turismo',
@@ -267,8 +267,8 @@ export const destinations: Destination[] = [
     tip: 'Pechinche com os artesãos! É comum conseguir descontos nas compras. Leve dinheiro em espécie, alguns boxes não aceitam cartão.',
     tip_en: 'Bargain with the artisans! It\'s common to get discounts on purchases. Bring cash, some boxes don\'t accept cards.',
     tip_es: '¡Regatéa con los artesanos! Es común conseguir descuentos en las compras. Lleva dinero en efectivo, algunos boxes no aceptan tarjeta.',
-    lat: -10.9134,
-    lon: -37.0652,
+    lat: -10.9126,
+    lon: -37.0510,
   },
 ];
 
