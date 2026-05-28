@@ -1,27 +1,30 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Landmark,
+  MapPin,
+  PawPrint,
+  Search,
+  TreePine,
+  UtensilsCrossed,
+  Waves,
+  X,
+} from "lucide-react";
+
 import { destinations } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
+import { SERGIPE_HOME_MIX } from "@/constants/sergipeImages";
+
 import { AtracaoCard } from "@/features/home/components/AtracaoCard";
 import { HotelCard } from "@/features/home/components/HotelCard";
 import { HeroSlideshow } from "@/components/shared/HeroSlideshow";
-import { SERGIPE_HOME_MIX } from "@/constants/sergipeImages";
-import {
-  ChevronDown,
-  Search,
-  X,
-  ArrowRight,
-  MapPin,
-  UtensilsCrossed,
-  Landmark,
-  Waves,
-  TreePine,
-  PawPrint,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import type { UserProfile } from "../App";
 
-// ─── Mock data — Hotéis ──────────────────────────
+import type { UserProfile } from "@/types";
+
 const HOTEL_IMG_1 =
   "https://images.unsplash.com/photo-1512680865582-710e8a690ed6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxib3V0aXF1ZSUyMGhvdGVsJTIwcG91c2FkYSUyMHNlcmdpcGUlMjBiZWFjaHxlbnwxfHx8fDE3Nzc5Mjc3MjR8MA&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -51,6 +54,14 @@ interface HotelMock {
   reviews: string;
   image: string;
   amenities: string[];
+}
+
+interface HomeScreenProps {
+  onNavigate: (screen: string, destinationId?: string) => void;
+  onToast: (message: string) => void;
+  language: "pt" | "en" | "es";
+  onChangeLanguage: (lang: "pt" | "en" | "es") => void;
+  userProfile: UserProfile;
 }
 
 const HOTELS_MOCK: HotelMock[] = [
@@ -92,14 +103,6 @@ const HOTELS_MOCK: HotelMock[] = [
   },
 ];
 
-interface HomeScreenProps {
-  onNavigate: (screen: string, destinationId?: string) => void;
-  onToast: (message: string) => void;
-  language: "pt" | "en" | "es";
-  onChangeLanguage: (lang: "pt" | "en" | "es") => void;
-  userProfile: UserProfile;
-}
-
 const DEST_LIKES: Record<string, string> = {
   "orla-atalaia": "73mil",
   miauteria: "41mil",
@@ -111,7 +114,14 @@ const DEST_LIKES: Record<string, string> = {
   "praia-do-saco": "31mil",
 };
 
-const getLikes = (id: string) => DEST_LIKES[id] ?? "12mil";
+const CITIES = [
+  "Aracaju",
+  "São Cristóvão",
+  "Laranjeiras",
+  "Canindé",
+  "Lagarto",
+  "Itabaiana",
+];
 
 const FILTER_KEYS = [
   "all",
@@ -123,7 +133,9 @@ const FILTER_KEYS = [
   "petFriendly",
 ] as const;
 
-const CATEGORY_MAP: Record<string, string> = {
+type FilterKey = (typeof FILTER_KEYS)[number];
+
+const CATEGORY_MAP: Record<FilterKey, string> = {
   all: "TODOS",
   gastronomy: "GASTRONOMIA",
   culture: "CULTURA",
@@ -133,83 +145,156 @@ const CATEGORY_MAP: Record<string, string> = {
   petFriendly: "PET FRIENDLY",
 };
 
+function getLikes(id: string) {
+  return DEST_LIKES[id] ?? "12mil";
+}
+
+function getFilterIcon(key: FilterKey) {
+  switch (key) {
+    case "gastronomy":
+      return UtensilsCrossed;
+    case "culture":
+    case "history":
+      return Landmark;
+    case "nature":
+      return TreePine;
+    case "petFriendly":
+      return PawPrint;
+    case "all":
+    case "beaches":
+    default:
+      return Waves;
+  }
+}
+
 export function HomeScreen({
   onNavigate,
   onToast,
   language,
   onChangeLanguage,
-  userProfile,
 }: HomeScreenProps) {
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  const [showCityMenu, setShowCityMenu] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("Aracaju");
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [experienciaIndex, setExperienciaIndex] = useState(0);
+  const [showLanguageMenu, setShowLanguageMenu] = useState<boolean>(false);
+  const [showCityMenu, setShowCityMenu] = useState<boolean>(false);
+  const [selectedCity, setSelectedCity] = useState<string>("Aracaju");
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [experienciaIndex, setExperienciaIndex] = useState<number>(0);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
   const cityMenuRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language] as typeof translations.pt;
 
-  const cities = [
-    'Aracaju',
-    'São Cristóvão',
-    'Laranjeiras',
-    'Canindé',
-    'Lagarto',
-    'Itabaiana',
-  ];
+  const cityOptions = useMemo(
+    () => CITIES.filter((city) => city !== selectedCity),
+    [selectedCity]
+  );
 
-  const cityOptions = cities.filter((city) => city !== selectedCity);
-
-  const experienciasSlides = [
-    {
-      id: "gastronomia",
-      image: EXPERIENCIAS_BG,
-      tagline: t.bannerTagline || "A LAGOSTA MAIS FAMOSA DE SERGIPE",
-      desc:
-        t.bannerDesc ||
-        "Orla de Atalaia: onde a história, o sabor e a paisagem se encontram em um único destino.",
-      chips: [
-        t.experienciasFrutos || "Frutos do Mar",
-        t.experienciasPraias || "Praias",
-        t.experienciasPasseios || "Passeios",
-        t.experienciasCultura || "Cultura",
-        t.experienciasEco || "Ecoturismo",
-      ],
-    },
-    {
-      id: "praias",
-      image: EXPERIENCIAS_BG_2,
-      tagline: "PRAIAS E PAISAGENS",
-      desc:
-        "Conheça cenários incríveis de Sergipe, com praias, brisa do mar e experiências perfeitas para curtir o dia.",
-      chips: ["Praias", "Passeios", "Natureza", "Família", "Fotos"],
-    },
-    {
-      id: "cultura",
-      image: EXPERIENCIAS_BG_3,
-      tagline: "CULTURA SERGIPANA",
-      desc:
-        "Explore histórias, sabores, mercados, tradições e lugares que mostram a identidade do povo sergipano.",
-      chips: ["Cultura", "História", "Gastronomia", "Roteiros", "Artesanato"],
-    },
-  ];
+  const experienciasSlides = useMemo(
+    () => [
+      {
+        id: "gastronomia",
+        image: EXPERIENCIAS_BG,
+        tagline: t.bannerTagline || "A LAGOSTA MAIS FAMOSA DE SERGIPE",
+        desc:
+          t.bannerDesc ||
+          "Orla de Atalaia: onde a história, o sabor e a paisagem se encontram em um único destino.",
+        chips: [
+          t.experienciasFrutos || "Frutos do Mar",
+          t.experienciasPraias || "Praias",
+          t.experienciasPasseios || "Passeios",
+          t.experienciasCultura || "Cultura",
+          t.experienciasEco || "Ecoturismo",
+        ],
+      },
+      {
+        id: "praias",
+        image: EXPERIENCIAS_BG_2,
+        tagline: "PRAIAS E PAISAGENS",
+        desc:
+          "Conheça cenários incríveis de Sergipe, com praias, brisa do mar e experiências perfeitas para curtir o dia.",
+        chips: ["Praias", "Passeios", "Natureza", "Família", "Fotos"],
+      },
+      {
+        id: "cultura",
+        image: EXPERIENCIAS_BG_3,
+        tagline: "CULTURA SERGIPANA",
+        desc:
+          "Explore histórias, sabores, mercados, tradições e lugares que mostram a identidade do povo sergipano.",
+        chips: ["Cultura", "História", "Gastronomia", "Roteiros", "Artesanato"],
+      },
+    ],
+    [t]
+  );
 
   const currentExperiencia = experienciasSlides[experienciaIndex];
 
-  const nextExperiencia = () => {
-    setExperienciaIndex((prev) => (prev + 1) % experienciasSlides.length);
-  };
+  const filteredDestinations = useMemo(() => {
+    let result = [...destinations];
 
-  const prevExperiencia = () => {
+    if (activeFilter !== "all") {
+      result = result.filter(
+        (destination) => destination.category === CATEGORY_MAP[activeFilter]
+      );
+    }
+
+    const term = searchTerm.trim().toLowerCase();
+
+    if (!term) return result;
+
+    return result.filter((destination) => {
+      const desc =
+        language === "en" && destination.shortDesc_en
+          ? destination.shortDesc_en
+          : language === "es" && destination.shortDesc_es
+          ? destination.shortDesc_es
+          : destination.shortDesc;
+
+      return (
+        destination.name.toLowerCase().includes(term) ||
+        desc.toLowerCase().includes(term) ||
+        destination.category.toLowerCase().includes(term) ||
+        destination.region.toLowerCase().includes(term) ||
+        destination.bairro.toLowerCase().includes(term)
+      );
+    });
+  }, [activeFilter, language, searchTerm]);
+
+  const vamosCurtirItems = useMemo(
+    () => filteredDestinations.slice(0, 3),
+    [filteredDestinations]
+  );
+
+  function langPillLabel() {
+    if (language === "pt") return "Sergipanês";
+    if (language === "en") return "English";
+    return "Español";
+  }
+
+  function handleSearch() {
+    const term = searchTerm.trim();
+
+    if (term) {
+      onToast(`${t.searchingFor}: ${term}`);
+    }
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  }
+
+  function nextExperiencia() {
+    setExperienciaIndex((prev) => (prev + 1) % experienciasSlides.length);
+  }
+
+  function prevExperiencia() {
     setExperienciaIndex(
       (prev) => (prev - 1 + experienciasSlides.length) % experienciasSlides.length
     );
-  };
+  }
 
-  // Carrossel automático da seção Experiências 360°
   useEffect(() => {
     const interval = window.setInterval(() => {
       setExperienciaIndex((prev) => (prev + 1) % experienciasSlides.length);
@@ -218,106 +303,56 @@ export function HomeScreen({
     return () => window.clearInterval(interval);
   }, [experienciasSlides.length]);
 
-  // Fechar menu de idioma ao clicar fora
   useEffect(() => {
     if (!showLanguageMenu) return;
 
-    const handler = (e: MouseEvent) => {
+    function handleClickOutside(e: MouseEvent) {
       if (
         langMenuRef.current &&
         !langMenuRef.current.contains(e.target as Node)
       ) {
         setShowLanguageMenu(false);
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showLanguageMenu]);
 
-  // Fechar menu de cidade ao clicar fora
   useEffect(() => {
     if (!showCityMenu) return;
 
-    const handler = (e: MouseEvent) => {
+    function handleClickOutside(e: MouseEvent) {
       if (
         cityMenuRef.current &&
         !cityMenuRef.current.contains(e.target as Node)
       ) {
         setShowCityMenu(false);
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCityMenu]);
 
-  const langPillLabel = () => {
-    if (language === "pt") return "Sergipanês";
-    if (language === "en") return "English";
-    return "Español";
-  };
-
-  const handleSearch = () => {
-    if (searchTerm.trim()) onToast(`${t.searchingFor}: ${searchTerm}`);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
-  let filteredDestinations = [...destinations];
-
-  if (activeFilter !== "all") {
-    filteredDestinations = filteredDestinations.filter(
-      (d) => d.category === CATEGORY_MAP[activeFilter]
-    );
-  }
-
-  if (searchTerm.trim()) {
-    const term = searchTerm.toLowerCase();
-
-    filteredDestinations = filteredDestinations.filter((d) => {
-      const desc =
-        language === "en" && d.shortDesc_en
-          ? d.shortDesc_en
-          : language === "es" && d.shortDesc_es
-          ? d.shortDesc_es
-          : d.shortDesc;
-
-      return (
-        d.name.toLowerCase().includes(term) ||
-        desc.toLowerCase().includes(term) ||
-        d.category.toLowerCase().includes(term) ||
-        d.region.toLowerCase().includes(term) ||
-        d.bairro.toLowerCase().includes(term)
-      );
-    });
-  }
-
-  const vamosCurtirItems = filteredDestinations.slice(0, 3);
-
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "var(--branco)" }}
-    >
-      {/* SEÇÃO 1 — HERO COM SLIDESHOW */}
+    <div className="min-h-screen" style={{ backgroundColor: "var(--branco)" }}>
       <HeroSlideshow
         images={SERGIPE_HOME_MIX}
         height="480px"
         overlayOpacity={0.52}
       >
         <>
-          <div
-            className="absolute left-5 top-5 z-20"
-            ref={cityMenuRef}
-          >
+          <div className="absolute left-5 top-5 z-20" ref={cityMenuRef}>
             <button
-              onClick={() => setShowCityMenu(!showCityMenu)}
+              type="button"
+              onClick={() => setShowCityMenu((prev) => !prev)}
+              aria-expanded={showCityMenu}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
                          border border-white/20 rounded-full text-white text-[13px] font-medium
-                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-[44px]"
+                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
               <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
               <span>{selectedCity}</span>
@@ -331,19 +366,20 @@ export function HomeScreen({
 
             {showCityMenu && (
               <div
-                className="absolute top-full left-0 mt-2 bg-white rounded-[var(--radius-sm)]
-                           shadow-[var(--sombra-md)] border border-[var(--cinza-med)]
-                           overflow-hidden min-w-[170px] z-20"
+                className="absolute top-full left-0 mt-2 bg-white rounded-sm
+                           shadow-(--sombra-md) border border-(--cinza-med)
+                           overflow-hidden min-w-42.5 z-20"
               >
                 {cityOptions.map((city) => (
                   <button
+                    type="button"
                     key={city}
                     onClick={() => {
                       setSelectedCity(city);
                       setShowCityMenu(false);
                     }}
-                    className="w-full text-left px-4 py-3 text-[14px] text-[var(--cinza-escuro)]
-                               hover:bg-[var(--cinza-mais-claro)] transition-colors"
+                    className="w-full text-left px-4 py-3 text-[14px] text-(--cinza-escuro)
+                               hover:bg-(--cinza-mais-claro) transition-colors"
                   >
                     {city}
                   </button>
@@ -352,15 +388,14 @@ export function HomeScreen({
             )}
           </div>
 
-          <div
-            className="absolute top-5 right-5 sm:right-8 z-20"
-            ref={langMenuRef}
-          >
+          <div className="absolute top-5 right-5 sm:right-8 z-20" ref={langMenuRef}>
             <button
-              onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+              type="button"
+              onClick={() => setShowLanguageMenu((prev) => !prev)}
+              aria-expanded={showLanguageMenu}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
                          border border-white/20 rounded-full text-white text-[13px] font-medium
-                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-[44px]"
+                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
               <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
               <span>{langPillLabel()}</span>
@@ -374,9 +409,9 @@ export function HomeScreen({
 
             {showLanguageMenu && (
               <div
-                className="absolute top-full right-0 mt-2 bg-white rounded-[var(--radius-sm)]
-                           shadow-[var(--sombra-md)] border border-[var(--cinza-med)]
-                           overflow-hidden min-w-[170px] z-20"
+                className="absolute top-full right-0 mt-2 bg-white rounded-sm
+                           shadow-(--sombra-md) border border-(--cinza-med)
+                           overflow-hidden min-w-42.5 z-20"
               >
                 {[
                   {
@@ -397,6 +432,7 @@ export function HomeScreen({
                   },
                 ].map(({ lang, label, accent }) => (
                   <button
+                    type="button"
                     key={lang}
                     onClick={() => {
                       onChangeLanguage(lang);
@@ -407,7 +443,7 @@ export function HomeScreen({
                                 ${
                                   language === lang
                                     ? accent
-                                    : "bg-white text-[var(--preto)] hover:bg-[var(--cinza-leve)]"
+                                    : "bg-white text-(--preto) hover:bg-(--cinza-leve)"
                                 }`}
                   >
                     <span>{label}</span>
@@ -427,31 +463,33 @@ export function HomeScreen({
             </h1>
 
             <p
-              className="text-white/70 mb-8 max-w-[560px] leading-relaxed"
+              className="text-white/70 mb-8 max-w-140 leading-relaxed"
               style={{ fontSize: "17px" }}
             >
               {t.homeSubtitle}
             </p>
 
-            <div className="flex gap-2 w-full max-w-[600px]">
+            <div className="flex gap-2 w-full max-w-150">
               <div className="relative flex-1">
                 <Search
                   size={16}
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                 />
+
                 <input
                   type="text"
                   placeholder={t.searchPlaceholder?.replace("🔍  ", "")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   className="w-full pl-10 pr-10 py-3.5 border-none rounded-[10px] text-[14px]
-                             bg-white outline-none text-[var(--preto)]
+                             bg-white outline-none text-(--preto)
                              shadow-[0_4px_24px_rgba(0,0,0,0.18)] placeholder:text-gray-400"
                 />
 
                 {searchTerm && (
                   <button
+                    type="button"
                     onClick={() => {
                       setSearchTerm("");
                       onToast(t.searchCleared);
@@ -466,10 +504,11 @@ export function HomeScreen({
               </div>
 
               <button
+                type="button"
                 onClick={handleSearch}
                 className="px-6 py-3.5 text-white border-none rounded-[10px]
                            font-['Fjalla_One'] text-[14px] tracking-widest uppercase cursor-pointer
-                           transition-all whitespace-nowrap min-h-[44px]"
+                           transition-all whitespace-nowrap min-h-11"
                 style={{
                   backgroundColor: "var(--primary)",
                   boxShadow: "0 4px 20px rgba(240,96,48,0.35)",
@@ -482,17 +521,16 @@ export function HomeScreen({
         </>
       </HeroSlideshow>
 
-      {/* SEÇÃO 2 — FILTROS POR CATEGORIA */}
       <section
+        className="px-5 sm:px-8"
         style={{
           backgroundColor: "#FFFFFF",
           paddingTop: "28px",
           paddingBottom: "28px",
         }}
-        className="px-5 sm:px-8"
       >
         <h2
-          className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide mb-4"
+          className="font-['Fjalla_One'] text-(--preto) tracking-wide mb-4"
           style={{ fontSize: "19px" }}
         >
           {t.filterTitle}
@@ -501,39 +539,26 @@ export function HomeScreen({
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
           {FILTER_KEYS.map((key) => {
             const isActive = activeFilter === key;
-
-            const FilterIcon =
-              key === "all"
-                ? Waves
-                : key === "gastronomy"
-                ? UtensilsCrossed
-                : key === "culture"
-                ? Landmark
-                : key === "beaches"
-                ? Waves
-                : key === "history"
-                ? Landmark
-                : key === "nature"
-                ? TreePine
-                : key === "petFriendly"
-                ? PawPrint
-                : Waves;
+            const FilterIcon = getFilterIcon(key);
 
             return (
               <button
+                type="button"
                 key={key}
                 onClick={() => {
                   setActiveFilter(key);
-                  if (key !== "all")
+
+                  if (key !== "all") {
                     onToast(`${t.filteringBy}: ${t.filters[key]}`);
+                  }
                 }}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-medium
-                            cursor-pointer transition-all duration-150 min-h-[38px]
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-medium
+                            cursor-pointer transition-all duration-150 min-h-9.5
                             whitespace-nowrap border
                             ${
                               isActive
                                 ? "text-white border-transparent"
-                                : "bg-white text-[var(--cinza-txt)] border-[var(--cinza-med)] hover:border-[var(--primary)]/50 hover:text-[var(--primary)]"
+                                : "bg-white text-(--cinza-txt) border-(--cinza-med) hover:border-(--primary)/50 hover:text-primary"
                             }`}
                 style={
                   isActive
@@ -541,7 +566,7 @@ export function HomeScreen({
                         backgroundColor: "var(--primary)",
                         boxShadow: "0 2px 10px rgba(240,96,48,0.25)",
                       }
-                    : {}
+                    : undefined
                 }
               >
                 <FilterIcon size={14} strokeWidth={2} />
@@ -552,7 +577,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* SEÇÃO 3 — VAMOS CURTIR */}
       <section
         className="px-5 sm:px-8"
         style={{
@@ -565,7 +589,7 @@ export function HomeScreen({
           <div>
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-[0.10em] uppercase"
+                         font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
                 backgroundColor: "#F5EDE6",
@@ -577,22 +601,23 @@ export function HomeScreen({
             </div>
 
             <h2
-              className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-2"
+              className="font-['Fjalla_One'] text-(--preto) tracking-wide leading-tight mb-2"
               style={{ fontSize: "clamp(22px, 4vw, 30px)" }}
             >
               {t.vamosCurtirTitle}
             </h2>
 
-            <p className="text-[var(--cinza-txt)]" style={{ fontSize: "15px" }}>
+            <p className="text-(--cinza-txt)" style={{ fontSize: "15px" }}>
               {t.vamosCurtirSubtitle}
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => onNavigate("guia")}
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
-                       text-[14px] min-h-[44px] flex items-center gap-1"
+                       text-[14px] min-h-11 flex items-center gap-1"
             style={{ color: "var(--primary)" }}
           >
             {t.viewAll}
@@ -601,22 +626,23 @@ export function HomeScreen({
 
         {vamosCurtirItems.length === 0 ? (
           <div className="text-center py-16">
-            <div className="mb-4">
+            <div className="mb-4 flex justify-center">
               <Search size={48} style={{ color: "var(--cinza-txt)" }} />
             </div>
 
             <h3
-              className="font-['Fjalla_One'] text-[var(--preto)] mb-2"
+              className="font-['Fjalla_One'] text-(--preto) mb-2"
               style={{ fontSize: "24px" }}
             >
               {t.noResults?.title}
             </h3>
 
-            <p className="text-[14px] text-[var(--cinza-txt)] mb-6">
+            <p className="text-[14px] text-(--cinza-txt) mb-6">
               {t.noResults?.message}
             </p>
 
             <button
+              type="button"
               onClick={() => {
                 setSearchTerm("");
                 setActiveFilter("all");
@@ -624,7 +650,7 @@ export function HomeScreen({
               }}
               className="px-6 py-3 text-white border-none rounded-[10px]
                          font-['Fjalla_One'] text-[13px] tracking-wider uppercase cursor-pointer
-                         hover:opacity-90 transition-all min-h-[44px]"
+                         hover:opacity-90 transition-all min-h-11"
               style={{ backgroundColor: "var(--primary)" }}
             >
               {t.noResults?.clearButton}
@@ -632,28 +658,23 @@ export function HomeScreen({
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {vamosCurtirItems.map((dest) => {
-              const hours =
-                language === "en" ? dest.hours : language === "es" ? dest.hours : dest.hours;
-
-              return (
-                <AtracaoCard
-                  key={dest.id}
-                  id={dest.id}
-                  name={dest.name}
-                  hours={hours}
-                  image={dest.image}
-                  likes={getLikes(dest.id)}
-                  onNavigate={onNavigate}
-                  onToast={onToast}
-                  curtirLabel={t.curtir}
-                  compartilharLabel={t.compartilhar}
-                  salvarLabel={t.salvar}
-                  curtidoToast={t.curtido}
-                  compartilhadoToast={t.compartilhado}
-                />
-              );
-            })}
+            {vamosCurtirItems.map((dest) => (
+              <AtracaoCard
+                key={dest.id}
+                id={dest.id}
+                name={dest.name}
+                hours={dest.hours}
+                image={dest.image}
+                likes={getLikes(dest.id)}
+                onNavigate={onNavigate}
+                onToast={onToast}
+                curtirLabel={t.curtir}
+                compartilharLabel={t.compartilhar}
+                salvarLabel={t.salvar}
+                curtidoToast={t.curtido}
+                compartilhadoToast={t.compartilhado}
+              />
+            ))}
           </div>
         )}
 
@@ -663,7 +684,8 @@ export function HomeScreen({
               className="h-px flex-1"
               style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
             />
-            <span className="text-[12px] text-[var(--cinza-txt)] whitespace-nowrap">
+
+            <span className="text-[12px] text-(--cinza-txt) whitespace-nowrap">
               {filteredDestinations.length > 3
                 ? `${t.viewAll?.replace("→", "").trim()} ${
                     filteredDestinations.length - 3
@@ -674,6 +696,7 @@ export function HomeScreen({
                     filteredDestinations.length === 1 ? t.result : t.results
                   }`}
             </span>
+
             <div
               className="h-px flex-1"
               style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
@@ -682,7 +705,6 @@ export function HomeScreen({
         )}
       </section>
 
-      {/* SEÇÃO 4 — ARREI AS MALAS */}
       <section
         className="px-5 sm:px-8"
         style={{
@@ -695,7 +717,7 @@ export function HomeScreen({
           <div>
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-[0.10em] uppercase"
+                         font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
                 backgroundColor: "rgba(13,115,119,0.10)",
@@ -707,22 +729,23 @@ export function HomeScreen({
             </div>
 
             <h2
-              className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-2"
+              className="font-['Fjalla_One'] text-(--preto) tracking-wide leading-tight mb-2"
               style={{ fontSize: "clamp(22px, 4vw, 30px)" }}
             >
               {t.arreiMalasTitle}
             </h2>
 
-            <p className="text-[var(--cinza-txt)]" style={{ fontSize: "15px" }}>
+            <p className="text-(--cinza-txt)" style={{ fontSize: "15px" }}>
               {t.arreiMalasSubtitle}
             </p>
           </div>
 
           <button
-            onClick={() => onToast("🏨 Abrindo todas as hospedagens...")}
+            type="button"
+            onClick={() => onToast("Abrindo todas as hospedagens...")}
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
-                       text-[14px] min-h-[44px] flex items-center gap-1"
+                       text-[14px] min-h-11 flex items-center gap-1"
             style={{ color: "var(--azul)" }}
           >
             {t.viewAll}
@@ -743,7 +766,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* SEÇÃO 5 — EXPERIÊNCIAS 360° COM CARROSSEL FUNCIONANDO */}
       <section
         className="px-5 sm:px-8"
         style={{
@@ -756,7 +778,7 @@ export function HomeScreen({
           <div>
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-[0.10em] uppercase"
+                         font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
                 backgroundColor: "rgba(240,96,48,0.15)",
@@ -803,24 +825,30 @@ export function HomeScreen({
           />
 
           <button
+            type="button"
             onClick={prevExperiencia}
             aria-label="Slide anterior"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/30 text-white flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all hover:bg-black/50"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full
+                       border border-white/20 bg-black/30 text-white flex items-center justify-center
+                       cursor-pointer opacity-0 group-hover:opacity-100 transition-all hover:bg-black/50"
           >
             <ChevronLeft size={22} />
           </button>
 
           <button
+            type="button"
             onClick={nextExperiencia}
             aria-label="Próximo slide"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/30 text-white flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all hover:bg-black/50"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full
+                       border border-white/20 bg-black/30 text-white flex items-center justify-center
+                       cursor-pointer opacity-0 group-hover:opacity-100 transition-all hover:bg-black/50"
           >
             <ChevronRight size={22} />
           </button>
 
-          <div className="relative z-10 flex flex-col justify-center h-full px-8 py-10 md:px-12 md:py-12 max-w-[560px]">
+          <div className="relative z-10 flex flex-col justify-center h-full px-8 py-10 md:px-12 md:py-12 max-w-140">
             <p
-              className="font-bold tracking-[0.10em] uppercase mb-3"
+              className="font-bold tracking-widest uppercase mb-3"
               style={{ fontSize: "11px", color: "var(--primary)" }}
             >
               {currentExperiencia.tagline}
@@ -834,9 +862,9 @@ export function HomeScreen({
             </p>
 
             <div className="flex flex-wrap gap-2 mb-8">
-              {currentExperiencia.chips.map((exp: string) => (
+              {currentExperiencia.chips.map((chip) => (
                 <span
-                  key={exp}
+                  key={chip}
                   className="px-3 py-1.5 rounded-full text-[12px] font-medium text-white
                              transition-colors cursor-default"
                   style={{
@@ -845,16 +873,17 @@ export function HomeScreen({
                     backdropFilter: "blur(4px)",
                   }}
                 >
-                  {exp}
+                  {chip}
                 </span>
               ))}
             </div>
 
             <button
+              type="button"
               onClick={() => onNavigate("guia")}
               className="self-start flex items-center gap-2 px-7 py-3.5 rounded-full
-                         bg-white text-[var(--preto)] font-bold cursor-pointer border-none
-                         transition-all duration-150 min-h-[48px]
+                         bg-white text-(--preto) font-bold cursor-pointer border-none
+                         transition-all duration-150 min-h-12
                          hover:opacity-90 active:scale-[0.98]"
               style={{
                 fontSize: "14px",
@@ -872,10 +901,10 @@ export function HomeScreen({
           />
         </div>
 
-        <div className="flex items-center justify-center gap-2 mgit branch
-        t-8">
+        <div className="flex items-center justify-center gap-2 mt-8">
           {experienciasSlides.map((slide, index) => (
             <button
+              type="button"
               key={slide.id}
               onClick={() => setExperienciaIndex(index)}
               aria-label={`Ir para experiência ${index + 1}`}
