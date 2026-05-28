@@ -3,7 +3,7 @@ import {
   Search, MapPin, ArrowRight, ArrowLeft, ChevronRight,
   Instagram, Globe, Mail, X, Palette,
   BookOpen, Shapes, 
-  Eye, Landmark,
+  Eye,
   Ticket, Tent,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -42,7 +42,7 @@ const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf0
 const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 // ─── Types ───────────────────────────────────────────────────
-type CulturaTab = 'artistas' | 'historias' | 'eventos' | 'patrimonio';
+type CulturaTab = 'artistas' | 'historias' | 'eventos';
 type ArtistFilter = 'todos';
 
 interface Artist {
@@ -86,18 +86,6 @@ interface CulturaEvent {
   free: boolean;
   online: boolean;
   thisWeek: boolean;
-}
-
-interface Heritage {
-  id: string;
-  name: string;
-  type: 'PATRIMÔNIO MATERIAL' | 'PATRIMÔNIO IMATERIAL';
-  year: string;
-  institute: string;
-  desc: string;
-  img: string;
-  height?: 'tall' | 'normal';
-  objectPosition?: string;
 }
 
 // ─── Mock Data ───────────────────────────────────────────────
@@ -316,69 +304,7 @@ const EVENTS: CulturaEvent[] = [
   },
 ];
 
-const HERITAGE: Heritage[] = [
-  {
-    id: 'sao-cristovao',
-    name: 'Centro Histórico de São Cristóvão',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '2010',
-    institute: 'UNESCO',
-    desc: 'A quarta cidade mais antiga do Brasil, com conjunto arquitetônico colonial que inclui igrejas, conventos e casarões do século XVII. Inscrita no Patrimônio Mundial da Humanidade.',
-    img: IMG_CHURCH,
-    height: 'tall',
-  },
-  {
-    id: 'lambe-sujos',
-    name: 'Dança dos Lambe-Sujos e Caboclinhos',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2009',
-    institute: 'IPHAN',
-    desc: 'Manifestação cultural única de Laranjeiras que encena simbolicamente a história da escravidão com máscaras, chocalhos e cantos rituais.',
-    img: IMG_LAMBE_SUJO3,
-    height: 'normal',
-    objectPosition: 'center bottom',
-  },
-  {
-    id: 'museu-gente',
-    name: 'Museu da Gente Sergipana',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '2011',
-    institute: 'SECULT-SE',
-    desc: 'Museu interativo instalado no Solar Moreira Lima que conta a história do povo sergipano através de tecnologia e objetos de memória. Um dos mais visitados do Nordeste.',
-    img: IMG_MUSEUM,
-    height: 'normal',
-  },
-  {
-    id: 'festas-laranjeiras',
-    name: 'Festas de Laranjeiras',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2006',
-    institute: 'IPHAN',
-    desc: 'Conjunto de 14 manifestações culturais do município de Laranjeiras — de folguedos afro-brasileiros a danças de origem indígena — tombadas como patrimônio imaterial do Brasil.',
-    img: IMG_FESTIVAL,
-    height: 'tall',
-  },
-  {
-    id: 'ceramica-itabaiana',
-    name: 'Cerâmica Artesanal de Itabaiana',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2017',
-    institute: 'IPHAN-SE',
-    desc: 'Tradição ceramista transmitida há séculos nas famílias da Serra de Itabaiana. Peças utilitárias e decorativas moldadas com argila local usando técnicas pré-colombianas.',
-    img: IMG_ARTISAN,
-    height: 'normal',
-  },
-  {
-    id: 'ruinas-cottia',
-    name: 'Ruínas Históricas do Vale do Cotinguiba',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '1987',
-    institute: 'IPHAN',
-    desc: 'Conjunto de ruínas de engenhos e casarões do ciclo do açúcar no vale do Cotinguiba. Testemunhos arquitetônicos do apogeu econômico sergipano nos séculos XVIII e XIX.',
-    img: IMG_HERITAGE,
-    height: 'normal',
-  },
-];
+
 
 // ─── LANGUAGE ICONS MAP ───────────────────────────────────────
 
@@ -746,7 +672,6 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
     { id: 'artistas', label: 'Sergipanidade', Icon: Palette },
     { id: 'historias', label: 'Histórias', Icon: BookOpen },
     { id: 'eventos', label: 'Eventos', Icon: Tent },
-    { id: 'patrimonio', label: 'Patrimônio', Icon: Landmark },
   ];
 
   return (
@@ -1159,74 +1084,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
           </div>
         )}
 
-        {/* ── PATRIMÔNIO ── */}
-        {activeTab === 'patrimonio' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
-                Memória de Sergipe
-              </h2>
-              <p style={{ color: '#4A4A4A', fontSize: '15px' }}>
-                Sítios históricos, patrimônios imateriais e tradições tombadas
-              </p>
-            </div>
 
-            {/* Masonry-like grid */}
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
-              {HERITAGE.map((item) => (
-                <div
-                  key={item.id}
-                  className="break-inside-avoid bg-white rounded-[14px] overflow-hidden
-                             shadow-[0_2px_12px_rgba(0,0,0,0.06)]
-                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5
-                             transition-all duration-200 cursor-pointer"
-                  onClick={() => onToast(`🏛️ Conhecendo: ${item.name}`)}
-                >
-                  <div
-                    className="overflow-hidden"
-                    style={{ height: item.height === 'tall' ? '260px' : '200px' }}
-                  >
-                    <ImageWithFallback
-                      src={item.img}
-                      alt={item.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                      style={{ objectPosition: item.objectPosition || 'center' }}
-                    />
-                  </div>
-                  <div className="p-5">
-                    {/* Type badge */}
-                    <span
-                      className="inline-block mb-3 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider"
-                      style={{
-                        backgroundColor: item.type === 'PATRIMÔNIO MATERIAL' ? 'rgba(13,115,119,0.10)' : '#E6F4F4',
-                        color: '#0D7377',
-                        fontSize: '10px',
-                      }}
-                    >
-                      {item.type}
-                    </span>
-                    <h3 className="font-semibold mb-1.5 leading-tight" style={{ color: '#1A1A1A', fontSize: '15px' }}>
-                      {item.name}
-                    </h3>
-                    <p className="mb-3" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                      Tombado em {item.year} · {item.institute}
-                    </p>
-                    <p className="mb-4 line-clamp-3" style={{ color: '#4A4A4A', fontSize: '13px', lineHeight: 1.6 }}>
-                      {item.desc}
-                    </p>
-                    <button
-                      className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] hover:gap-2.5 transition-all"
-                      style={{ color: '#0D7377', fontSize: '13px' }}
-                    >
-                      Conhecer história
-                      <ChevronRight size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
