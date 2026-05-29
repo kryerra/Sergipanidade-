@@ -10,7 +10,7 @@
 export const PERIODO_TIME: Record<string, string> = {
   // Portuguese
   manhã: "09:00",
-  tarde: "14:00",
+  tarde: "14:00", // Shared key: "tarde" is identical in both Portuguese and Spanish
   noite: "19:00",
   // English
   morning: "09:00",
@@ -28,7 +28,7 @@ export const PERIODO_TIME: Record<string, string> = {
 export const PERIODO_DUR: Record<string, string> = {
   // Portuguese
   manhã: "2h",
-  tarde: "1h 30min",
+  tarde: "1h 30min", // Shared key: "tarde" is identical in both Portuguese and Spanish
   noite: "2h",
   // English
   morning: "2h",
