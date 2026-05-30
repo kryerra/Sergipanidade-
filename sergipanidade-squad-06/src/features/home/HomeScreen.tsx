@@ -14,6 +14,8 @@ import {
   Waves,
   X,
 } from "lucide-react";
+const ACCENT = "#0D7377";
+const ACCENT_SHADOW = "rgba(13,115,119,0.35)";
 
 import { destinations } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
@@ -354,7 +356,7 @@ export function HomeScreen({
                          border border-white/20 rounded-full text-white text-[13px] font-medium
                          cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
+              <MapPin size={16} strokeWidth={2.5} style={{ color: ACCENT }} />
               <span>{selectedCity}</span>
               <ChevronDown
                 size={14}
@@ -397,7 +399,7 @@ export function HomeScreen({
                          border border-white/20 rounded-full text-white text-[13px] font-medium
                          cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
+              <MapPin size={16} strokeWidth={2.5} style={{ color: ACCENT }} />
               <span>{langPillLabel()}</span>
               <ChevronDown
                 size={14}
@@ -417,18 +419,17 @@ export function HomeScreen({
                   {
                     lang: "pt" as const,
                     label: "Sergipanês",
-                    accent: "text-[var(--primary)] bg-[var(--laranja-leve)]",
+                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
                   },
                   {
                     lang: "en" as const,
                     label: "English",
-                    accent: "text-[var(--azul)] bg-[var(--azul-leve)]",
+                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
                   },
                   {
                     lang: "es" as const,
                     label: "Español",
-                    accent:
-                      "text-[var(--vermelho)] bg-[rgba(232,84,58,0.07)]",
+                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
                   },
                 ].map(({ lang, label, accent }) => (
                   <button
@@ -509,10 +510,11 @@ export function HomeScreen({
                 className="px-6 py-3.5 text-white border-none rounded-[10px]
                            font-['Fjalla_One'] text-[14px] tracking-widest uppercase cursor-pointer
                            transition-all whitespace-nowrap min-h-11"
-                style={{
-                  backgroundColor: "var(--primary)",
-                  boxShadow: "0 4px 20px rgba(240,96,48,0.35)",
-                }}
+                           style={{
+                            backgroundColor: ACCENT,
+                            boxShadow: `0 4px 20px ${ACCENT_SHADOW}`,
+                          }}
+                
               >
                 {t.searchButton}
               </button>
@@ -563,8 +565,8 @@ export function HomeScreen({
                 style={
                   isActive
                     ? {
-                        backgroundColor: "var(--primary)",
-                        boxShadow: "0 2px 10px rgba(240,96,48,0.25)",
+                        backgroundColor: ACCENT,
+                        boxShadow: "0 2px 10px rgba(13,115,119,0.25)",
                       }
                     : undefined
                 }
@@ -592,9 +594,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "#F5EDE6",
-                color: "#0D7377",
-                border: "1px solid rgba(224,92,0,0.22)",
+                backgroundColor: "rgba(13,115,119,0.10)",
+                color: ACCENT,
+                border: "1px solid rgba(13,115,119,0.22)",
               }}
             >
               {t.vamosCurtirTag}
@@ -618,7 +620,7 @@ export function HomeScreen({
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
-            style={{ color: "var(--primary)" }}
+            style={{ color: ACCENT }}
           >
             {t.viewAll}
           </button>
@@ -651,7 +653,7 @@ export function HomeScreen({
               className="px-6 py-3 text-white border-none rounded-[10px]
                          font-['Fjalla_One'] text-[13px] tracking-wider uppercase cursor-pointer
                          hover:opacity-90 transition-all min-h-11"
-              style={{ backgroundColor: "var(--primary)" }}
+              style={{ backgroundColor: ACCENT }}
             >
               {t.noResults?.clearButton}
             </button>
@@ -721,7 +723,7 @@ export function HomeScreen({
               style={{
                 fontSize: "11px",
                 backgroundColor: "rgba(13,115,119,0.10)",
-                color: "var(--azul)",
+                color: ACCENT,
                 border: "1px solid rgba(13,115,119,0.22)",
               }}
             >
@@ -746,7 +748,7 @@ export function HomeScreen({
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
-            style={{ color: "var(--azul)" }}
+            style={{ color: ACCENT }}
           >
             {t.viewAll}
           </button>
@@ -781,9 +783,10 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "rgba(240,96,48,0.15)",
-                color: "var(--primary)",
-                border: "1px solid rgba(240,96,48,0.28)",
+                 backgroundColor: "rgba(13,115,119,0.28)",
+                color: "#7FFCF5",
+                border: "1px solid rgba(127,252,245,0.45)",
+                boxShadow: "0 0 18px rgba(13,115,119,0.28)"
               }}
             >
               {t.experiencias360Tag}
@@ -820,7 +823,7 @@ export function HomeScreen({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to right, rgba(24,24,27,0.96) 0%, rgba(24,24,27,0.80) 45%, rgba(24,24,27,0.18) 75%, rgba(24,24,27,0.03) 100%)",
+                "linear-gradient(to right, rgba(13,115,119,0.96) 0%, rgba(13,115,119,0.80) 45%, rgba(24,24,27,0.18) 75%, rgba(24,24,27,0.03) 100%)",
             }}
           />
 
@@ -849,7 +852,11 @@ export function HomeScreen({
           <div className="relative z-10 flex flex-col justify-center h-full px-8 py-10 md:px-12 md:py-12 max-w-140">
             <p
               className="font-bold tracking-widest uppercase mb-3"
-              style={{ fontSize: "11px", color: "var(--primary)" }}
+              style={{ 
+                fontSize: "11px",
+                color: "#FFFFFF",
+                textShadow: "0 2px 10px rgba(0,0,0,0.45)",
+                }}
             >
               {currentExperiencia.tagline}
             </p>
@@ -868,8 +875,8 @@ export function HomeScreen({
                   className="px-3 py-1.5 rounded-full text-[12px] font-medium text-white
                              transition-colors cursor-default"
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.10)",
-                    border: "1px solid rgba(255,255,255,0.16)",
+                    backgroundColor: "rgba(13,115,119,0.15)",
+                    border: "1px solid rgba(13,115,119,0.22)",
                     backdropFilter: "blur(4px)",
                   }}
                 >
@@ -897,7 +904,7 @@ export function HomeScreen({
 
           <div
             className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-            style={{ backgroundColor: "var(--primary)" }}
+            style={{ backgroundColor: ACCENT }}
           />
         </div>
 
@@ -914,7 +921,7 @@ export function HomeScreen({
                 height: "8px",
                 backgroundColor:
                   experienciaIndex === index
-                    ? "var(--primary)"
+                    ? ACCENT
                     : "rgba(255,255,255,0.18)",
               }}
             />
