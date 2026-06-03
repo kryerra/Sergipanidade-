@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  Search, MapPin, ArrowRight, ArrowLeft, ChevronRight,
+  Search, MapPin, ArrowRight, ArrowLeft,
   Instagram, Globe, Mail, X, Palette,
   BookOpen, Shapes, 
-  Eye, Landmark,
+  Eye,
   Ticket, Tent,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import IMG_CULTURA_HERO from "@/imports/Cultura.jpeg";
-import IMG_LAMBE_SUJO3 from "@/assets/images/lambe-sujo3.jpg";
 import IMG_VERAO_SERGIPE from "@/imports/verão-sergipe.png";
 import IMG_ARRAIA_DO_POVO from "@/imports/arraia-do-povo.jpg";
 import IMG_FASC from "@/imports/fasc.jpeg";
@@ -20,31 +19,24 @@ import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa
 import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
 import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
 import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
-import IMG_QUADRILHA_JUNINA from "@/assets/images/quadrilha_junina.jpg";
+import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
+import IMG_VEIO from "@/imports/veio.png";
+import IMG_VEIO_ITAU from "@/imports/veio_itau.jpg";
+import IMG_VEIO_ENTALHES from "@/imports/veio_entalhes.png";
 
 
 // ─── Image Constants ─────────────────────────────────────────
-const IMG_ARTISAN = 'https://images.unsplash.com/photo-1660386383798-7f957c379452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PAINTER = 'https://images.unsplash.com/photo-1711809814870-72b7c756bd37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_PHOTO = 'https://images.unsplash.com/photo-1642932516003-00f97bd01a43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_LACE = 'https://images.unsplash.com/photo-1766414435654-c0fd3ecdad35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MURAL = 'https://images.unsplash.com/photo-1693498892953-b37618b67544?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MARKET = 'https://images.unsplash.com/photo-1765461069097-7bb0db2af224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_HERITAGE = 'https://images.unsplash.com/photo-1776905177837-46124c0b9424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_SCULPTOR = 'https://images.unsplash.com/photo-1761410379143-f8276f48b1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_MUSEUM = 'https://images.unsplash.com/photo-1761641062457-bc8603350eb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 // ─── Types ───────────────────────────────────────────────────
-type CulturaTab = 'artistas' | 'historias' | 'eventos' | 'patrimonio';
-type ArtistFilter = 'todos';
+type CulturaTab = 'artistas' | 'historias' | 'eventos';
 
 interface Artist {
   id: string;
@@ -63,7 +55,7 @@ interface Artist {
 
 interface Story {
   id: string;
-  category: 'FOLCLORE' | 'TRADIÇÃO' | 'PERSONALIDADE' | 'GASTRONOMIA';
+  category: 'FOLCLORE' | 'TRADIÇÃO' | 'PERSONALIDADE' | 'GASTRONOMIA' | 'PATRIMÔNIO IMATERIAL';
   title: string;
   intro: string;
   body: string[];
@@ -87,18 +79,6 @@ interface CulturaEvent {
   free: boolean;
   online: boolean;
   thisWeek: boolean;
-}
-
-interface Heritage {
-  id: string;
-  name: string;
-  type: 'PATRIMÔNIO MATERIAL' | 'PATRIMÔNIO IMATERIAL';
-  year: string;
-  institute: string;
-  desc: string;
-  img: string;
-  height?: 'tall' | 'normal';
-  objectPosition?: string;
 }
 
 // ─── Mock Data ───────────────────────────────────────────────
@@ -158,22 +138,33 @@ const ARTISTS: Artist[] = [
     ],
   },
   {
-    id: 'manoel',
-    name: 'Manoel Ribeiro',
-    city: 'Laranjeiras · SE',
+    id: 'Véio',
+    name: 'Cícero Alves dos Santos',
+    city: 'Nossa Senhora da Glória·SE',
     linguagem: 'escultura',
-    bio: 'Escultor em pedra-sabão e madeira que recria a imaginária religiosa e os santos populares do catolicismo popular sergipano.',
-    bioFull: 'Manoel Ribeiro aprendeu a esculpir com seu pai, que era entalhador de retábulos em igrejas coloniais do Vale do Cotinguiba. Hoje, aos 68 anos, é um dos últimos mestres vivos da imaginária popular sergipana. Suas obras integram acervos de museus e igrejas históricas do Brasil e do exterior.',
-    photo: IMG_SCULPTOR,
-    coverPhoto: IMG_CHURCH,
-    awards: ' Mestre da Cultura Sergipana — SECULT 2018',
-    years: '45 anos de trajetória',
-    instagram: '@manoel.imaginaria.se',
+    bio: 'Véio Escultor internacionalmente reconhecido que utiliza madeira morta do sertão.',
+    bioFull: 'Cicero Alves dos Santos, o Véio é escultor e criador do Museu do Sertão, que conta com um acervo de cerca de 17 mil obras. O artista plástico sergipano utiliza madeira morta como matéria-prima para suas esculturas.',
+    photo: IMG_VEIO,
+    coverPhoto: IMG_VEIO_ITAU,
+    awards: ' Doutor Honoris Causa pela Universidade Federal de Sergipe, ao longo de sua trajetória Véio participou de diversas exposições, como uma retrospectiva da sua obra, em 2018, com curadoria de Carlos Augusto Calil e Agnaldo Farias, no Itaú Cultural, instituição que também o reconheceu com o Prêmio Itaú Cultural 30 anos, por suas contribuições para a arte brasileira.',
+    years: 'Mais de 65 anos de trajetória.',
+    instagram: '@artistaveio',
     works: [
-      { title: 'São Francisco do Sertão', year: '2024', img: IMG_SCULPTOR, desc: 'Escultura em cedro representando São Francisco de Assis com motivos sertanejos.', tecnica: 'Madeira entalhada e policromada' },
-      { title: 'Nossa Senhora das Dores', year: '2023', img: IMG_CHURCH, desc: 'Imagem sacra em pedra-sabão encomendada para a Igreja de Laranjeiras.', tecnica: 'Pedra-sabão' },
-      { title: 'Presépio do Rio São Francisco', year: '2022', img: IMG_ARTISAN, desc: 'Presépio com figuras que vestem roupas típicas do cangaço e da vida ribeirinha.', tecnica: 'Argila e tinta acrílica' },
-    ],
+      {
+        title: 'Prêmio ABCA',
+        year: '2024',
+        img: IMG_VEIO_ENTALHES,
+        desc: 'Vencedor na categoria Destaque Regional (Nordeste) pela Associação Brasileira de Críticos de Arte.',
+        tecnica: 'Entalhes - Arte Popular Brasileira',
+      },
+      {
+        title: 'Prêmio Itaú Cultural 30 Anos',
+        year: '2017',
+        img: IMG_VEIO_ITAU,
+        desc: 'Reconhecimento pelas suas contribuições para a arte brasileira.',
+        tecnica: 'Esculturas de madeira.',
+      },
+    ]
   },
   {
     id: 'Alzira-Alves',
@@ -188,7 +179,10 @@ const ARTISTS: Artist[] = [
     years: 'Mais de 68 anos de trajetória',
     instagram: '@alziraalves25',
     works: [
-      { title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa' },
+      {
+        title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa',
+        year: ''
+      },
       ],
   },
 ];
@@ -212,7 +206,7 @@ const STORIES: Story[] = [
     relatedImg: IMG_FOZ_RIOSÃOFRANCISCO,
   },
   {
-  id: 'Quadrilhas-Juninas',
+    id: 'Quadrilhas-Juninas',
     category: 'TRADIÇÃO',
     title: 'As quadrilhas juninas em Sergipe são uma das maiores expressões culturais do "País do Forró"',
     intro: 'Quadrilhas se preparam para mostrar toda a beleza e a tradição dos festejos juninos.',
@@ -221,8 +215,9 @@ const STORIES: Story[] = [
     ],
     author: 'Governo de Sergipe',
     date: '29 maio 2026',
-    img: IMG_QUADRILHA_JUNINA,
+    img: IMG_QUADRILHA,
     relatedImg: IMG_ARRAIA_DO_POVO,
+    imgCaption: ''
   },
   {
     id: 'A-Renda-Irlandesa',
@@ -240,6 +235,7 @@ const STORIES: Story[] = [
     img: IMG_RENDA_IRLANDESA,
     imgCaption: 'Mãos de mestras rendeiras: o trabalho de horas que se transforma em arte delicada',
     relatedImg: IMG_NATANZINHO_RENDA_IRLANDESA,
+    author: ''
   },
   {
     id: 'culinaria-sergipana',
@@ -314,72 +310,11 @@ const EVENTS: CulturaEvent[] = [
     free: true,
     online: false,
     thisWeek: false,
+    day: ''
   },
 ];
 
-const HERITAGE: Heritage[] = [
-  {
-    id: 'sao-cristovao',
-    name: 'Centro Histórico de São Cristóvão',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '2010',
-    institute: 'UNESCO',
-    desc: 'A quarta cidade mais antiga do Brasil, com conjunto arquitetônico colonial que inclui igrejas, conventos e casarões do século XVII. Inscrita no Patrimônio Mundial da Humanidade.',
-    img: IMG_CHURCH,
-    height: 'tall',
-  },
-  {
-    id: 'lambe-sujos',
-    name: 'Dança dos Lambe-Sujos e Caboclinhos',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2009',
-    institute: 'IPHAN',
-    desc: 'Manifestação cultural única de Laranjeiras que encena simbolicamente a história da escravidão com máscaras, chocalhos e cantos rituais.',
-    img: IMG_LAMBE_SUJO3,
-    height: 'normal',
-    objectPosition: 'center bottom',
-  },
-  {
-    id: 'museu-gente',
-    name: 'Museu da Gente Sergipana',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '2011',
-    institute: 'SECULT-SE',
-    desc: 'Museu interativo instalado no Solar Moreira Lima que conta a história do povo sergipano através de tecnologia e objetos de memória. Um dos mais visitados do Nordeste.',
-    img: IMG_MUSEUM,
-    height: 'normal',
-  },
-  {
-    id: 'festas-laranjeiras',
-    name: 'Festas de Laranjeiras',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2006',
-    institute: 'IPHAN',
-    desc: 'Conjunto de 14 manifestações culturais do município de Laranjeiras — de folguedos afro-brasileiros a danças de origem indígena — tombadas como patrimônio imaterial do Brasil.',
-    img: IMG_FESTIVAL,
-    height: 'tall',
-  },
-  {
-    id: 'ceramica-itabaiana',
-    name: 'Cerâmica Artesanal de Itabaiana',
-    type: 'PATRIMÔNIO IMATERIAL',
-    year: '2017',
-    institute: 'IPHAN-SE',
-    desc: 'Tradição ceramista transmitida há séculos nas famílias da Serra de Itabaiana. Peças utilitárias e decorativas moldadas com argila local usando técnicas pré-colombianas.',
-    img: IMG_ARTISAN,
-    height: 'normal',
-  },
-  {
-    id: 'ruinas-cottia',
-    name: 'Ruínas Históricas do Vale do Cotinguiba',
-    type: 'PATRIMÔNIO MATERIAL',
-    year: '1987',
-    institute: 'IPHAN',
-    desc: 'Conjunto de ruínas de engenhos e casarões do ciclo do açúcar no vale do Cotinguiba. Testemunhos arquitetônicos do apogeu econômico sergipano nos séculos XVIII e XIX.',
-    img: IMG_HERITAGE,
-    height: 'normal',
-  },
-];
+
 
 // ─── LANGUAGE ICONS MAP ───────────────────────────────────────
 
@@ -747,7 +682,6 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
     { id: 'artistas', label: 'Sergipanidade', Icon: Palette },
     { id: 'historias', label: 'Histórias', Icon: BookOpen },
     { id: 'eventos', label: 'Eventos', Icon: Tent },
-    { id: 'patrimonio', label: 'Patrimônio', Icon: Landmark },
   ];
 
   return (
@@ -1160,74 +1094,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
           </div>
         )}
 
-        {/* ── PATRIMÔNIO ── */}
-        {activeTab === 'patrimonio' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
-                Memória de Sergipe
-              </h2>
-              <p style={{ color: '#4A4A4A', fontSize: '15px' }}>
-                Sítios históricos, patrimônios imateriais e tradições tombadas
-              </p>
-            </div>
 
-            {/* Masonry-like grid */}
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
-              {HERITAGE.map((item) => (
-                <div
-                  key={item.id}
-                  className="break-inside-avoid bg-white rounded-[14px] overflow-hidden
-                             shadow-[0_2px_12px_rgba(0,0,0,0.06)]
-                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5
-                             transition-all duration-200 cursor-pointer"
-                  onClick={() => onToast(`🏛️ Conhecendo: ${item.name}`)}
-                >
-                  <div
-                    className="overflow-hidden"
-                    style={{ height: item.height === 'tall' ? '260px' : '200px' }}
-                  >
-                    <ImageWithFallback
-                      src={item.img}
-                      alt={item.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                      style={{ objectPosition: item.objectPosition || 'center' }}
-                    />
-                  </div>
-                  <div className="p-5">
-                    {/* Type badge */}
-                    <span
-                      className="inline-block mb-3 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider"
-                      style={{
-                        backgroundColor: item.type === 'PATRIMÔNIO MATERIAL' ? 'rgba(13,115,119,0.10)' : '#E6F4F4',
-                        color: '#0D7377',
-                        fontSize: '10px',
-                      }}
-                    >
-                      {item.type}
-                    </span>
-                    <h3 className="font-semibold mb-1.5 leading-tight" style={{ color: '#1A1A1A', fontSize: '15px' }}>
-                      {item.name}
-                    </h3>
-                    <p className="mb-3" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                      Tombado em {item.year} · {item.institute}
-                    </p>
-                    <p className="mb-4 line-clamp-3" style={{ color: '#4A4A4A', fontSize: '13px', lineHeight: 1.6 }}>
-                      {item.desc}
-                    </p>
-                    <button
-                      className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] hover:gap-2.5 transition-all"
-                      style={{ color: '#0D7377', fontSize: '13px' }}
-                    >
-                      Conhecer história
-                      <ChevronRight size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

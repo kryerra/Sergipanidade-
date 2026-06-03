@@ -49,10 +49,12 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, className })) + " hover:scale-105 transition-transform"}
       {...props}
     />
   );
 }
 
 export { Button, buttonVariants };
+// Alias para manter compatibilidade com componentes antigos
+export const PrimaryButton = Button;

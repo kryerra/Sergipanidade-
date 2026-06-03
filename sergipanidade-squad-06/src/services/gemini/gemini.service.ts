@@ -1,98 +1,121 @@
 /**
- * Gemini AI Service — Sergipanidade
- * Handles all interactions with Google's Generative AI API
+ * Serviço de IA do Google Gemini — Sergipanidade
+ * Utiliza a API oficial do Google AI Studio diretamente para maior velocidade (1-2s) e gratuidade.
  */
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+const MODELO_IA = "gemini-2.5-flash"; // Modelo padrão rápido e gratuito do Gemini
 
 /**
- * Extracts the suggested retry delay (in milliseconds) from a 429 error.
- * Returns null if no retry delay is found.
+ * Extrai o tempo de espera sugerido (em milissegundos) a partir de um erro de limite de requisições (429).
  */
-export function parseRetryDelayMs(error: unknown): number | null {
+export function extrairTempoEsperaMs(erro: unknown): number | null {
   try {
-    const message = (error as { message?: string })?.message ?? '';
-    const match = message.match(/retry in ([\d.]+)s/i);
-    if (match) {
-      return Math.ceil(parseFloat(match[1])) * 1000;
+    const mensagem = (erro as { message?: string })?.message ?? '';
+    const correspondencia = mensagem.match(/retry in ([\d.]+)s/i);
+    if (correspondencia) {
+      return Math.ceil(parseFloat(correspondencia[1])) * 1000;
     }
   } catch {}
   return null;
 }
 
 /**
- * Checks if error indicates daily/total quota exhausted (no useful retry).
+ * Verifica se o erro indica esgotamento da cota de requisições.
  */
-export function isDailyQuotaExhausted(error: unknown): boolean {
-  const message = (error as { message?: string })?.message ?? '';
+export function isCotaDiariaEsgotada(erro: unknown): boolean {
+  const mensagem = (erro as { message?: string })?.message ?? '';
   return (
-    message.includes('generate_content_free_tier_requests') &&
-    message.includes('PerDayPerProjectPerModel')
+    mensagem.includes('quota') ||
+    mensagem.includes('limit') ||
+    mensagem.includes('Exceeded')
   );
 }
 
 /**
- * Internal: makes a single call to the Gemini API.
- * Throws if the API key is missing or the call fails.
+ * Faz a chamada HTTP para a API oficial do Google AI Studio (Gemini).
+ * Retorna em 1-2 segundos e é 100% gratuito (15 requisições por minuto).
  */
-async function chamarGemini(prompt: string): Promise<string> {
-  if (!GEMINI_API_KEY) {
+async function chamarGoogleAIStudio(prompt: string): Promise<string> {
+  if (!API_KEY) {
     throw new Error(
-      'VITE_GEMINI_API_KEY não definida. Crie um arquivo .env com a chave do Gemini.'
+      'Chave de API do Gemini não definida. Crie um arquivo .env com VITE_GEMINI_API_KEY.'
     );
   }
- 
-  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
- 
-  const result = await model.generateContent(prompt);
-  const response = result.response;
- 
-  if (!response) {
-    throw new Error('Empty response from Gemini API');
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODELO_IA}:generateContent?key=${API_KEY}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          responseMimeType: "application/json", // Força o Gemini a retornar JSON estruturado puro
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    let detalheErro = "";
+    try {
+      const errorJson = await response.json();
+      detalheErro = errorJson.error?.message || JSON.stringify(errorJson);
+    } catch {
+      detalheErro = response.statusText;
+    }
+    throw new Error(`Erro na chamada da API Google AI Studio (Status ${response.status}): ${detalheErro}`);
   }
- 
-  return response.text();
+
+  const data = await response.json();
+  const respostaTexto = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!respostaTexto) {
+    throw new Error('Resposta vazia da API do Google AI Studio');
+  }
+
+  return respostaTexto;
 }
- 
 
 /**
- * Public interface for generating content with Gemini AI.
- * Handles retries for rate limiting (429 errors).
- * Falls back gracefully if daily quota is exceeded.
- *
- * @param prompt The full prompt to send to Gemini
- * @returns Promise<string> The AI response text
- * @throws Error if API call fails after retry
+ * Interface pública para geração de conteúdo com a IA.
+ * Trata tentativas automáticas (retries) em caso de limite de requisições (erros 429).
  */
 export async function gerarRoteiroComIA(prompt: string): Promise<string> {
   try {
-    return await chamarGemini(prompt);
-  } catch (apiError: unknown) {
-    const message = (apiError as { message?: string })?.message ?? '';
-    const is429 = message.includes('429');
- 
-    if (is429 && !isDailyQuotaExhausted(apiError)) {
-      const delayMs = parseRetryDelayMs(apiError) ?? 15000;
- 
-      if (delayMs <= 30000) {
-        console.info(`Gemini rate-limit 429 — retrying in ${delayMs / 1000}s…`);
-        await new Promise(r => setTimeout(r, delayMs));
- 
+    return await chamarGoogleAIStudio(prompt);
+  } catch (erroApi: unknown) {
+    const mensagem = (erroApi as { message?: string })?.message ?? '';
+    const is429 = mensagem.includes('429') || mensagem.includes('Too Many Requests');
+
+    if (is429 && !isCotaDiariaEsgotada(erroApi)) {
+      const tempoEsperaMs = extrairTempoEsperaMs(erroApi) ?? 15000;
+
+      if (tempoEsperaMs <= 30000) {
+        console.info(`Limite de requisições atingido (429) — tentando novamente em ${tempoEsperaMs / 1000}s…`);
+        await new Promise(r => setTimeout(r, tempoEsperaMs));
+
         try {
-          return await chamarGemini(prompt);
-        } catch (retryError: unknown) {
-          console.warn('Retry failed:', (retryError as { message?: string })?.message ?? retryError);
-          throw retryError;
+          return await chamarGoogleAIStudio(prompt);
+        } catch (erroTentativa: unknown) {
+          console.warn('Falha na nova tentativa:', (erroTentativa as { message?: string })?.message ?? erroTentativa);
+          throw erroTentativa;
         }
       } else {
-        console.warn('Gemini rate-limit with long delay, failing.');
-        throw apiError;
+        console.warn('Tempo de espera muito longo. Falhando para acionar fallback.');
+        throw erroApi;
       }
     } else {
-      console.warn('Gemini API unavailable:', message);
-      throw apiError;
+      console.warn('API de IA indisponível:', mensagem);
+      throw erroApi;
     }
   }
 }
