@@ -617,13 +617,13 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
           <div className="flex items-center gap-2 mt-4">
             <span
               className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(240,96,48,0.18)', color: 'var(--primary)', border: '1px solid rgba(240,96,48,0.28)' }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(36, 28, 106, 0.28)' }}
             >
               {destinations.length} destinos cadastrados
             </span>
             <span
               className="px-3 py-1 rounded-full text-[12px] font-bold"
-              style={{ backgroundColor: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.12)' }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(36, 28, 106, 0.28)' }}
             >
               {VERIFIED_IDS.size} verificados <CheckCircle2 size={10} strokeWidth={2.5} className="inline-block ml-0.5" />
             </span>

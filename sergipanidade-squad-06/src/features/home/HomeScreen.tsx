@@ -669,7 +669,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* SEÇÃO 5 — EXPERIÊNCIAS 360° COM CARROSSEL FUNCIONANDO */}
       <section
         className="px-5 sm:px-8"
         style={{
@@ -685,9 +684,9 @@ export function HomeScreen({
                          font-bold tracking-[0.10em] uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "rgba(240,96,48,0.15)",
+                backgroundColor: "rgba(255,255,255,0.07)`",
                 color: "var(--primary)",
-                border: "1px solid rgba(240,96,48,0.28)",
+                border: '1px solid rgba(36, 28, 106, 0.28)' ,
               }}
             >
               {t.experiencias360Tag}
