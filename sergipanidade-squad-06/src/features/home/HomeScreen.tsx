@@ -781,9 +781,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "rgba(240,96,48,0.15)",
+                backgroundColor: "rgba(255,255,255,0.07)",
                 color: "var(--primary)",
-                border: "1px solid rgba(240,96,48,0.28)",
+                border: "1px solid rgba(36, 28, 100, 0.28)",
               }}
             >
               {t.experiencias360Tag}
