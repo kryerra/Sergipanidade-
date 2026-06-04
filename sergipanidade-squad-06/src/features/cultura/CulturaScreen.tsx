@@ -689,7 +689,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       className="min-h-screen"
       style={{
         backgroundColor: 'var(--branco)',
-        paddingTop: 'calc(56px + env(safe-area-inset-top))',
+        paddingTop: 'calc(0px + env(safe-area-inset-top))',
         paddingBottom: 'calc(72px + env(safe-area-inset-bottom))',
       }}
     >
