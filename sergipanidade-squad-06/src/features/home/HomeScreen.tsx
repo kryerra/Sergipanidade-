@@ -35,13 +35,13 @@ const HOTEL_IMG_3 =
   "https://images.unsplash.com/photo-1776761420412-e6451f458162?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiZWFjaGZyb250JTIwaG90ZWwlMjByZXNvcnQlMjBwb29sJTIwb2NlYW4lMjB2aWV3fGVufDF8fHx8MTc3NzkyNzczNXww&ixlib=rb-4.1.0&q=80&w=1080";
 
 const EXPERIENCIAS_BG =
-  "https://images.unsplash.com/photo-1768654040238-8ca1a9588340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb2JzdGVyJTIwc2VhZm9vZCUyMHJlc3RhdXJhbnQlMjB0cm9waWNhbCUyMGNvYXN0YWx8ZW58MXx8fHwxNzc3OTI3NzM4fDA&ixlib=rb-4.1.0&q=80&w=1080";
+  "src/assets/images/orla-exp.jpeg";
 
 const EXPERIENCIAS_BG_2 =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600";
+  "src/assets/images/praia-do-mosqueiro-exp.jpg";
 
 const EXPERIENCIAS_BG_3 =
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600";
+  "src/assets/images/mercado-1-exp.jpg";
 
 interface HotelMock {
   id: string;
@@ -781,9 +781,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "rgba(240,96,48,0.15)",
+                backgroundColor: "rgba(255,255,255,0.07)",
                 color: "var(--primary)",
-                border: "1px solid rgba(240,96,48,0.28)",
+                border: "1px solid rgba(36, 28, 100, 0.28)",
               }}
             >
               {t.experiencias360Tag}
