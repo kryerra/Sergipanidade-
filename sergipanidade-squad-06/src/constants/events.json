@@ -1,0 +1,58 @@
+[
+  {
+    "id": "Verão Sergipe",
+    "name": "Verão Sergipe 2026",
+    "type": "Festival e Esporte",
+    "day": "30",
+    "month": "JAN",
+    "local": "Praias e arenas públicas",
+    "city": "Aracaju e municípios litorâneos",
+    "desc": "O Verão Sergipe consolida-se como um dos principais projetos de fomento ao turismo e esporte no litoral. Pela primeira vez na história do evento, a capital Aracaju sedia as competições esportivas na praia e as apresentações artísticas com grandes expoentes da MPB e da música regional, promovendo o turismo de lazer gratuito com suporte da Setur.",
+    "img": "/src/imports/verão-sergipe.png",
+    "free": true,
+    "online": false,
+    "thisWeek": false
+  },
+  {
+    "id": "Arraiá do Povo",
+    "name": "Arraiá do Povo & Vila do Forró",
+    "type": "Festa Popular",
+    "day": "29",
+    "month": "MAIO",
+    "local": "Praça de Eventos da Orla de Atalaia",
+    "city": "Aracaju",
+    "desc": "Com uma programação estendida de 60 dias de celebração ininterrupta, o Arraiá do Povo e a Vila do Forró transformam a Orla de Atalaia no epicentro junino do Nordeste. O evento conta com apresentações diárias de trios de forró pé-de-serra, quadrilhas estilizadas e grandes shows nacionais, além de uma cenografia que simula uma cidade cenográfica do interior sergipano.",
+    "img": "/src/imports/arraia-do-povo.jpg",
+    "free": true,
+    "online": false,
+    "thisWeek": false
+  },
+  {
+    "id": "FASC 2026",
+    "name": "41º Festival de Artes de São Cristóvão (FASC)",
+    "type": "Festival Multicultural",
+    "day": "19 a 22",
+    "month": "NOV",
+    "local": "Centro Histórico (Patrimônio UNESCO)",
+    "city": "São Cristóvão - SE",
+    "desc": "Um dos festivais de arte mais tradicionais do país, o FASC ocupa as praças, igrejas e casarões históricos da quarta cidade mais antiga do Brasil. A programação abrange espetáculos de teatro, dança, exibição de filmes, debates literários e shows de música instrumental, reunindo artistas de diversas partes do mundo em um ambiente de diversidade e gratuito.",
+    "img": "/src/imports/fasc.jpeg",
+    "free": true,
+    "online": false,
+    "thisWeek": false
+  },
+  {
+    "id": "Natal Iluminado",
+    "name": "Natal Iluminado em Sergipe",
+    "type": "Celebração Natalina",
+    "day": "01 a 31",
+    "month": "DEZ",
+    "local": "Praças do Centro e Orla de Atalaia",
+    "city": "Aracaju",
+    "desc": "Realizado em parceria entre o Governo do Estado e a Fecomércio, o Natal Iluminado decora as principais praças públicas com milhões de pontos de luz. O evento destaca-se pelas apresentações de corais, projeções mapeadas na fachada de monumentos históricos e a montagem da Vila do Natal Iluminado na Orla de Atalaia, atraindo milhares de famílias para celebrar o espírito natalino.",
+    "img": "/src/imports/natal-iluminado-se.jpg",
+    "free": true,
+    "online": false,
+    "thisWeek": false
+  }
+]

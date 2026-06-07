@@ -1,0 +1,41 @@
+[
+  {
+    "id": "radisson",
+    "name": "Radisson Hotel Aracaju",
+    "category": "Hotel 5★",
+    "bairro": "Atalaia",
+    "priceLevel": 3,
+    "startingPrice": "R$ 480",
+    "rating": 4.8,
+    "reviews": "1.2k",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1080",
+    "amenities": ["Piscina", "Wi-Fi Grátis", "Café da Manhã", "Academia", "Restaurante", "Estacionamento"],
+    "description": "Situado a poucos passos da Orla de Atalaia, o Radisson Hotel Aracaju destaca-se por sua excelência em hospitalidade e infraestrutura de alto padrão. Com quartos modernos, piscina ao ar livre de design contemporâneo e o aclamado Restaurante Origens, que mescla gastronomia internacional com toques regionais, é a escolha ideal tanto para viajantes a negócios quanto para famílias que buscam máximo conforto e conveniência na capital sergipana."
+  },
+  {
+    "id": "aruana-eco",
+    "name": "Aruanã Eco Praia Hotel",
+    "category": "Hotel Ecológico",
+    "bairro": "Aruana",
+    "priceLevel": 3,
+    "startingPrice": "R$ 380",
+    "rating": 4.7,
+    "reviews": "850",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1080",
+    "amenities": ["Eco-friendly", "Piscina", "Acesso à Praia", "Wi-Fi", "Restaurante Temático"],
+    "description": "Perfeitamente integrado à vegetação nativa das praias do sul de Aracaju, o Aruanã Eco Praia Hotel oferece uma experiência imersiva de tranquilidade e sustentabilidade. Com foco no turismo ecológico, o hotel dispõe de amplos jardins tropicais, piscina rodeada por coqueiros e um compromisso ativo com a preservação ambiental. O restaurante local valoriza ingredientes orgânicos e receitas típicas da culinária sergipana."
+  },
+  {
+    "id": "jatoba-praia",
+    "name": "Jatobá Praia Hotel",
+    "category": "Hotel 3★",
+    "bairro": "Atalaia",
+    "priceLevel": 2,
+    "startingPrice": "R$ 220",
+    "rating": 4.5,
+    "reviews": "512",
+    "image": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=1080",
+    "amenities": ["Vista Mar", "Piscina Coberta", "Wi-Fi", "Café da Manhã Incluso", "Pet Friendly"],
+    "description": "Oferecendo uma das melhores relações custo-benefício na Orla de Atalaia, o Jatobá Praia Hotel apresenta acomodações aconchegantes e uma bela vista para o Oceano Atlântico. Os hóspedes podem desfrutar de um farto café da manhã com iguarias regionais, piscina na cobertura e facilidade de acesso aos principais restaurantes gastronômicos, passarelas de caranguejo e pontos turísticos da região."
+  }
+]

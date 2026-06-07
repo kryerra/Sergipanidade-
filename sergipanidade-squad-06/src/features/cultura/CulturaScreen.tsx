@@ -9,32 +9,6 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import IMG_CULTURA_HERO from "@/imports/Cultura.jpeg";
-import IMG_VERAO_SERGIPE from "@/imports/verão-sergipe.png";
-import IMG_ARRAIA_DO_POVO from "@/imports/arraia-do-povo.jpg";
-import IMG_FASC from "@/imports/fasc.jpeg";
-import IMG_NATAL_ILUMINADO from "@/imports/natal-iluminado-se.jpg";
-import IMG_FOZ_RIOSÃOFRANCISCO from "@/assets/images/foz_riosãofrancisco.jpg";
-import IMG_RENDA_IRLANDESA from "@/imports/renda_irlandesa.png";
-import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa.png";
-import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
-import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
-import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
-import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
-import IMG_VEIO from "@/imports/veio.png";
-import IMG_VEIO_ITAU from "@/imports/veio_itau.jpg";
-import IMG_VEIO_ENTALHES from "@/imports/veio_entalhes.png";
-
-
-// ─── Image Constants ─────────────────────────────────────────
-const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-
 // ─── Types ───────────────────────────────────────────────────
 type CulturaTab = 'artistas' | 'historias' | 'eventos';
 
@@ -81,238 +55,13 @@ interface CulturaEvent {
   thisWeek: boolean;
 }
 
-// ─── Mock Data ───────────────────────────────────────────────
-const ARTISTS: Artist[] = [
-  {
-    id: 'ana',
-    name: 'Ana Lima',
-    city: 'Itabaiana · SE',
-    linguagem: 'musica',
-    bio: 'Cantora e compositora de forró pé-de-serra que mantém viva a tradição do forró sergipano com composições autorais e raízes.',
-    bioFull: 'Ana Lima cresceu ouvindo forró nas festas de São João de Itabaiana. Filha de sanfoneiro, aprendeu a tocar antes de andar de bicicleta. Formou sua primeira banda aos 17 anos e desde então percorreu todos os estados nordestinos com sua música. Tem três álbuns lançados e colabora com o projeto "Forró nas Escolas" em parceria com a SEED-SE.',
-    photo: IMG_MUSIC,
-    coverPhoto: IMG_CONCERT,
-    awards: ' Melhor Álbum Forró — SESC 2023',
-    years: '20 anos de trajetória',
-    instagram: '@analima.forro',
-    works: [
-      { title: 'Álbum "Raízes"', year: '2023', img: IMG_MUSIC, desc: '12 composições autorais de forró pé-de-serra com sanfona, zabumba e triângulo.', tecnica: 'Forró tradicional' },
-      { title: 'EP "Nas Serras"', year: '2021', img: IMG_CONCERT, desc: 'EP ao vivo gravado no coração da Serra de Itabaiana.', tecnica: 'Forró / MPB' },
-      { title: 'Participação — "Sergipe Canta"', year: '2020', img: IMG_FESTIVAL, desc: 'Coletânea estadual com 20 artistas sergipanos.', tecnica: 'Voz e violão' },
-    ],
-  },
-  {
-    id: 'josefa',
-    name: 'Josefa Nascimento',
-    city: 'São Cristóvão · SE',
-    linguagem: 'literatura',
-    bio: 'Escritora e pesquisadora das tradições orais sergipanas. Autora de 6 livros que resgatam lendas e histórias das comunidades do interior.',
-    bioFull: 'Josefa Nascimento é professora doutora e escritora nascida em São Cristóvão. Pesquisa há 25 anos as tradições orais do interior sergipano, coletando histórias de benzedeiras, mestres de reisado e repentistas. Seus livros são adotados em escolas públicas do Estado e ela é membro honorária da Academia Sergipana de Letras.',
-    photo: IMG_WRITER,
-    coverPhoto: IMG_CHURCH,
-    awards: ' Academia Sergipana de Letras 2020',
-    years: '25 anos de trajetória',
-    instagram: '@josefa.nascimento.se',
-    works: [
-      { title: '"Contos da Caatinga"', year: '2024', img: IMG_WRITER, desc: 'Coletânea de 22 contos baseados em narrativas orais do sertão sergipano.', tecnica: 'Conto literário' },
-      { title: '"A Benzedeira de Brejo Grande"', year: '2022', img: IMG_RIVER, desc: 'Romance sobre uma mulher sábia e sua comunidade ribeirinha.', tecnica: 'Romance' },
-      { title: '"Lendas de Sergipe"', year: '2019', img: IMG_CHURCH, desc: 'Compilação ilustrada de lendas tradicionais sergipanas para jovens leitores.', tecnica: 'Literatura infantojuvenil' },
-    ],
-  },
-  {
-    id: 'karoline',
-    name: 'Karoline Ferreira',
-    city: 'Aracaju · SE',
-    linguagem: 'danca',
-    bio: 'Coreógrafa e bailarina, diretora do Grupo Sergipano de Danças Populares. Referência na preservação do reisado e do samba de pareia.',
-    bioFull: 'Karoline Ferreira fundou o Grupo Sergipano de Danças Populares em 2008 com jovens da periferia de Aracaju. O grupo já se apresentou em mais de 15 países, levando a cultura sergipana para palcos internacionais. Karoline documenta e preserva mais de 30 manifestações culturais sergipanas em risco de desaparecimento.',
-    photo: IMG_DANCE,
-    coverPhoto: IMG_FESTIVAL,
-    awards: ' Prêmio Funarte 2022',
-    years: '16 anos de trajetória',
-    instagram: '@karoline.danca.se',
-    works: [
-      { title: '"Raízes" — Espetáculo', year: '2024', img: IMG_DANCE, desc: 'Espetáculo de dança contemporânea com base nas danças populares sergipanas.', tecnica: 'Dança contemporânea / Folclore' },
-      { title: 'Samba de Pareia em Cena', year: '2022', img: IMG_FESTIVAL, desc: 'Registro e reencenação do samba de pareia da comunidade de Tobias Barreto.', tecnica: 'Dança popular' },
-      { title: 'Workshop Internacional', year: '2023', img: IMG_THEATER, desc: 'Masterclass de danças populares nordestinas — Lisboa, Portugal.', tecnica: 'Pedagogia do movimento' },
-    ],
-  },
-  {
-    id: 'Véio',
-    name: 'Cícero Alves dos Santos',
-    city: 'Nossa Senhora da Glória·SE',
-    linguagem: 'escultura',
-    bio: 'Véio Escultor internacionalmente reconhecido que utiliza madeira morta do sertão.',
-    bioFull: 'Cicero Alves dos Santos, o Véio é escultor e criador do Museu do Sertão, que conta com um acervo de cerca de 17 mil obras. O artista plástico sergipano utiliza madeira morta como matéria-prima para suas esculturas.',
-    photo: IMG_VEIO,
-    coverPhoto: IMG_VEIO_ITAU,
-    awards: ' Doutor Honoris Causa pela Universidade Federal de Sergipe, ao longo de sua trajetória Véio participou de diversas exposições, como uma retrospectiva da sua obra, em 2018, com curadoria de Carlos Augusto Calil e Agnaldo Farias, no Itaú Cultural, instituição que também o reconheceu com o Prêmio Itaú Cultural 30 anos, por suas contribuições para a arte brasileira.',
-    years: 'Mais de 65 anos de trajetória.',
-    instagram: '@artistaveio',
-    works: [
-      {
-        title: 'Prêmio ABCA',
-        year: '2024',
-        img: IMG_VEIO_ENTALHES,
-        desc: 'Vencedor na categoria Destaque Regional (Nordeste) pela Associação Brasileira de Críticos de Arte.',
-        tecnica: 'Entalhes - Arte Popular Brasileira',
-      },
-      {
-        title: 'Prêmio Itaú Cultural 30 Anos',
-        year: '2017',
-        img: IMG_VEIO_ITAU,
-        desc: 'Reconhecimento pelas suas contribuições para a arte brasileira.',
-        tecnica: 'Esculturas de madeira.',
-      },
-    ]
-  },
-  {
-    id: 'Alzira-Alves',
-    name: 'Alzira Alves',
-    city: 'Divina Pastora · SE',
-    linguagem: 'artesanato',
-    bio: 'Artesã de Renda Irlandesa que mantém viva a tradição, técnica que corre o risco de desaparecer.',
-    bioFull: 'Alzira Alves é Mestra e guardiã da memória e identidade da Renda Irlandesa de Divina Pastora, tem 78 anos e faz Renda Irlandesa desde os 10 anos de idade.',
-    photo: IMG_ALZIRA_ALVES,
-    coverPhoto: IMG_RENDA_IRLANDESA,
-    awards: ' Artesã desde os 10 anos de idade.',
-    years: 'Mais de 68 anos de trajetória',
-    instagram: '@alziraalves25',
-    works: [
-      {
-        title: 'Rendas Irlandesas', img: IMG_NATANZINHO_RENDA_IRLANDESA, desc: 'Peça de renda bordada à mão para o Cantor Natanzinho', tecnica: 'Renda Irlandesa',
-        year: ''
-      },
-      ],
-  },
-];
+import artistsData from "@/constants/artists.json";
+import storiesData from "@/constants/stories.json";
+import eventsData from "@/constants/events.json";
 
-const STORIES: Story[] = [
-  {
-    id: 'foz-sao-francisco',
-    category: 'FOLCLORE',
-    title: 'A Foz do Rio São Francisco: onde o rio encontra o mar',
-    intro: 'O lugar onde as águas doces e salgadas se encontram é sagrado para quilombolas, pescadores e ribeirinhos. Conheça as lendas que habitam esse ponto único do litoral sergipano.',
-    body: [
-      'A foz do Rio São Francisco, em Sergipe, é um dos encontros mais singulares da natureza brasileira: as águas marrons do "Velho Chico" disputam espaço com o azul do Atlântico numa dança de correntes que intriga visitantes e encanta moradores há séculos.',
-      'Para os moradores de Brejo Grande, o rio é muito mais que uma fronteira entre Sergipe e Alagoas. É o pai provedor, o caminho dos ancestrais, a rota de fuga de escravizados que buscavam liberdade nos quilombos das margens.',
-      'A lenda mais conhecida da região fala sobre a Mãe d\'Água, uma sereia de cabelos verdes que habita exatamente o ponto de encontro das águas. Segundo os pescadores mais velhos, nos dias de lua nova, é possível ouvi-la cantar no silêncio entre as ondas. Quem a seguir ao fundo das águas, dizem, aprende a arte de pescar com os olhos fechados.',
-      'As comunidades quilombolas do entorno preservam rituais de agradecimento ao rio realizados semestralmente. Barcos enfeitados com flores e velas saem das margens ao entardecer enquanto rezas e cantos embalados pelo som do zabumba pedem pela fartura da pesca.',
-    ],
-    author: 'Equipe Sergipanidade',
-    date: '24 mai 2026',
-    img: IMG_RIVER,
-    imgCaption: 'A foz do Rio São Francisco, entre Sergipe e Alagoas — um dos encontros mais singulares da natureza brasileira.',
-    relatedImg: IMG_FOZ_RIOSÃOFRANCISCO,
-  },
-  {
-    id: 'Quadrilhas-Juninas',
-    category: 'TRADIÇÃO',
-    title: 'As quadrilhas juninas em Sergipe são uma das maiores expressões culturais do "País do Forró"',
-    intro: 'Quadrilhas se preparam para mostrar toda a beleza e a tradição dos festejos juninos.',
-    body: [
-      'Faltam poucos dias para o início dos festejos juninos em Sergipe. Assim, às vésperas da mais representativa manifestação da cultura sergipana, as quadrilhas juninas estão em ritmo acelerado de ensaios. Querem fazer bonito nas apresentações, que são bastante esperadas e elogiadas por turistas que vêm ao estado em busca de entretenimento e também de conhecer as tradições culturais que embalam o ‘País do Forró’ no período junino. Vale ressaltar que serão 60 dias de festejos, com uma extensa programação artística e cultural no Arraiá do Povo e na Vila do Forró, na Orla de Atalaia.',
-    ],
-    author: 'Governo de Sergipe',
-    date: '29 maio 2026',
-    img: IMG_QUADRILHA,
-    relatedImg: IMG_ARRAIA_DO_POVO,
-    imgCaption: ''
-  },
-  {
-    id: 'A-Renda-Irlandesa',
-    category: 'PATRIMÔNIO IMATERIAL',
-    title: 'A renda irlandesa é um artesanato luxuoso de fios e agulhas, Patrimônio Cultural Imaterial do Brasil. O município sergipano de Divina Pastora é o grande polo produtor',
-    intro: 'Nas mãos de mestras artesãs locais, filamentos de algodão se transformam em rendas delicadas que contam a história das mulheres rendeiras.',
-    body: [
-      'Detalhes e Origem',
-      'A renda irlandesa se tornou Patrimônio Cultural do Brasil em 2009, além de constar no livro de registro de saberes do Instituto do Patrimônio Histórico e Artístico Nacional (Iphan).',
-      'Como é feita: Produzida manualmente com linha, agulha e um cordão chamado lacê. Os desenhos são feitos sobre papel-manteiga e contornados pelo lacê, formando pontos como redinha, abacaxi e aranha',
-      'Origem: Introduzida na região em meados do século XX por imigrantes europeus, a técnica ganhou identidade própria nas mãos das rendeiras sergipanas.',
-      'Onde ver de perto: Divina Pastora (SE): Localizada a aproximadamente 40 km de Aracaju. É a terra-natal do ofício e sede de associações de rendeiras que mantêm a tradição e comercializam as peças diretamente.',
-    ],
-    date: '24 mai 2026',
-    img: IMG_RENDA_IRLANDESA,
-    imgCaption: 'Mãos de mestras rendeiras: o trabalho de horas que se transforma em arte delicada',
-    relatedImg: IMG_NATANZINHO_RENDA_IRLANDESA,
-    author: ''
-  },
-  {
-    id: 'culinaria-sergipana',
-    category: 'GASTRONOMIA',
-    title: 'A culinária de Sergipe mistura tradições litorâneas e sertanejas.',
-    intro: 'om forte uso de frutos do mar, mandioca, carne de sol e coco. O estado destaca-se pela abundância de crustáceos.',
-    body: [
-      'Poucos estados brasileiros têm uma culinária tão genuinamente híbrida quanto Sergipe. Em menos de 280 km, passamos da culinária litorânea — farta em crustáceos, frutos do mar e leite de coco — para a cozinha sertaneja, baseada no milho, no feijão e na carne seca.',
-      'Caranguejada: Carro-chefe da gastronomia local, principalmente na capital Aracaju. O crustáceo é cozido inteiro em um caldo temperado com leite de coco, cheiro-verde, tomate e pimentão, geralmente servido com pirão e farofa.',
-      'Moqueca Sergipana: Diferente da versão baiana, a moqueca sergipana costuma ser mais leve no azeite de dendê, mas rica em leite de coco e peixes frescos da região, como robalo e pescada.',
-      'Amendoim Verde Cozido: Reconhecido como Patrimônio Imaterial de Sergipe, é uma das comidas de rua mais populares, encontrado facilmente em tabuleiros e praias.',
-      'Sertão (Buchada e Sarapatel): Na região mais seca, a culinária é robusta, com forte presença da carne de bode, carne de sol com macaxeira, além de pratos com miúdos como a tradicional buchada e o sarapatel.',
-      'No Mercado Municipal Thales Ferraz, em Aracaju, as barracas da Avenida da Cultura são o melhor laboratório para entender essa riqueza. Buchada, sarapatel, carne de sol com manteiga de garrafa, mungunzá de milho verde — uma aula de história em cada prato.',
-    ],
-    author: 'Equipe Sergipanidade',
-    date: '25 maio 2026',
-    img: IMG_FESTIVAL_CARANGUEJO,
-    imgCaption: 'O Mercado Municipal Thales Ferraz, em Aracaju: a alma gastronômica de Sergipe.',
-    relatedImg: IMG_AMENDOIM,
-  },
-];
-
-const EVENTS: CulturaEvent[] = [
-  {
-    id: 'Verão Sergipe',
-    name: 'Verão Sergipe 2026',
-    type: 'Eventos',
-    day: '30', month: 'JAN',
-    local: 'Sergipe',
-    city: 'Aracaju e região',
-    desc: 'O Verão Sergipe inica nesta sexta-feira, 30, com uma novidade que marca a edição de 2026: é a primeira vez que Aracaju recebe o projeto promovido pelo Governo de Sergipe, com o apoio da Secretaria de Estado do Turismo (Setur).',
-    img: IMG_VERAO_SERGIPE,
-    free: true,
-    online: false,
-    thisWeek: false,
-  },
-  {
-    id: 'Arraiá do Povo',
-    name: 'A Vilá do Forró iniciará no dia 29 de maio e segue até o dia 26 de julho, totalizando 60 dias de festejos na Orla de Atalaia, em Aracaju',
-    type: 'Festa',
-    day: '29', month: 'MAIO',
-    local: 'Orla da Atalaia',
-    city: 'Aracaju',
-    desc: 'Serão 30 dias de programação com shows no Arraiá do Povo e na Vila do Forró, seguidos por mais 30 dias de atividades exclusivamente na vila. Neste ano, os shows acontecem entre os dias 29 de maio e 28 de junho, reunindo artistas locais e nacionais. Entre os nomes confirmados estão Elba Ramalho, Luan Santana, Mestrinho e Gusttavo Lima, além de outras atrações que devem movimentar o público ao longo do período.O Ciclo Junino é um dos principais eventos culturais do estado, atraindo turistas e fortalecendo as tradições nordestinas com muita música, dança e gastronomia típica.',
-    img: IMG_ARRAIA_DO_POVO,
-    free: true,
-    online: false,
-    thisWeek: false,
-  },
-  {
-    id: 'FASC 2026',
-    name: 'Festival de Artes de São Cristóvão',
-    type: 'Festival',
-    day: '19 a 22', month: 'NOV',
-    local: 'Centro Histórico',
-    city: 'São Cristóvão- SE',
-    desc: 'O 41º Festival de Artes de São Cristóvão (FASC), maior festival de arte e cultura gratuito do Nordeste.',
-    img: IMG_FASC,
-    free: true,
-    online: false,
-    thisWeek: false,
-  },
-  {
-    id: 'Natal Iluminado',
-    name: 'Natal Ilumindado',
-    type: 'Evento',
-    month: 'DEZEMBRO',
-    local: 'Toda a cidade',
-    city: 'Aracaju',
-    desc: 'O Natal Iluminado em Sergipe destaca-se principalmente pela grandiosa Vila do Natal Iluminado, realizada pelo Governo do Estado. O evento ocorre anualmente, entre o início de dezembro e o final do ano, na Praça de Eventos da Orla da Atalaia, em Aracaju.',
-    img: IMG_NATAL_ILUMINADO,
-    free: true,
-    online: false,
-    thisWeek: false,
-    day: ''
-  },
-];
+const ARTISTS: Artist[] = artistsData as Artist[];
+const STORIES: Story[] = storiesData as unknown as Story[];
+const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
 
 
 
@@ -327,7 +76,7 @@ interface CulturaScreenProps {
   language?: 'pt' | 'en' | 'es';
 }
 
-export function CulturaScreen({ onToast }: CulturaScreenProps) {
+export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
 
@@ -338,27 +87,27 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
   const [selectedArtwork, setSelectedArtwork] = useState<Artist['works'][0] | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useEffect((): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedArtist, selectedStory]);
 
-  const filteredArtists = ARTISTS.filter((a) => {
+  const filteredArtists = ARTISTS.filter((a: Artist): boolean => {
     const matchSearch = !searchTerm || a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.city.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredEvents = EVENTS.filter((e) => {
+  const filteredEvents = EVENTS.filter((e: CulturaEvent): boolean => {
     const matchSearch = !searchTerm || e.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredStories = STORIES.filter((s) =>
+  const filteredStories = STORIES.filter((s: Story): boolean =>
     !searchTerm || s.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // ── Artist Detail ──────────────────────────────────────────
   if (selectedArtist) {
-    const related = ARTISTS.filter((a) => a.id !== selectedArtist.id).slice(0, 3);
+    const related = ARTISTS.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
     return (
       <div
         className="min-h-screen"
@@ -371,8 +120,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         {/* Back */}
         <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-6 pb-2">
           <button
-            onClick={() => setSelectedArtist(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-[44px] hover:opacity-70 transition-opacity"
+            onClick={(): void => setSelectedArtist(null)}
+            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
             style={{ color: '#0D7377', fontSize: '14px' }}
           >
             <ArrowLeft size={18} />
@@ -381,15 +130,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* Cover */}
-        <div className="relative h-[320px] sm:h-[400px] overflow-hidden">
+        <div className="relative h-80 sm:h-100 overflow-hidden">
           <ImageWithFallback src={selectedArtist.coverPhoto} alt="Capa" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
         </div>
 
         {/* Header info */}
         <div className="max-w-5xl mx-auto px-4 sm:px-8">
           <div className="relative flex items-end gap-5 -mt-14 mb-6">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-lg flex-shrink-0 bg-[var(--cinza-leve)]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-lg shrink-0 bg-(--cinza-leve)">
               <ImageWithFallback src={selectedArtist.photo} alt={selectedArtist.name} className="w-full h-full object-cover" />
             </div>
             <div className="pb-1">
@@ -415,8 +164,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               <MapPin size={15} />
               <span>{selectedArtist.city}</span>
             </div>
-            <span className="text-[var(--cinza-txt)] text-sm">{selectedArtist.awards}</span>
-            <span className="text-[var(--cinza-txt)] text-sm">{selectedArtist.years}</span>
+            <span className="text-(--cinza-txt) text-sm">{selectedArtist.awards}</span>
+            <span className="text-(--cinza-txt) text-sm">{selectedArtist.years}</span>
           </div>
 
           {/* Bio */}
@@ -434,15 +183,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             Clique em uma obra para ver em destaque
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-            {selectedArtist.works.map((work, i) => (
+            {selectedArtist.works.map((work: Artist['works'][0], i: number): JSX.Element => (
               <button
                 key={i}
-                onClick={() => setSelectedArtwork(work)}
+                onClick={(): void => setSelectedArtwork(work)}
                 className="group text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                            hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                            border-none cursor-pointer"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-4/3 overflow-hidden">
                   <ImageWithFallback src={work.img} alt={work.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                     <Eye size={28} color="white" className="opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
@@ -466,12 +215,12 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                 { icon: Instagram, label: selectedArtist.instagram, href: '#' },
                 { icon: Globe, label: 'Site pessoal', href: '#' },
                 { icon: Mail, label: 'E-mail', href: '#' },
-              ].map(({ icon: Icon, label, href }) => (
+              ].map(({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }): JSX.Element => (
                 <a
                   key={label}
                   href={href}
-                  onClick={(e) => { e.preventDefault(); onToast(`🔗 Abrindo ${label}`); }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all min-h-[44px]"
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>): void => { e.preventDefault(); onToast(`🔗 Abrindo ${label}`); }}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all min-h-11"
                   style={{ borderColor: '#D9D9D9', color: '#0D7377', fontSize: '13px' }}
                 >
                   <Icon size={15} />
@@ -486,15 +235,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             Outros artistas que você pode gostar
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-8">
-            {related.map((a) => (
+            {related.map((a: Artist): JSX.Element => (
               <button
                 key={a.id}
-                onClick={() => setSelectedArtist(a)}
+                onClick={(): void => setSelectedArtist(a)}
                 className="text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                            hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                            border-none cursor-pointer"
               >
-                <div className="aspect-[4/3] overflow-hidden">
+                <div className="aspect-4/3 overflow-hidden">
                   <ImageWithFallback src={a.photo} alt={a.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-4">
@@ -508,16 +257,16 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
         {/* Artwork Lightbox */}
         {selectedArtwork && (
-          <div className="fixed inset-0 z-[990] flex items-center justify-center p-4" onClick={() => setSelectedArtwork(null)}>
+          <div className="fixed inset-0 z-990 flex items-center justify-center p-4" onClick={(): void => setSelectedArtwork(null)}>
             <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
             <div
               className="relative bg-white rounded-[14px] overflow-hidden w-full max-w-2xl max-h-[90vh] flex flex-col"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent<HTMLDivElement>): void => e.stopPropagation()}
             >
               <div className="relative">
                 <ImageWithFallback src={selectedArtwork.img} alt={selectedArtwork.title} className="w-full max-h-[50vh] object-cover" />
                 <button
-                  onClick={() => setSelectedArtwork(null)}
+                  onClick={(): void => setSelectedArtwork(null)}
                   className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
                 >
                   <X size={16} color="white" />
@@ -543,7 +292,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
   // ── Story Detail ───────────────────────────────────────────
   if (selectedStory) {
-    const related = STORIES.filter((s) => s.id !== selectedStory.id).slice(0, 3);
+    const related = STORIES.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
     const catColor = '#0D7377';
     return (
       <div
@@ -557,8 +306,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         {/* Back */}
         <div className="max-w-3xl mx-auto px-4 sm:px-8 pt-6 pb-2">
           <button
-            onClick={() => setSelectedStory(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-[44px] hover:opacity-70 transition-opacity"
+            onClick={(): void => setSelectedStory(null)}
+            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
             style={{ color: '#0D7377', fontSize: '14px' }}
           >
             <ArrowLeft size={18} />
@@ -567,9 +316,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* Hero */}
-        <div className="relative h-[300px] sm:h-[420px] overflow-hidden">
+        <div className="relative h-75 sm:h-105 overflow-hidden">
           <ImageWithFallback src={selectedStory.img} alt={selectedStory.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 pb-10 max-w-3xl mx-auto">
             <span
               className="inline-block px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 text-white"
@@ -602,12 +351,12 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             {selectedStory.intro}
           </p>
 
-          {selectedStory.body.map((paragraph, i) => (
+          {selectedStory.body.map((paragraph: string, i: number): JSX.Element => (
             <div key={i}>
               {i === 1 && (
                 <div className="my-8">
                   <div className="rounded-[14px] overflow-hidden mb-2">
-                    <ImageWithFallback src={selectedStory.relatedImg} alt="Ilustração" className="w-full max-h-[340px] object-cover" />
+                    <ImageWithFallback src={selectedStory.relatedImg} alt="Ilustração" className="w-full max-h-85 object-cover" />
                   </div>
                   <p style={{ color: '#8A8A8A', fontSize: '13px' }} className="text-center italic">
                     {selectedStory.imgCaption}
@@ -625,21 +374,21 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* More stories */}
-        <div className="bg-[var(--cinza-leve)] py-12 px-4 sm:px-8">
+        <div className="bg-(--cinza-leve) py-12 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto">
             <h2 className="font-['Fjalla_One'] mb-6" style={{ color: '#1A1A1A', fontSize: '24px' }}>
               Explore mais histórias
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {related.map((s) => (
+              {related.map((s: Story): JSX.Element => (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedStory(s)}
+                  onClick={(): void => setSelectedStory(s)}
                   className="text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                              hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                              border-none cursor-pointer"
                 >
-                  <div className="aspect-[16/9] overflow-hidden">
+                  <div className="aspect-video overflow-hidden">
                     <ImageWithFallback src={s.img} alt={s.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-4">
@@ -660,7 +409,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
   }
 
   // ── Pin Component ────────────────────────────────────────────
-  const CategoryPin = ({ Icon, isActive }: { Icon: LucideIcon; isActive?: boolean }) => (
+  const CategoryPin = ({ Icon, isActive }: { Icon: LucideIcon; isActive?: boolean }): JSX.Element => (
     <div className="relative flex items-center justify-center" style={{ width: 28, height: 36 }}>
       {/* Pin shape */}
       <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -694,7 +443,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       }}
     >
       {/* ── HEADER ESTÁTICO ── */}
-      <div className="relative w-full h-[480px] overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-120 overflow-hidden flex items-center justify-center">
         {/* Foto de fundo */}
         <ImageWithFallback
           src={IMG_CULTURA_HERO}
@@ -746,17 +495,17 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                 type="text"
                 placeholder="Buscar artista, história, evento..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 h-[50px] outline-none border-none bg-transparent"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 h-12.5 outline-none border-none bg-transparent"
                 style={{ color: '#1A1A1A', fontSize: '15px', borderRadius: '8px' }}
               />
             </div>
             <button
-              onClick={() => onToast(`Buscando: "${searchTerm}"`)}
+              onClick={(): void => onToast(`Buscando: "${searchTerm}"`)}
               className="px-6 font-bold tracking-widest uppercase border-none cursor-pointer transition-colors flex items-center justify-center"
               style={{ backgroundColor: '#0D7377', color: '#FFFFFF', fontSize: '14px', minWidth: '120px', minHeight: '50px', borderRadius: '8px' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0A5E62')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#0D7377')}
+              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0A5E62'; }}
+              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0D7377'; }}
             >
               EXPLORAR
             </button>
@@ -767,7 +516,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       {/* ── STICKY TABS ── */}
       <div
         ref={tabsRef}
-        className="z-[80] bg-white overflow-x-auto"
+        className="z-80 bg-white overflow-x-auto"
         style={{
           top: 'calc(56px + env(safe-area-inset-top))',
           borderBottom: '1px solid #D9D9D9',
@@ -775,14 +524,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         }}
       >
         <div className="flex max-w-5xl mx-auto px-4 sm:px-8">
-          {TABS.map(({ id, label, Icon }) => {
+          {TABS.map(({ id, label, Icon }: { id: CulturaTab; label: string; Icon: LucideIcon }): JSX.Element => {
             const isActive = activeTab === id;
             return (
               <button
                 key={id}
-                onClick={() => setActiveTab(id)}
+                onClick={(): void => setActiveTab(id)}
                 className="relative flex items-center gap-2.5 px-4 sm:px-5 py-4 whitespace-nowrap
-                           bg-transparent border-none cursor-pointer min-h-[52px] transition-colors"
+                           bg-transparent border-none cursor-pointer min-h-13 transition-colors"
                 style={{ color: isActive ? '#0D7377' : '#8A8A8A' }}
               >
                 <CategoryPin Icon={Icon} isActive={isActive} />
@@ -821,14 +570,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredArtists.map((artist) => (
+                {filteredArtists.map((artist: Artist): JSX.Element => (
                   <div
                     key={artist.id}
                     className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                                hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200"
                   >
                     {/* Photo */}
-                    <div className="aspect-[4/3] overflow-hidden relative">
+                    <div className="aspect-4/3 overflow-hidden relative">
                       <ImageWithFallback
                         src={artist.photo}
                         alt={artist.name}
@@ -859,8 +608,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         {artist.awards} · {artist.years}
                       </p>
                       <button
-                        onClick={() => setSelectedArtist(artist)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-colors hover:gap-2.5"
+                        onClick={(): void => setSelectedArtist(artist)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-colors hover:gap-2.5"
                         style={{ color: '#0D7377', fontSize: '13px' }}
                       >
                         Ver perfil completo
@@ -887,7 +636,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             </div>
 
             <div className="flex flex-col gap-8">
-              {filteredStories.map((story, i) => {
+              {filteredStories.map((story: Story, i: number): JSX.Element => {
                 const imageLeft = i % 2 === 0;
                 return (
                   <div
@@ -897,7 +646,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                                 flex flex-col ${imageLeft ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
                   >
                     {/* Image — 45% */}
-                    <div className="sm:w-[45%] h-[220px] sm:h-auto overflow-hidden flex-shrink-0">
+                    <div className="sm:w-[45%] h-55 sm:h-auto overflow-hidden shrink-0">
                       <ImageWithFallback
                         src={story.img}
                         alt={story.title}
@@ -929,8 +678,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         Por <strong style={{ color: '#1A1A1A' }}>{story.author}</strong> · {story.date}
                       </p>
                       <button
-                        onClick={() => setSelectedStory(story)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-all hover:gap-2.5 w-fit"
+                        onClick={(): void => setSelectedStory(story)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5 w-fit"
                         style={{ color: '#0D7377', fontSize: '14px' }}
                       >
                         Ler história completa
@@ -958,11 +707,11 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               </div>
               {/* View toggle */}
               <div className="flex rounded-[10px] overflow-hidden border" style={{ borderColor: '#D9D9D9' }}>
-                {(['lista', 'calendario'] as const).map((v) => (
+                {(['lista', 'calendario'] as const).map((v: 'lista' | 'calendario'): JSX.Element => (
                   <button
                     key={v}
-                    onClick={() => setEventsView(v)}
-                    className="px-4 py-2 capitalize border-none cursor-pointer transition-colors min-h-[40px]"
+                    onClick={(): void => setEventsView(v)}
+                    className="px-4 py-2 capitalize border-none cursor-pointer transition-colors min-h-10"
                     style={{
                       backgroundColor: eventsView === v ? '#0D7377' : '#FFFFFF',
                       color: eventsView === v ? '#FFFFFF' : '#4A4A4A',
@@ -984,14 +733,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                     <Ticket size={40} className="mx-auto mb-3 opacity-30" />
                     <p style={{ fontSize: '16px' }}>Nenhum evento encontrado com esses filtros</p>
                   </div>
-                ) : filteredEvents.map((event) => (
+                ) : filteredEvents.map((event: CulturaEvent): JSX.Element => (
                   <div
                     key={event.id}
                     className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                                hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200"
                   >
                     {/* Image */}
-                    <div className="relative aspect-[16/9] overflow-hidden">
+                    <div className="relative aspect-video overflow-hidden">
                       <ImageWithFallback src={event.img} alt={event.name} className="w-full h-full object-cover" />
                       {/* Type badge */}
                       <div
@@ -1035,8 +784,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                       </p>
 
                       <button
-                        onClick={() => onToast(`🎟️ Saiba mais: ${event.name}`)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-all hover:gap-2.5"
+                        onClick={(): void => onToast(`🎟️ Saiba mais: ${event.name}`)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5"
                         style={{ color: '#0D7377', fontSize: '13px' }}
                       >
                         Saiba mais
@@ -1055,14 +804,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  {filteredEvents.sort((a, b) => parseInt(a.day) - parseInt(b.day)).map((event) => (
+                  {filteredEvents.sort((a: CulturaEvent, b: CulturaEvent) => parseInt(a.day) - parseInt(b.day)).map((event: CulturaEvent): JSX.Element => (
                     <div
                       key={event.id}
-                      className="flex items-center gap-4 p-4 rounded-[10px] hover:bg-[var(--cinza-leve)] transition-colors cursor-pointer"
-                      onClick={() => onToast(`📅 ${event.name}`)}
+                      className="flex items-center gap-4 p-4 rounded-[10px] hover:bg-(--cinza-leve) transition-colors cursor-pointer"
+                      onClick={(): void => onToast(`📅 ${event.name}`)}
                     >
                       <div
-                        className="flex-shrink-0 w-14 h-14 rounded-[10px] flex flex-col items-center justify-center"
+                        className="shrink-0 w-14 h-14 rounded-[10px] flex flex-col items-center justify-center"
                         style={{ backgroundColor: '#F5EDE6' }}
                       >
                         <span className="font-['Fjalla_One']" style={{ color: '#0D7377', fontSize: '20px', lineHeight: 1 }}>
@@ -1081,7 +830,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         </p>
                       </div>
                       <span
-                        className="flex-shrink-0 px-2.5 py-1 rounded-full font-bold uppercase"
+                        className="shrink-0 px-2.5 py-1 rounded-full font-bold uppercase"
                         style={{ backgroundColor: '#EEEDE9', color: '#1A1A1A', fontSize: '10px' }}
                       >
                         {event.type}
