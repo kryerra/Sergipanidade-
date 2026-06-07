@@ -292,7 +292,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
 
             <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
                          tracking-wide"
-                         style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.50)' }}>
+                         style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.70)' }}>
               {t.loginHeroLine1}<br />{t.loginHeroLine2}<br />
               <span className="text-[#F7F6F3] opacity-90">{t.loginHeroHighlight}</span>
             </h1>
