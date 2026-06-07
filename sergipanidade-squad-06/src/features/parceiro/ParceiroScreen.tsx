@@ -26,60 +26,10 @@ interface ParceiroScreenProps {
   language: "pt" | "en" | "es";
 }
 
+import reviewsData from "@/constants/reviews.json";
+
 /* ─────────── Mock data ─────────── */
-const REVIEWS_DATA = [
-  {
-    id: 1,
-    name: "Maria Silva",
-    initials: "MS",
-    rating: 5,
-    comment:
-      "Lugar incrível! Os gatinhos são muito fofos e o café é delicioso. Passei horas lá e não queria ir embora.",
-    date: "2 dias atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 2,
-    name: "João Santos",
-    initials: "JS",
-    rating: 5,
-    comment: "Ambiente acolhedor e os gatos são super carinhosos. Recomendo muito para quem ama felinos!",
-    date: "5 dias atrás",
-    replied: true,
-    existingResponse: "Obrigado pelo carinho, João! Esperamos você sempre aqui na Miauteria!",
-  },
-  {
-    id: 3,
-    name: "Ana Costa",
-    initials: "AC",
-    rating: 4,
-    comment: "Muito bom, mas estava um pouco cheio quando visitei. Vale reservar com antecedência.",
-    date: "1 semana atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 4,
-    name: "Pedro Oliveira",
-    initials: "PO",
-    rating: 5,
-    comment: "A experiência de tomar um café rodeado por gatinhos resgatados é única em Aracaju. Voltarei com certeza!",
-    date: "10 dias atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 5,
-    name: "Carla Ferreira",
-    initials: "CF",
-    rating: 4,
-    comment: "Café de qualidade e causa social linda. Adotei uma das gatas e estou muito feliz!",
-    date: "2 semanas atrás",
-    replied: true,
-    existingResponse: "Que notícia maravilhosa, Carla! Boa sorte com sua nova companheira!",
-  },
-];
+const REVIEWS_DATA = reviewsData.partnerReviews;
 
 /* ──��──────── Avatar colorido por iniciais ─────────── */
 const AVATAR_COLORS = [

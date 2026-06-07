@@ -58,36 +58,9 @@ const MOCK_ITINERARIES = [
   },
 ];
 
-const MOCK_REVIEWS = [
-  {
-    id: '1',
-    place: 'Orla de Atalaia',
-    rating: 5,
-    date: 'Fev 2024',
-    text: 'Lugar incrível! O pôr do sol é espetacular e a orla está muito bem cuidada. Recomendo muito a caminhada ao entardecer.',
-    partnerResponse: null as string | null,
-    partnerInitials: null as string | null,
-  },
-  {
-    id: '2',
-    place: 'Museu da Gente Sergipana',
-    rating: 4,
-    date: 'Mar 2024',
-    text: 'Um museu moderno e envolvente. Aprendi muito sobre a riquíssima cultura sergipana. Vale cada minuto!',
-    partnerResponse:
-      'Obrigado pela visita, João! Ficamos felizes que tenha curtido a experiência. Volte sempre!',
-    partnerInitials: 'MG',
-  },
-  {
-    id: '3',
-    place: 'Miauteria Cat Café',
-    rating: 5,
-    date: 'Abr 2024',
-    text: 'Melhor café de Aracaju! Os gatinhos são um charme extra. Café de qualidade com uma causa social incrível.',
-    partnerResponse: null,
-    partnerInitials: null,
-  },
-];
+import reviewsData from "@/constants/reviews.json";
+
+const MOCK_REVIEWS = reviewsData.userReviews;
 
 // Picks first 6 destinations as "favorites"
 const MOCK_FAVORITES = destinations.slice(0, 6);

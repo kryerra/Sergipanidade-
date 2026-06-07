@@ -43,6 +43,8 @@ const EXPERIENCIAS_BG_2 =
 const EXPERIENCIAS_BG_3 =
   "src/assets/images/mercado-1-exp.jpg";
 
+import hotelsData from "@/constants/hotels.json";
+
 interface HotelMock {
   id: string;
   name: string;
@@ -64,44 +66,8 @@ interface HomeScreenProps {
   userProfile: UserProfile;
 }
 
-const HOTELS_MOCK: HotelMock[] = [
-  {
-    id: "radisson",
-    name: "Radisson Hotel Aracaju",
-    category: "Hotel 4★",
-    bairro: "Atalaia",
-    priceLevel: 3,
-    startingPrice: "R$ 280",
-    rating: 4.8,
-    reviews: "1.2k",
-    image: HOTEL_IMG_1,
-    amenities: ["Piscina", "Wifi", "Café da manhã"],
-  },
-  {
-    id: "pousada",
-    name: "Pousada Beira Mar",
-    category: "Pousada",
-    bairro: "Atalaia",
-    priceLevel: 2,
-    startingPrice: "R$ 180",
-    rating: 4.6,
-    reviews: "342",
-    image: HOTEL_IMG_2,
-    amenities: ["Vista Mar", "Pet OK", "Café"],
-  },
-  {
-    id: "vila-real",
-    name: "Hotel Vila Real",
-    category: "Hotel",
-    bairro: "Centro",
-    priceLevel: 2,
-    startingPrice: "R$ 150",
-    rating: 4.4,
-    reviews: "218",
-    image: HOTEL_IMG_3,
-    amenities: ["Academia", "Wifi", "Estacionamento"],
-  },
-];
+const HOTELS_MOCK: HotelMock[] = hotelsData;
+
 
 const DEST_LIKES: Record<string, string> = {
   "orla-atalaia": "73mil",
