@@ -393,8 +393,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               <ImageWithFallback src={selectedArtist.photo} alt={selectedArtist.name} className="w-full h-full object-cover" />
             </div>
             <div className="pb-1">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="font-['Fjalla_One'] text-white drop-shadow-lg" style={{ fontSize: '28px' }}>
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <h1 className="font-['Fjalla_One'] text-[#0D7377] drop-shadow-lg" style={{ fontSize: '28px' }}>
                   {selectedArtist.name}
                 </h1>
               </div>
