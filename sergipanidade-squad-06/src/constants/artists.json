@@ -1,0 +1,133 @@
+[
+  {
+    "id": "ana",
+    "name": "Ana Lima",
+    "city": "Itabaiana · SE",
+    "linguagem": "musica",
+    "bio": "Cantora e compositora de forró pé-de-serra que mantém viva a tradição do forró sergipano com composições autorais e de fortes raízes nordestinas.",
+    "bioFull": "Ana Lima cresceu rodeada pela musicalidade do agreste sergipano nas festas de São João de Itabaiana. Filha de sanfoneiro, aprendeu a tocar os primeiros acordes na sanfona de oito baixos ainda na infância. Formou sua primeira banda profissional aos 17 anos e, desde então, tem percorrido o Nordeste promovendo o autêntico forró pé-de-serra. Com três álbuns lançados, coordena o projeto social 'Forró nas Escolas', que ensina ritmos tradicionais para crianças da rede pública de ensino de Sergipe.",
+    "photo": "https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Melhor Álbum de Forró — Prêmio SESC de Cultura 2023",
+    "years": "20 anos de trajetória artística",
+    "instagram": "@analima.forro",
+    "works": [
+      {
+        "title": "Álbum 'Raízes'",
+        "year": "2023",
+        "img": "https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Compilação de 12 composições autorais de forró pé-de-serra, valorizando instrumentos clássicos como sanfona, zabumba e triângulo.",
+        "tecnica": "Forró tradicional / Gravação de estúdio"
+      },
+      {
+        "title": "EP 'Nas Serras'",
+        "year": "2021",
+        "img": "https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "EP gravado ao vivo em formato acústico nas paisagens da Serra de Itabaiana, misturando influências regionais e MPB.",
+        "tecnica": "Forró / MPB acústico"
+      }
+    ]
+  },
+  {
+    "id": "josefa",
+    "name": "Josefa Nascimento",
+    "city": "São Cristóvão · SE",
+    "linguagem": "literatura",
+    "bio": "Escritora e pesquisadora das tradições orais sergipanas. Autora de diversas obras dedicadas ao resgate de lendas e contos populares do sertão.",
+    "bioFull": "Josefa Nascimento é professora universitária, doutora em Antropologia e escritora nascida na histórica cidade de São Cristóvão. Dedica-se há mais de duas décadas a documentar a tradição oral das comunidades ribeirinhas e sertanejas de Sergipe. Seu trabalho meticuloso de campo resgata contos de benzedeiras, memórias de mestres de reisado e versos de repentistas, transformando-os em literatura de alto valor histórico e pedagógico. É membra correspondente da Academia Sergipana de Letras.",
+    "photo": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Prêmio Litteris da Academia Sergipana de Letras 2020",
+    "years": "25 anos de pesquisas e publicações",
+    "instagram": "@josefa.nascimento.se",
+    "works": [
+      {
+        "title": "Livro 'Contos da Caatinga'",
+        "year": "2024",
+        "img": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Coletânea literária com 22 contos fundamentados em narrativas orais e causos coletados no semiárido sergipano.",
+        "tecnica": "Literatura de resgate folclórico"
+      },
+      {
+        "title": "Romance 'A Benzedeira de Brejo Grande'",
+        "year": "2022",
+        "img": "https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Obra de ficção inspirada nas parteiras e curandeiras tradicionais da foz do Rio São Francisco e sua profunda relação com a natureza.",
+        "tecnica": "Ficção / Etnografia literária"
+      }
+    ]
+  },
+  {
+    "id": "karoline",
+    "name": "Karoline Ferreira",
+    "city": "Aracaju · SE",
+    "linguagem": "danca",
+    "bio": "Bailarina e coreógrafa, diretora do Grupo Sergipano de Danças Populares, reconhecida pela difusão do Reisado e do Samba de Pareia.",
+    "bioFull": "Karoline Ferreira iniciou seus estudos de dança clássica na infância, mas encontrou sua verdadeira paixão nas manifestações folclóricas de Sergipe. Fundadora do Grupo Sergipano de Danças Populares, realiza oficinas em comunidades periféricas da capital para integrar ritmos tradicionais, como o Reisado, Guerreiro e Samba de Pareia, à dança contemporânea. Sob sua direção, o grupo já representou Sergipe em festivais folclóricos internacionais na Europa e na América Latina.",
+    "photo": "https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Prêmio Nacional Funarte de Dança Popular 2022",
+    "years": "16 anos de difusão cultural",
+    "instagram": "@karoline.danca.se",
+    "works": [
+      {
+        "title": "Espetáculo 'Raízes e Movimentos'",
+        "year": "2024",
+        "img": "https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Montagem coreográfica contemporânea que reimagina a gestualidade do maracatu e do cacuriá sob a ótica da dança de teatro.",
+        "tecnica": "Dança contemporânea e pesquisa folclórica"
+      }
+    ]
+  },
+  {
+    "id": "Véio",
+    "name": "Cícero Alves dos Santos (Véio)",
+    "city": "Nossa Senhora da Glória · SE",
+    "linguagem": "escultura",
+    "bio": "Escultor de prestígio internacional que transforma galhos secos e troncos caídos do sertão em figuras enigmáticas da cultura popular.",
+    "bioFull": "Cícero Alves dos Santos, universalmente conhecido como Véio, é um dos maiores nomes da arte popular brasileira. Nascido no sertão sergipano, começou a esculpir na infância utilizando cera de abelha e sabugo de milho. Autodidata, passou a trabalhar com troncos e raízes de madeira morta da caatinga, revelando figuras humanas e animais que parecem ocultas na própria forma da madeira. Fundou em Nossa Senhora da Glória o Museu do Sertão, que abriga milhares de obras de sua autoria e de outros artistas populares.",
+    "photo": "/src/imports/veio.png",
+    "coverPhoto": "/src/imports/veio_itau.jpg",
+    "awards": "🏅 Título de Doutor Honoris Causa pela Universidade Federal de Sergipe (UFS) & Prêmio Itaú Cultural 30 Anos",
+    "years": "Mais de 65 anos esculpindo a identidade sertaneja",
+    "instagram": "@artistaveio",
+    "works": [
+      {
+        "title": "Escultura em Madeira Morta da Caatinga",
+        "year": "2024",
+        "img": "/src/imports/veio_entalhes.png",
+        "desc": "Figura entalhada a partir de um tronco retorcido de umbuzeiro seco, mantendo as texturas e ranhuras naturais da madeira.",
+        "tecnica": "Escultura em madeira residual com pigmentos naturais"
+      },
+      {
+        "title": "Exposição Itaú Cultural",
+        "year": "2018",
+        "img": "/src/imports/veio_itau.jpg",
+        "desc": "Painel de retrospectiva de obras históricas no renomado centro cultural em São Paulo, consolidando sua projeção nacional.",
+        "tecnica": "Retrospectiva artística / Instalação"
+      }
+    ]
+  },
+  {
+    "id": "Alzira-Alves",
+    "name": "Alzira Alves",
+    "city": "Divina Pastora · SE",
+    "linguagem": "artesanato",
+    "bio": "Mestra artesã da Renda Irlandesa, técnica secular reconhecida como Patrimônio Cultural Imaterial do Brasil.",
+    "bioFull": "Dona Alzira Alves é uma das principais guardiãs e mestras da Renda Irlandesa em Divina Pastora, o polo nacional deste saber tradicional. Começou a manusear o lacê e a agulha aos 10 anos de idade, sob a orientação de sua mãe. Ao longo de quase sete décadas dedicadas ao ofício, contribuiu ativamente para a organização das rendeiras locais em associações e para o registro da Renda Irlandesa como Patrimônio Cultural do Brasil pelo Iphan em 2009. Suas mãos delicadas tecem vestidos, toalhas e acessórios que vestem desde colecionadores até figuras da música e da política nacional.",
+    "photo": "/src/imports/Alzira_alves.png",
+    "coverPhoto": "/src/imports/renda_irlandesa.png",
+    "awards": "🏅 Reconhecimento Oficial do Registro de Saberes do Iphan",
+    "years": "Mais de 68 anos dedicados à costura de lacê",
+    "instagram": "@alziraalves25",
+    "works": [
+      {
+        "title": "Peça de Renda Exclusiva",
+        "year": "2023",
+        "img": "/src/imports/Natanzinho_renda_irlandesa.png",
+        "desc": "Customização em Renda Irlandesa desenvolvida artesanalmente para compor o figurino do cantor nacional Natanzinho.",
+        "tecnica": "Renda Irlandesa clássica sob lacê e linha de algodão"
+      }
+    ]
+  }
+]
