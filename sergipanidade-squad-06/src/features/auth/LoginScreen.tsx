@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
-import bgImage from "@/assets/images/Login teste.png";
+import bgImage from "@/assets/images/login_teste.png";
 import googleLogo from "@/imports/Google_Logo.png";
 import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
 
