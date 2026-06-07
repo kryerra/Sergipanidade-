@@ -35,7 +35,7 @@ const HOTEL_IMG_3 =
   "https://images.unsplash.com/photo-1776761420412-e6451f458162?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiZWFjaGZyb250JTIwaG90ZWwlMjByZXNvcnQlMjBwb29sJTIwb2NlYW4lMjB2aWV3fGVufDF8fHx8MTc3NzkyNzczNXww&ixlib=rb-4.1.0&q=80&w=1080";
 
 const EXPERIENCIAS_BG =
-  "src/assets/images/orla-exp.jpeg";
+  "src/assets/images/orla-exp.jpg";
 
 const EXPERIENCIAS_BG_2 =
   "src/assets/images/praia-do-mosqueiro-exp.jpg";
