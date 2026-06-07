@@ -1,0 +1,69 @@
+[
+  {
+    "id": "foz-sao-francisco",
+    "category": "FOLCLORE",
+    "title": "A Foz do Rio São Francisco: onde o rio abraça o mar",
+    "intro": "O ponto de encontro entre as águas doces do 'Velho Chico' e as ondas salgadas do Oceano Atlântico é um território repleto de misticismo, lendas e profunda importância histórica para pescadores e comunidades ribeirinhas.",
+    "body": [
+      "A foz do Rio São Francisco, situada no município sergipano de Brejo Grande, constitui uma das paisagens mais impressionantes e poéticas do Brasil. Nesse trecho litorâneo, a densa correnteza fluvial de tom terroso funde-se gradativamente com o azul do Atlântico, gerando um espetáculo visual dinâmico que varia conforme o ciclo das marés e a vazão das comportas.",
+      "Para os habitantes das ilhas fluviais e da foz, o rio transcende o papel de recurso natural ou via de transporte. Ele é tratado como uma divindade viva, provedora de sustento e elo de ligação com as gerações ancestrais. No imaginário local, o leito do São Francisco serviu de passagem e refúgio histórico para grupos que buscavam emancipação e estabeleciam comunidades quilombolas às suas margens.",
+      "A narrativa mítica mais célebre dessa região é a da Mãe d'Água, uma entidade mística que guardaria a entrada do estuário. Segundo os pescadores tradicionais, sob noites de lua cheia ou nova, um canto sutil ecoa no limiar onde a água doce silencia o som das ondas. Diz-se que aqueles que prestam respeito à guardiã recebem a dádiva de águas fartas e orientação segura nos momentos de tempestade.",
+      "Em agradecimento, as comunidades locais realizam cortejos fluviais semestrais. Embarcações adornadas com flores silvestres e velas partem ao pôr do sol, enquanto cantos e toques de zabumba saúdam as águas, renovando o pacto de respeito e simbiose entre o homem sertanejo e o rio."
+    ],
+    "author": "Equipe Sergipanidade",
+    "date": "24 mai 2026",
+    "img": "https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "imgCaption": "A foz do Rio São Francisco em Brejo Grande — local de convergência natural e mística das correntes ribeirinhas.",
+    "relatedImg": "/src/assets/images/foz_riosãofrancisco.jpg"
+  },
+  {
+    "id": "Quadrilhas-Juninas",
+    "category": "TRADIÇÃO",
+    "title": "As Quadrilhas Juninas como Expressão Máxima do 'País do Forró'",
+    "intro": "Os grupos de quadrilha de Sergipe preparam-se anualmente com coreografias complexas, trajes luxuosos e narrativas cênicas que encantam milhares de espectadores nos tradicionais festivais juninos.",
+    "body": [
+      "Com a proximidade dos festejos juninos, o estado de Sergipe mobiliza-se inteiramente em torno de sua manifestação folclórica mais vibrante. Conhecido nacionalmente como o 'País do Forró', o estado abriga centenas de quadrilhas juninas que ensaiam exaustivamente durante meses para apresentar espetáculos grandiosos que mesclam dança, teatro de rua e musicalidade tradicional.",
+      "Longe de serem apresentações amadoras, as quadrilhas sergipanas operam com produções sofisticadas. O processo envolve estilistas dedicados à confecção de figurinos detalhados, coreógrafos que alinham passos tradicionais à dança contemporânea e dramaturgos que estruturam roteiros baseados em lendas, questões sociais do sertão e devoção aos santos juninos.",
+      "O epicentro dessas exibições ocorre durante o ciclo de festejos na Vila do Forró e no Arraiá do Povo, localizados na icônica Orla de Atalaia, em Aracaju. Durante cerca de 60 dias de programação cultural ininterrupta, as apresentações atraem turistas de todas as regiões brasileiras, consolidando o patrimônio imaterial sergipano como referência nacional de folguedo junino."
+    ],
+    "author": "Secretaria de Comunicação de Sergipe",
+    "date": "29 maio 2026",
+    "img": "/src/imports/quadrilha.jpg",
+    "imgCaption": "Cores, ritmos e dramaturgia se fundem nos palcos juninos da Orla de Atalaia.",
+    "relatedImg": "/src/imports/arraia-do-povo.jpg"
+  },
+  {
+    "id": "A-Renda-Irlandesa",
+    "category": "PATRIMÔNIO IMATERIAL",
+    "title": "A Renda Irlandesa de Divina Pastora: a delicadeza esculpida em agulhas",
+    "intro": "Reconhecida pelo Iphan como Patrimônio Cultural Imaterial do Brasil, a Renda Irlandesa combina fios de algodão, o cordão lacê e uma técnica artesanal única passada de geração a geração no interior de Sergipe.",
+    "body": [
+      "A Renda Irlandesa de Divina Pastora é um dos artesanatos mais sofisticados e singulares do Brasil, tendo sido inscrita no Livro de Registro dos Saberes do Iphan em 2009. Essa arte exige extraordinária destreza e paciência, sendo executada quase que exclusivamente por mulheres rendeiras organizadas em cooperativas locais.",
+      "O método de confecção envolve uma sequência rigorosa de etapas: a rendeira desenha o motivo decorativo sobre papel-manteiga, fixa-o a uma almofada de suporte e contorna as linhas com o cordão especial denominado lacê. Em seguida, os espaços vazios são preenchidos com agulha e linha fina, gerando pontos clássicos conhecidos localmente por nomes sugestivos como 'redinha', 'abacaxi', 'aranha' e 'cocada'.",
+      "Introduzida no Brasil por freiras missionárias de origem europeia, a técnica estabeleceu raízes profundas na comunidade de Divina Pastora. Ao longo do tempo, as artesãs sergipanas incorporaram motivos inspirados na fauna e flora tropicais, conferindo à técnica uma identidade tipicamente nordestina.",
+      "Hoje, Divina Pastora, a cerca de 40 km de Aracaju, atrai pesquisadores, estilistas e colecionadores que adquirem diretamente das associações essas peças, valorizando o sustento e a autonomia das famílias rendeiras da região."
+    ],
+    "author": "Equipe Sergipanidade",
+    "date": "24 mai 2026",
+    "img": "/src/imports/renda_irlandesa.png",
+    "imgCaption": "A precisão das mãos que dão forma e leveza ao cordão lacê nas almofadas de Divina Pastora.",
+    "relatedImg": "/src/imports/Natanzinho_renda_irlandesa.png"
+  },
+  {
+    "id": "culinaria-sergipana",
+    "category": "GASTRONOMIA",
+    "title": "Sabores de Sergipe: a rica convergência entre o litoral e o sertão",
+    "intro": "A gastronomia sergipana reflete a geografia diversa do estado, equilibrando o frescor dos crustáceos litorâneos e das receitas à base de coco com a robustez e a força da culinária típica do semiárido.",
+    "body": [
+      "Poucas cozinhas estaduais no Brasil ostentam uma transição de sabores tão marcante quanto a sergipana. Num território compacto, a culinária transita suavemente das praias — marcadas pela abundância de caranguejos, aratus, sururus e o leite de coco fresco — para a culinária sertaneja, baseada no feijão de corda, na macaxeira cozida e nas carnes de sol e de bode.",
+      "O caranguejo cozido destaca-se como o maior emblema da gastronomia aracajuana. Servido inteiro e cozido em um caldo perfumado com coentro, tomate, cebola e pimentão, costuma ser acompanhado de pirão quente e farofa de manteiga, convertendo a refeição em um ritual social e de confraternização, especialmente na 'Passarela do Caranguejo'.",
+      "Outro elemento singular da mesa sergipana é o amendoim verde cozido em água e sal, frequentemente enriquecido com limão ou especiarias. Declarado Patrimônio Imaterial do Estado, o petisco é vendido por vendedores ambulantes em tabuleiros de alumínio nas praias, praças e esquinas de Aracaju.",
+      "À medida que avançamos em direção ao sertão, pratos encorpados ganham protagonismo. A carne de sol com manteiga de garrafa, a buchada e o sarapatel representam a força e a adaptação do homem sertanejo, oferecendo pratos de sabor pronunciado que podem ser degustados em sua melhor forma nas feiras livres e mercados da capital, como o Thales Ferraz."
+    ],
+    "author": "Equipe Sergipanidade",
+    "date": "25 maio 2026",
+    "img": "/src/assets/images/Festival_caranguejo.jpg",
+    "imgCaption": "O caranguejo cozido: prato emblemático e expressão cultural do litoral de Sergipe.",
+    "relatedImg": "/src/assets/images/amendoim.jpg"
+  }
+]
