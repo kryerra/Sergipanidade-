@@ -9,32 +9,6 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import IMG_CULTURA_HERO from "@/imports/Cultura.jpeg";
-import IMG_VERAO_SERGIPE from "@/imports/verão-sergipe.png";
-import IMG_ARRAIA_DO_POVO from "@/imports/arraia-do-povo.jpg";
-import IMG_FASC from "@/imports/fasc.jpeg";
-import IMG_NATAL_ILUMINADO from "@/imports/natal-iluminado-se.jpg";
-import IMG_FOZ_RIOSÃOFRANCISCO from "@/assets/images/foz_riosãofrancisco.jpg";
-import IMG_RENDA_IRLANDESA from "@/imports/renda_irlandesa.png";
-import IMG_NATANZINHO_RENDA_IRLANDESA from "@/imports/Natanzinho_renda_irlandesa.png";
-import IMG_ALZIRA_ALVES from "@/imports/Alzira_alves.png";
-import IMG_FESTIVAL_CARANGUEJO from "@/assets/images/Festival_caranguejo.jpg";
-import IMG_AMENDOIM from "@/assets/images/amendoim.jpg";
-import IMG_QUADRILHA from "@/imports/quadrilha.jpg";
-import IMG_VEIO from "@/imports/veio.png";
-import IMG_VEIO_ITAU from "@/imports/veio_itau.jpg";
-import IMG_VEIO_ENTALHES from "@/imports/veio_entalhes.png";
-
-
-// ─── Image Constants ─────────────────────────────────────────
-const IMG_MUSIC = 'https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_DANCE = 'https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_RIVER = 'https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_WRITER = 'https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CONCERT = 'https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_THEATER = 'https://images.unsplash.com/photo-1761229660731-891484da5c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_FESTIVAL = 'https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-const IMG_CHURCH = 'https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
-
 // ─── Types ───────────────────────────────────────────────────
 type CulturaTab = 'artistas' | 'historias' | 'eventos';
 
@@ -102,7 +76,7 @@ interface CulturaScreenProps {
   language?: 'pt' | 'en' | 'es';
 }
 
-export function CulturaScreen({ onToast }: CulturaScreenProps) {
+export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
 
@@ -113,27 +87,27 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
   const [selectedArtwork, setSelectedArtwork] = useState<Artist['works'][0] | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useEffect((): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedArtist, selectedStory]);
 
-  const filteredArtists = ARTISTS.filter((a) => {
+  const filteredArtists = ARTISTS.filter((a: Artist): boolean => {
     const matchSearch = !searchTerm || a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.city.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredEvents = EVENTS.filter((e) => {
+  const filteredEvents = EVENTS.filter((e: CulturaEvent): boolean => {
     const matchSearch = !searchTerm || e.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredStories = STORIES.filter((s) =>
+  const filteredStories = STORIES.filter((s: Story): boolean =>
     !searchTerm || s.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // ── Artist Detail ──────────────────────────────────────────
   if (selectedArtist) {
-    const related = ARTISTS.filter((a) => a.id !== selectedArtist.id).slice(0, 3);
+    const related = ARTISTS.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
     return (
       <div
         className="min-h-screen"
@@ -146,8 +120,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         {/* Back */}
         <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-6 pb-2">
           <button
-            onClick={() => setSelectedArtist(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-[44px] hover:opacity-70 transition-opacity"
+            onClick={(): void => setSelectedArtist(null)}
+            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
             style={{ color: '#0D7377', fontSize: '14px' }}
           >
             <ArrowLeft size={18} />
@@ -156,15 +130,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* Cover */}
-        <div className="relative h-[320px] sm:h-[400px] overflow-hidden">
+        <div className="relative h-80 sm:h-100 overflow-hidden">
           <ImageWithFallback src={selectedArtist.coverPhoto} alt="Capa" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
         </div>
 
         {/* Header info */}
         <div className="max-w-5xl mx-auto px-4 sm:px-8">
           <div className="relative flex items-end gap-5 -mt-14 mb-6">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-lg flex-shrink-0 bg-[var(--cinza-leve)]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-lg shrink-0 bg-(--cinza-leve)">
               <ImageWithFallback src={selectedArtist.photo} alt={selectedArtist.name} className="w-full h-full object-cover" />
             </div>
             <div className="pb-1">
@@ -190,8 +164,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               <MapPin size={15} />
               <span>{selectedArtist.city}</span>
             </div>
-            <span className="text-[var(--cinza-txt)] text-sm">{selectedArtist.awards}</span>
-            <span className="text-[var(--cinza-txt)] text-sm">{selectedArtist.years}</span>
+            <span className="text-(--cinza-txt) text-sm">{selectedArtist.awards}</span>
+            <span className="text-(--cinza-txt) text-sm">{selectedArtist.years}</span>
           </div>
 
           {/* Bio */}
@@ -209,15 +183,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             Clique em uma obra para ver em destaque
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-            {selectedArtist.works.map((work, i) => (
+            {selectedArtist.works.map((work: Artist['works'][0], i: number): JSX.Element => (
               <button
                 key={i}
-                onClick={() => setSelectedArtwork(work)}
+                onClick={(): void => setSelectedArtwork(work)}
                 className="group text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                            hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                            border-none cursor-pointer"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-4/3 overflow-hidden">
                   <ImageWithFallback src={work.img} alt={work.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                     <Eye size={28} color="white" className="opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
@@ -241,12 +215,12 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                 { icon: Instagram, label: selectedArtist.instagram, href: '#' },
                 { icon: Globe, label: 'Site pessoal', href: '#' },
                 { icon: Mail, label: 'E-mail', href: '#' },
-              ].map(({ icon: Icon, label, href }) => (
+              ].map(({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }): JSX.Element => (
                 <a
                   key={label}
                   href={href}
-                  onClick={(e) => { e.preventDefault(); onToast(`🔗 Abrindo ${label}`); }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all min-h-[44px]"
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>): void => { e.preventDefault(); onToast(`🔗 Abrindo ${label}`); }}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all min-h-11"
                   style={{ borderColor: '#D9D9D9', color: '#0D7377', fontSize: '13px' }}
                 >
                   <Icon size={15} />
@@ -261,15 +235,15 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             Outros artistas que você pode gostar
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-8">
-            {related.map((a) => (
+            {related.map((a: Artist): JSX.Element => (
               <button
                 key={a.id}
-                onClick={() => setSelectedArtist(a)}
+                onClick={(): void => setSelectedArtist(a)}
                 className="text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                            hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                            border-none cursor-pointer"
               >
-                <div className="aspect-[4/3] overflow-hidden">
+                <div className="aspect-4/3 overflow-hidden">
                   <ImageWithFallback src={a.photo} alt={a.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-4">
@@ -283,16 +257,16 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
         {/* Artwork Lightbox */}
         {selectedArtwork && (
-          <div className="fixed inset-0 z-[990] flex items-center justify-center p-4" onClick={() => setSelectedArtwork(null)}>
+          <div className="fixed inset-0 z-990 flex items-center justify-center p-4" onClick={(): void => setSelectedArtwork(null)}>
             <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
             <div
               className="relative bg-white rounded-[14px] overflow-hidden w-full max-w-2xl max-h-[90vh] flex flex-col"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent<HTMLDivElement>): void => e.stopPropagation()}
             >
               <div className="relative">
                 <ImageWithFallback src={selectedArtwork.img} alt={selectedArtwork.title} className="w-full max-h-[50vh] object-cover" />
                 <button
-                  onClick={() => setSelectedArtwork(null)}
+                  onClick={(): void => setSelectedArtwork(null)}
                   className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
                 >
                   <X size={16} color="white" />
@@ -318,7 +292,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
 
   // ── Story Detail ───────────────────────────────────────────
   if (selectedStory) {
-    const related = STORIES.filter((s) => s.id !== selectedStory.id).slice(0, 3);
+    const related = STORIES.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
     const catColor = '#0D7377';
     return (
       <div
@@ -332,8 +306,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         {/* Back */}
         <div className="max-w-3xl mx-auto px-4 sm:px-8 pt-6 pb-2">
           <button
-            onClick={() => setSelectedStory(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-[44px] hover:opacity-70 transition-opacity"
+            onClick={(): void => setSelectedStory(null)}
+            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
             style={{ color: '#0D7377', fontSize: '14px' }}
           >
             <ArrowLeft size={18} />
@@ -342,9 +316,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* Hero */}
-        <div className="relative h-[300px] sm:h-[420px] overflow-hidden">
+        <div className="relative h-75 sm:h-105 overflow-hidden">
           <ImageWithFallback src={selectedStory.img} alt={selectedStory.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 pb-10 max-w-3xl mx-auto">
             <span
               className="inline-block px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 text-white"
@@ -377,12 +351,12 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             {selectedStory.intro}
           </p>
 
-          {selectedStory.body.map((paragraph, i) => (
+          {selectedStory.body.map((paragraph: string, i: number): JSX.Element => (
             <div key={i}>
               {i === 1 && (
                 <div className="my-8">
                   <div className="rounded-[14px] overflow-hidden mb-2">
-                    <ImageWithFallback src={selectedStory.relatedImg} alt="Ilustração" className="w-full max-h-[340px] object-cover" />
+                    <ImageWithFallback src={selectedStory.relatedImg} alt="Ilustração" className="w-full max-h-85 object-cover" />
                   </div>
                   <p style={{ color: '#8A8A8A', fontSize: '13px' }} className="text-center italic">
                     {selectedStory.imgCaption}
@@ -400,21 +374,21 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         </div>
 
         {/* More stories */}
-        <div className="bg-[var(--cinza-leve)] py-12 px-4 sm:px-8">
+        <div className="bg-(--cinza-leve) py-12 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto">
             <h2 className="font-['Fjalla_One'] mb-6" style={{ color: '#1A1A1A', fontSize: '24px' }}>
               Explore mais histórias
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {related.map((s) => (
+              {related.map((s: Story): JSX.Element => (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedStory(s)}
+                  onClick={(): void => setSelectedStory(s)}
                   className="text-left bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                              hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200
                              border-none cursor-pointer"
                 >
-                  <div className="aspect-[16/9] overflow-hidden">
+                  <div className="aspect-video overflow-hidden">
                     <ImageWithFallback src={s.img} alt={s.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-4">
@@ -435,7 +409,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
   }
 
   // ── Pin Component ────────────────────────────────────────────
-  const CategoryPin = ({ Icon, isActive }: { Icon: LucideIcon; isActive?: boolean }) => (
+  const CategoryPin = ({ Icon, isActive }: { Icon: LucideIcon; isActive?: boolean }): JSX.Element => (
     <div className="relative flex items-center justify-center" style={{ width: 28, height: 36 }}>
       {/* Pin shape */}
       <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -469,7 +443,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       }}
     >
       {/* ── HEADER ESTÁTICO ── */}
-      <div className="relative w-full h-[480px] overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-120 overflow-hidden flex items-center justify-center">
         {/* Foto de fundo */}
         <ImageWithFallback
           src={IMG_CULTURA_HERO}
@@ -521,17 +495,17 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                 type="text"
                 placeholder="Buscar artista, história, evento..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 h-[50px] outline-none border-none bg-transparent"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 h-12.5 outline-none border-none bg-transparent"
                 style={{ color: '#1A1A1A', fontSize: '15px', borderRadius: '8px' }}
               />
             </div>
             <button
-              onClick={() => onToast(`Buscando: "${searchTerm}"`)}
+              onClick={(): void => onToast(`Buscando: "${searchTerm}"`)}
               className="px-6 font-bold tracking-widest uppercase border-none cursor-pointer transition-colors flex items-center justify-center"
               style={{ backgroundColor: '#0D7377', color: '#FFFFFF', fontSize: '14px', minWidth: '120px', minHeight: '50px', borderRadius: '8px' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0A5E62')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#0D7377')}
+              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0A5E62'; }}
+              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0D7377'; }}
             >
               EXPLORAR
             </button>
@@ -542,7 +516,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
       {/* ── STICKY TABS ── */}
       <div
         ref={tabsRef}
-        className="z-[80] bg-white overflow-x-auto"
+        className="z-80 bg-white overflow-x-auto"
         style={{
           top: 'calc(56px + env(safe-area-inset-top))',
           borderBottom: '1px solid #D9D9D9',
@@ -550,14 +524,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
         }}
       >
         <div className="flex max-w-5xl mx-auto px-4 sm:px-8">
-          {TABS.map(({ id, label, Icon }) => {
+          {TABS.map(({ id, label, Icon }: { id: CulturaTab; label: string; Icon: LucideIcon }): JSX.Element => {
             const isActive = activeTab === id;
             return (
               <button
                 key={id}
-                onClick={() => setActiveTab(id)}
+                onClick={(): void => setActiveTab(id)}
                 className="relative flex items-center gap-2.5 px-4 sm:px-5 py-4 whitespace-nowrap
-                           bg-transparent border-none cursor-pointer min-h-[52px] transition-colors"
+                           bg-transparent border-none cursor-pointer min-h-13 transition-colors"
                 style={{ color: isActive ? '#0D7377' : '#8A8A8A' }}
               >
                 <CategoryPin Icon={Icon} isActive={isActive} />
@@ -596,14 +570,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredArtists.map((artist) => (
+                {filteredArtists.map((artist: Artist): JSX.Element => (
                   <div
                     key={artist.id}
                     className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                                hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200"
                   >
                     {/* Photo */}
-                    <div className="aspect-[4/3] overflow-hidden relative">
+                    <div className="aspect-4/3 overflow-hidden relative">
                       <ImageWithFallback
                         src={artist.photo}
                         alt={artist.name}
@@ -634,8 +608,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         {artist.awards} · {artist.years}
                       </p>
                       <button
-                        onClick={() => setSelectedArtist(artist)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-colors hover:gap-2.5"
+                        onClick={(): void => setSelectedArtist(artist)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-colors hover:gap-2.5"
                         style={{ color: '#0D7377', fontSize: '13px' }}
                       >
                         Ver perfil completo
@@ -662,7 +636,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
             </div>
 
             <div className="flex flex-col gap-8">
-              {filteredStories.map((story, i) => {
+              {filteredStories.map((story: Story, i: number): JSX.Element => {
                 const imageLeft = i % 2 === 0;
                 return (
                   <div
@@ -672,7 +646,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                                 flex flex-col ${imageLeft ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
                   >
                     {/* Image — 45% */}
-                    <div className="sm:w-[45%] h-[220px] sm:h-auto overflow-hidden flex-shrink-0">
+                    <div className="sm:w-[45%] h-55 sm:h-auto overflow-hidden shrink-0">
                       <ImageWithFallback
                         src={story.img}
                         alt={story.title}
@@ -704,8 +678,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         Por <strong style={{ color: '#1A1A1A' }}>{story.author}</strong> · {story.date}
                       </p>
                       <button
-                        onClick={() => setSelectedStory(story)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-all hover:gap-2.5 w-fit"
+                        onClick={(): void => setSelectedStory(story)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5 w-fit"
                         style={{ color: '#0D7377', fontSize: '14px' }}
                       >
                         Ler história completa
@@ -733,11 +707,11 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
               </div>
               {/* View toggle */}
               <div className="flex rounded-[10px] overflow-hidden border" style={{ borderColor: '#D9D9D9' }}>
-                {(['lista', 'calendario'] as const).map((v) => (
+                {(['lista', 'calendario'] as const).map((v: 'lista' | 'calendario'): JSX.Element => (
                   <button
                     key={v}
-                    onClick={() => setEventsView(v)}
-                    className="px-4 py-2 capitalize border-none cursor-pointer transition-colors min-h-[40px]"
+                    onClick={(): void => setEventsView(v)}
+                    className="px-4 py-2 capitalize border-none cursor-pointer transition-colors min-h-10"
                     style={{
                       backgroundColor: eventsView === v ? '#0D7377' : '#FFFFFF',
                       color: eventsView === v ? '#FFFFFF' : '#4A4A4A',
@@ -759,14 +733,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                     <Ticket size={40} className="mx-auto mb-3 opacity-30" />
                     <p style={{ fontSize: '16px' }}>Nenhum evento encontrado com esses filtros</p>
                   </div>
-                ) : filteredEvents.map((event) => (
+                ) : filteredEvents.map((event: CulturaEvent): JSX.Element => (
                   <div
                     key={event.id}
                     className="bg-white rounded-[14px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                                hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200"
                   >
                     {/* Image */}
-                    <div className="relative aspect-[16/9] overflow-hidden">
+                    <div className="relative aspect-video overflow-hidden">
                       <ImageWithFallback src={event.img} alt={event.name} className="w-full h-full object-cover" />
                       {/* Type badge */}
                       <div
@@ -810,8 +784,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                       </p>
 
                       <button
-                        onClick={() => onToast(`🎟️ Saiba mais: ${event.name}`)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-[36px] transition-all hover:gap-2.5"
+                        onClick={(): void => onToast(`🎟️ Saiba mais: ${event.name}`)}
+                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5"
                         style={{ color: '#0D7377', fontSize: '13px' }}
                       >
                         Saiba mais
@@ -830,14 +804,14 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  {filteredEvents.sort((a, b) => parseInt(a.day) - parseInt(b.day)).map((event) => (
+                  {filteredEvents.sort((a: CulturaEvent, b: CulturaEvent) => parseInt(a.day) - parseInt(b.day)).map((event: CulturaEvent): JSX.Element => (
                     <div
                       key={event.id}
-                      className="flex items-center gap-4 p-4 rounded-[10px] hover:bg-[var(--cinza-leve)] transition-colors cursor-pointer"
-                      onClick={() => onToast(`📅 ${event.name}`)}
+                      className="flex items-center gap-4 p-4 rounded-[10px] hover:bg-(--cinza-leve) transition-colors cursor-pointer"
+                      onClick={(): void => onToast(`📅 ${event.name}`)}
                     >
                       <div
-                        className="flex-shrink-0 w-14 h-14 rounded-[10px] flex flex-col items-center justify-center"
+                        className="shrink-0 w-14 h-14 rounded-[10px] flex flex-col items-center justify-center"
                         style={{ backgroundColor: '#F5EDE6' }}
                       >
                         <span className="font-['Fjalla_One']" style={{ color: '#0D7377', fontSize: '20px', lineHeight: 1 }}>
@@ -856,7 +830,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps) {
                         </p>
                       </div>
                       <span
-                        className="flex-shrink-0 px-2.5 py-1 rounded-full font-bold uppercase"
+                        className="shrink-0 px-2.5 py-1 rounded-full font-bold uppercase"
                         style={{ backgroundColor: '#EEEDE9', color: '#1A1A1A', fontSize: '10px' }}
                       >
                         {event.type}

@@ -26,13 +26,24 @@ interface ParceiroScreenProps {
   language: "pt" | "en" | "es";
 }
 
+interface Review {
+  id: number;
+  initials: string;
+  name: string;
+  date: string;
+  rating: number;
+  comment: string;
+  existingResponse?: string;
+  replied: boolean;
+}
+
 import reviewsData from "@/constants/reviews.json";
 
 /* ─────────── Mock data ─────────── */
-const REVIEWS_DATA = reviewsData.partnerReviews;
+const REVIEWS_DATA: Review[] = reviewsData.partnerReviews as Review[];
 
-/* ──��──────── Avatar colorido por iniciais ─────────── */
-const AVATAR_COLORS = [
+/* ─────────── Avatar colorido por iniciais ─────────── */
+const AVATAR_COLORS: string[] = [
   "bg-[#F06030]",
   "bg-[#0D9488]",
   "bg-[#7C3AED]",
@@ -47,7 +58,7 @@ function EvolutionChart({
 }: {
   values: number[];
   labels: string[];
-}) {
+}): JSX.Element {
   const W = 340;
   const H = 170;
   const PAD = { top: 12, right: 12, bottom: 28, left: 42 };
@@ -58,23 +69,23 @@ function EvolutionChart({
   const maxV = Math.max(...values);
   const range = maxV - minV || 1;
 
-  const cx = (i: number) =>
+  const cx = (i: number): number =>
     PAD.left + (i / (values.length - 1)) * plotW;
-  const cy = (v: number) =>
+  const cy = (v: number): number =>
     PAD.top + plotH - ((v - minV) / range) * plotH;
 
   const linePath = values
-    .map((v, i) => `${i === 0 ? "M" : "L"}${cx(i)},${cy(v)}`)
+    .map((v: number, i: number): string => `${i === 0 ? "M" : "L"}${cx(i)},${cy(v)}`)
     .join(" ");
 
   const areaPath = `${linePath} L${cx(values.length - 1)},${PAD.top + plotH} L${cx(0)},${PAD.top + plotH}Z`;
 
   // 3 horizontal grid lines
   const gridVals = [minV, (minV + maxV) / 2, maxV].map(
-    (v) => Math.round(v / 100) * 100
+    (v: number): number => Math.round(v / 100) * 100
   );
 
-  const fmt = (v: number) =>
+  const fmt = (v: number): string =>
     v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v);
 
   return (
@@ -85,7 +96,7 @@ function EvolutionChart({
       aria-label="Gráfico de evolução de visualizações"
     >
       {/* Horizontal grid lines */}
-      {gridVals.map((gv, gi) => (
+      {gridVals.map((gv: number, gi: number): JSX.Element => (
         <g key={`grid-${gi}`}>
           <line
             x1={PAD.left}
@@ -121,7 +132,7 @@ function EvolutionChart({
       />
 
       {/* Dots */}
-      {values.map((v, i) => (
+      {values.map((v: number, i: number): JSX.Element => (
         <circle
           key={`dot-${i}`}
           cx={cx(i)}
@@ -134,7 +145,7 @@ function EvolutionChart({
       ))}
 
       {/* X-axis labels */}
-      {labels.map((lbl, i) => (
+      {labels.map((lbl: string, i: number): JSX.Element => (
         <text
           key={`lbl-${i}`}
           x={cx(i)}
@@ -151,7 +162,7 @@ function EvolutionChart({
 }
 
 /* ─────────── Componente ─────────── */
-export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
+export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.Element {
   const t = translations[language];
 
   /* Modal state */
@@ -168,8 +179,8 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
   const [profilePhoto, setProfilePhoto] = useState<string>(defaultProfilePhoto);
   const profilePhotoObjectUrlRef = useRef<string | null>(null);
 
-  useEffect(() => {
-    return () => {
+  useEffect((): () => void => {
+    return (): void => {
       if (profilePhotoObjectUrlRef.current) {
         URL.revokeObjectURL(profilePhotoObjectUrlRef.current);
       }
@@ -198,16 +209,16 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
   const SEAL_PCT = 87;
 
   /* Handlers */
-  const handleSaveEdit = () => {
+  const handleSaveEdit = (): void => {
     setShowEditModal(false);
     onToast(t.profileUpdated);
   };
 
-  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>): void => {
     if (e.target.files) setSelectedFiles(Array.from(e.target.files));
   };
 
-  const handleUploadPhotos = () => {
+  const handleUploadPhotos = (): void => {
     if (selectedFiles.length === 0) {
       onToast("📸 Selecione fotos primeiro");
       return;
@@ -226,7 +237,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
     onToast(`${t.photosAdded}`);
   };
 
-  const handleSendReply = (reviewId: number) => {
+  const handleSendReply = (reviewId: number): void => {
     const text = replyText[reviewId];
     if (!text?.trim()) {
       onToast("✏️ Escreva uma resposta antes de publicar");
@@ -283,7 +294,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
           <div className="flex flex-col sm:flex-row items-start gap-5">
             {/* Logo */}
             <div
-              className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-gradient-to-br from-[#ED2100] to-[#1A0050] flex items-center justify-center"
+              className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-linear-to-br from-[#ED2100] to-[#1A0050] flex items-center justify-center"
             >
               {profilePhoto ? (
                 <img
@@ -345,7 +356,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                 {/* Edit button */}
                 <button
                   onClick={() => setShowEditModal(true)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-sm min-h-[44px] transition-all text-white shrink-0 hover:opacity-90"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-sm min-h-11 transition-all text-white shrink-0 hover:opacity-90"
                   style={{ backgroundColor: "#0D7C84" }}
                 >
                   <PenLine size={15} strokeWidth={2.5} />
@@ -540,7 +551,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             {/* Fotos */}
             <button
               onClick={() => setShowPhotoModal(true)}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -570,7 +581,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     ?.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
               }}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -592,7 +603,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             {/* Promover */}
             <button
               onClick={() => setShowPromoteModal(true)}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -636,7 +647,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             </span>
           </div>
 
-          <div className="divide-y divide-[var(--cinza-med)]">
+          <div className="divide-y divide-(--cinza-med)">
             {REVIEWS_DATA.map((review, idx) => {
               const isReplying = replyingTo === review.id;
               const hasSentReply = !!sentReplies[review.id];
@@ -662,8 +673,8 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-1.5">
                         <div>
-                          <span className="font-bold text-sm text-[var(--preto)]">{review.name}</span>
-                          <span className="ml-2 text-xs text-[var(--cinza-txt)]">{review.date}</span>
+                          <span className="font-bold text-sm text-(--preto)">{review.name}</span>
+                          <span className="ml-2 text-xs text-(--cinza-txt)">{review.date}</span>
                         </div>
                         {/* Stars */}
                         <div className="flex">
@@ -674,21 +685,21 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                               className={
                                 s <= review.rating
                                   ? "text-[#F5A623] fill-[#F5A623]"
-                                  : "text-[var(--cinza-med)]"
+                                  : "text-(--cinza-med)"
                               }
                             />
                           ))}
                         </div>
                       </div>
 
-                      <p className="text-sm text-[var(--cinza-txt)] leading-relaxed mb-3">
+                      <p className="text-sm text-(--cinza-txt) leading-relaxed mb-3">
                         {review.comment}
                       </p>
 
                       {/* Existing / sent reply */}
                       {displayReply && (
                         <div
-                          className="mb-3 p-3.5 rounded-[var(--radius-sm)]"
+                          className="mb-3 p-3.5 rounded-sm"
                           style={{
                             backgroundColor: "#F0FDFA",
                             borderLeft: "3px solid #0D7C84",
@@ -700,7 +711,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                           >
                             {t.yourResponse}
                           </p>
-                          <p className="text-xs text-[var(--cinza-txt)] leading-relaxed">
+                          <p className="text-xs text-gray-500 leading-relaxed">
                             {displayReply}
                           </p>
                         </div>
@@ -726,7 +737,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleSendReply(review.id)}
-                              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-lg text-xs font-bold min-h-[36px] hover:opacity-90 transition-opacity"
+                              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-lg text-xs font-bold min-h-9 hover:opacity-90 transition-opacity"
                               style={{ backgroundColor: "#0D7C84" }}
                             >
                               <Send size={12} />
@@ -734,7 +745,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                             </button>
                             <button
                               onClick={() => setReplyingTo(null)}
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-colors min-h-[36px]"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-colors min-h-9"
                               style={{ border: '1px solid #E5E7EB', color: '#64748B', backgroundColor: '#FFFFFF' }}
                             >
                               <X size={12} />
@@ -748,7 +759,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                       {!isReplied && !isReplying && (
                         <button
                           onClick={() => setReplyingTo(review.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors min-h-[36px]"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors min-h-9"
                           style={{ border: '1px solid #E5E7EB', color: '#64748B' }}
                         >
                           <MessageSquare size={12} />
@@ -756,7 +767,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                         </button>
                       )}
                       {isReplied && !isReplying && (
-                        <span className="flex items-center gap-1.5 text-xs text-[var(--verde)] font-medium">
+                        <span className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
                           <CheckCircle2 size={13} />
                           {language === "pt"
                             ? "Respondido"
@@ -781,51 +792,51 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
       {/* Edit modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[var(--radius)] p-7 max-w-lg w-full shadow-2xl">
+          <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-[var(--preto)]">
+              <h3 className="font-['Fjalla_One'] text-2xl text-gray-900">
                 {t.editEstablishment}
               </h3>
               <button
                 onClick={() => setShowEditModal(false)}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="mb-4">
-              <label className="block text-xs font-bold tracking-widest uppercase text-[var(--cinza-txt)] mb-2">
+              <label className="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">
                 {t.name}
               </label>
               <input
                 type="text"
                 value={establishmentName}
                 onChange={(e) => setEstablishmentName(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--cinza-med)] rounded-[var(--radius-sm)] text-sm outline-none focus:border-[#004D5A] transition-colors bg-[var(--cinza-leve)]"
+                className="w-full px-4 py-3 border border-gray-300 rounded-sm text-sm outline-none focus:border-[#004D5A] transition-colors bg-gray-50"
               />
             </div>
             <div className="mb-6">
-              <label className="block text-xs font-bold tracking-widest uppercase text-[var(--cinza-txt)] mb-2">
+              <label className="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">
                 {t.description}
               </label>
               <textarea
                 value={establishmentDesc}
                 onChange={(e) => setEstablishmentDesc(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--cinza-med)] rounded-[var(--radius-sm)] text-sm outline-none focus:border-[#004D5A] transition-colors bg-[var(--cinza-leve)] resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-sm text-sm outline-none focus:border-[#004D5A] transition-colors bg-gray-50 resize-none"
                 rows={3}
               />
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handleSaveEdit}
-                className="flex-1 py-3 text-white rounded-lg font-bold text-sm min-h-[44px] hover:opacity-90 transition-opacity"
+                className="flex-1 py-3 text-white rounded-lg font-bold text-sm min-h-11 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: "#0D7C84" }}
               >
                 {t.save}
               </button>
               <button
                 onClick={() => setShowEditModal(false)}
-                className="flex-1 py-3 border-2 border-[var(--cinza-med)] text-[var(--cinza-txt)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--preto)] hover:text-[var(--preto)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 border-2 border-gray-300 text-gray-500 rounded-sm font-bold text-sm hover:border-gray-900 hover:text-gray-900 transition-colors min-h-11"
               >
                 {t.cancel}
               </button>
@@ -837,21 +848,21 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
       {/* Photo modal */}
       {showPhotoModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[var(--radius)] p-7 max-w-lg w-full shadow-2xl">
+          <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-[var(--preto)]">
+              <h3 className="font-['Fjalla_One'] text-2xl text-gray-900">
                 {t.addPhotosTitle}
               </h3>
               <button
                 onClick={() => { setShowPhotoModal(false); setSelectedFiles([]); }}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="border-2 border-dashed rounded-2xl p-10 text-center mb-6 transition-colors" style={{ borderColor: '#E5E7EB' }}>
               <Camera size={48} className="mx-auto mb-3" style={{ color: '#94A3B8' }} strokeWidth={1.5} />
-              <p className="text-sm text-[var(--cinza-txt)] mb-4">{t.dragPhotos}</p>
+              <p className="text-sm text-gray-500 mb-4">{t.dragPhotos}</p>
               <input
                 type="file"
                 multiple
@@ -876,13 +887,13 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             <div className="flex gap-3">
               <button
                 onClick={handleUploadPhotos}
-                className="flex-1 py-3 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[var(--vermelho)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 bg-primary text-white rounded-sm font-bold text-sm hover:bg-red-600 transition-colors min-h-11"
               >
                 {t.upload}
               </button>
               <button
                 onClick={() => { setShowPhotoModal(false); setSelectedFiles([]); }}
-                className="flex-1 py-3 border-2 border-[var(--cinza-med)] text-[var(--cinza-txt)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--preto)] hover:text-[var(--preto)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 border-2 border-gray-300 text-gray-500 rounded-sm font-bold text-sm hover:border-gray-900 hover:text-gray-900 transition-colors min-h-11"
               >
                 {t.cancel}
               </button>
@@ -901,7 +912,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
               </h3>
               <button
                 onClick={() => setShowPromoteModal(false)}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -925,14 +936,14 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     R$ 99<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque na listagem</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Galeria de até 10 fotos</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Estatísticas básicas</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque na listagem</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Galeria de até 10 fotos</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Estatísticas básicas</li>
                 </ul>
                 <button
                   onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Básico selecionado!"); }}
-                  className="w-full py-2.5 border-2 border-[var(--azul)] text-[var(--azul)] rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[var(--azul)] hover:text-white transition-colors"
+                  className="w-full py-2.5 border-2 border-(--azul) text-(--azul) rounded-sm text-xs font-bold hover:bg-(--azul) hover:text-white transition-colors"
                 >
                   Selecionar
                 </button>
@@ -954,15 +965,15 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     R$ 199<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque no topo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Fotos ilimitadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Estatísticas avançadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Post em redes sociais</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque no topo</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Fotos ilimitadas</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Estatísticas avançadas</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Post em redes sociais</li>
                 </ul>
                 <button
                   onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Profissional selecionado!"); }}
-                  className="w-full py-2.5 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[var(--vermelho)] transition-colors"
+                  className="w-full py-2.5 bg-primary text-white rounded-sm text-xs font-bold hover:bg-(--vermelho) transition-colors"
                 >
                   Selecionar
                 </button>
@@ -976,15 +987,15 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     R$ 349<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque exclusivo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Conteúdo em vídeo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Análise completa</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Gerente dedicado</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque exclusivo</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Conteúdo em vídeo</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Análise completa</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Gerente dedicado</li>
                 </ul>
                 <button
                   onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Premium selecionado!"); }}
-                  className="w-full py-2.5 border-2 border-[#7C3AED] text-[#7C3AED] rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[#7C3AED] hover:text-white transition-colors"
+                  className="w-full py-2.5 border-2 border-[#7C3AED] text-[#7C3AED] rounded-sm text-xs font-bold hover:bg-[#7C3AED] hover:text-white transition-colors"
                 >
                   Selecionar
                 </button>
