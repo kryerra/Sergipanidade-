@@ -133,7 +133,7 @@ Regras obrigatórias:
                   shadow-[0_4px_20px_rgba(0,0,128,0.50)]
                   transition-all duration-200 hover:scale-110
                   hover:shadow-[0_8px_32px_rgba(0,0,128,0.65)]"
-        style={{ bottom: 'calc(1.75rem + env(safe-area-inset-bottom))' }}
+        style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
       >
         {isOpen ? (
           <X size={22} color="#FFFFFF" strokeWidth={2.5} />
