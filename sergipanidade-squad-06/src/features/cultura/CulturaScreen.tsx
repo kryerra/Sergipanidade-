@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import {
   Search, MapPin, ArrowRight, ArrowLeft,
   Instagram, Globe, Mail, X, Palette,
-  BookOpen, Shapes, 
+  BookOpen, Shapes,
   Eye,
   Ticket, Tent,
 } from 'lucide-react';
