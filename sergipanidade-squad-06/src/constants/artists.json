@@ -29,31 +29,31 @@
     ]
   },
   {
-    "id": "josefa",
-    "name": "Josefa Nascimento",
-    "city": "São Cristóvão · SE",
-    "linguagem": "Literatura",
-    "bio": "Escritora e pesquisadora das tradições orais sergipanas. Autora de diversas obras dedicadas ao resgate de lendas e contos populares do sertão.",
-    "bioFull": "Josefa Nascimento é professora universitária, doutora em Antropologia e escritora nascida na histórica cidade de São Cristóvão. Dedica-se há mais de duas décadas a documentar a tradição oral das comunidades ribeirinhas e sertanejas de Sergipe. Seu trabalho meticuloso de campo resgata contos de benzedeiras, memórias de mestres de reisado e versos de repentistas, transformando-os em literatura de alto valor histórico e pedagógico. É membra correspondente da Academia Sergipana de Letras.",
-    "photo": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-    "coverPhoto": "https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-    "awards": "🏆 Prêmio Litteris da Academia Sergipana de Letras 2020",
-    "years": "25 anos de pesquisas e publicações",
-    "instagram": "@josefa.nascimento.se",
+    "id": "Tobias Barreto",
+    "name": "Tobias Barreto de Meneses",
+    "city": "Tobias Barreto · SE",
+    "linguagem": "Literatura e Filosofia",
+    "bio": "Filósofo, escritor, jurista e poeta sergipano. Foi o grande líder da célebre \"Escola do Recife\" e um dos maiores pensadores do século XIX no Brasil.",
+    "bioFull": "Tobias Barreto de Meneses foi um filósofo, jurista, magistral crítico literário e poeta nascido na Vila de Campos do Rio Real (atual Tobias Barreto). Atuando como o principal líder da 'Escola do Recife', movimento intelectual que revolucionou a Faculdade de Direito do Recife, ele marcou a história ao introduzir o pensamento alemão no Brasil, propagar o positivismo e o evolucionismo, além de defender ardorosamente a liberdade intelectual e o fim da escravidão.",
+    "photo": "/src/assets/images/TobiasBarreto.png",
+    "coverPhoto": "/src/assets/images/obrastb.png",
+    "awards": "Patrono da Cadeira n.º 38 da Academia Brasileira de Letras",
+    "years": "Líder cultural e acadêmico nas últimas décadas do século XIX",
+    "instagram": "null",
     "works": [
       {
-        "title": "Livro 'Contos da Caatinga'",
-        "year": "2024",
-        "img": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-        "desc": "Coletânea literária com 22 contos fundamentados em narrativas orais e causos coletados no semiárido sergipano.",
-        "tecnica": "Literatura de resgate folclórico"
+      "title": "Estudos Alemães",
+      "year": "1879",
+      "img": "/src/assets/images/tbestudosalemaes.jpg",
+      "desc": "Ensaio de grande impacto que introduziu o pensamento filosófico e jurídico alemão no cenário intelectual brasileiro.",
+      "tecnica": "Ensaio Filosófico / Crítica"
       },
       {
-        "title": "Romance 'A Benzedeira de Brejo Grande'",
-        "year": "2022",
-        "img": "https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-        "desc": "Obra de ficção inspirada nas parteiras e curandeiras tradicionais da foz do Rio São Francisco e sua profunda relação com a natureza.",
-        "tecnica": "Ficção / Etnografia literária"
+      "title": "Dias e Noites",
+      "year": "1881",
+      "img": "/src/assets/images/tbdiasenoites.jpg",
+      "desc": "Único livro de poesias publicado pelo autor em vida, caracterizando-o na vertente condoreira da Terceira Geração Romântica com forte teor social.",
+      "tecnica": "Poesia Condoreira / Romantismo"
       }
     ]
   },
