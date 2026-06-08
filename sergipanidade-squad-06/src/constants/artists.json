@@ -129,5 +129,34 @@
         "tecnica": "Renda Irlandesa clássica sob lacê e linha de algodão"
       }
     ]
+  },
+  {
+    "id": "Lambe-Sujo e Caboclinhos",
+    "name": "Festa dos Lambe-Sujos e Caboclinhos",
+    "city": "Laranjeiras · SE",
+    "linguagem": "Cultura Popular",
+    "bio": "Uma das maiores manifestações folclóricas do Brasil, considerada um grandioso teatro a céu aberto.",
+    "bioFull": "Com mais de 160 anos de história, a Festa dos Lambe-Sujos e Caboclinhos acontece anualmente no segundo domingo de outubro, em Laranjeiras. A festividade encena de forma dramática a resistência dos negros dos quilombos (Lambe-Sujos, pintados com melaço de cana e pó preto) contra os indígenas (Caboclinhos, que evocam a presença indígena com trajes e pinturas que destacam sua identidade e participação nessa narrativa festiva.)",
+    "photo": "/src/assets/images/lambesujo.jpg",
+    "coverPhoto": "/src/assets/images/lambe_sujo.jpg",
+    "awards": "Declarada por Lei Estadual como Bem de Interesse Cultural de Sergipe; marco do patrimônio imaterial.",
+    "years": "Desde 1860",
+    "instagram": "null",
+    "works": [
+      {
+        "title": "O Combate do Segundo Domingo",
+        "year": "Anual (Outubro)",
+        "img": "/src/assets/images/lambe-sujo.jpg",
+        "desc": "Cortejo pelas ruas históricas de Laranjeiras com cânticos tradicionais de resistência, culminando no rapto da Rainha dos Caboclinhos e na batalha final.",
+        "tecnica": "Manifestação cultural folclórica de resistência histórica"
+      },
+      {
+        "title": "Caboclinhos",
+        "year": "Anual",
+        "img": "/src/assets/images/lambe-sujo3.jpg",
+        "desc": "Um grande teatro a céu aberto, com cortejos, músicas, danças, brincadeiras e encenações que atraem moradores, visitantes e turistas de diferentes regiões, consolidando a festa como um marco de cultura popular e patrimônio imaterial.",
+        "tecnica": "Registros históricos que remontam ao século XIX."
+      }
+    ]
   }
 ]

@@ -458,7 +458,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
         />
 
         {/* Conteúdo centralizado */}
-        <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-5 sm:px-12 mt-4">
+        <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-5 sm:px-12">
 
           {/* Tag superior */}
           <div
@@ -486,30 +486,6 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
           >
             Conheça os artistas, as histórias e os eventos que fazem Sergipe único
           </p>
-
-          {/* Search bar */}
-          <div className="flex gap-2 w-full mx-auto" style={{ maxWidth: '560px' }}>
-            <div className="relative flex-1 bg-white flex items-center shadow-lg" style={{ borderRadius: '8px' }}>
-              <Search size={18} className="absolute left-4 pointer-events-none" style={{ color: '#8A8A8A' }} />
-              <input
-                type="text"
-                placeholder="Buscar artista, história, evento..."
-                value={searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 h-12.5 outline-none border-none bg-transparent"
-                style={{ color: '#1A1A1A', fontSize: '15px', borderRadius: '8px' }}
-              />
-            </div>
-            <button
-              onClick={(): void => onToast(`Buscando: "${searchTerm}"`)}
-              className="px-6 font-bold tracking-widest uppercase border-none cursor-pointer transition-colors flex items-center justify-center"
-              style={{ backgroundColor: '#0D7377', color: '#FFFFFF', fontSize: '14px', minWidth: '120px', minHeight: '50px', borderRadius: '8px' }}
-              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0A5E62'; }}
-              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>): void => { e.currentTarget.style.backgroundColor = '#0D7377'; }}
-            >
-              EXPLORAR
-            </button>
-          </div>
         </div>
       </div>
 
