@@ -1,7 +1,13 @@
-import { Logo } from './Logo';
+import { useState, useEffect } from 'react';
 import { SergipanidadeLogo } from './SergipanidadeLogo';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
+import sergipanidadeLight from '@/assets/images/SERGIPANIDADE FUNDO CLARO.png';
+import sergipanidadeIcon from '@/assets/images/SERGIPANIDADE.png';
+import homemImage from '@/assets/images/Homem.png';
+import mulherImage from '@/assets/images/MULHER.png';
+import fogueiraImage from '@/assets/images/FOGUEIRA.png';
+import palmeiraImage from '@/assets/images/PALMEIRA.png';
 import {
   Home,
   Map as MapIcon,
@@ -36,6 +42,13 @@ export function Navbar({
 
   const t = translations[language] as typeof translations.pt;
   const { userProfile } = useAppContext();
+  const isDev = Boolean((import.meta as any).env?.DEV);
+  const isAdminUser = Boolean(
+    userProfile?.email === 'admin@sergipanidade.local' ||
+    (userProfile as any)?.isAdmin === true ||
+    userProfile.userType === 'administrador'
+  );
+  const isEstablishmentUser = userProfile.userType === 'estabelecimento';
 
   const bottomNavItems = [
     { label: 'Home', screen: 'home', icon: Home },
@@ -43,7 +56,7 @@ export function Navbar({
     { label: 'Cultura', screen: 'cultura', icon: Landmark },
   ];
 
-  if (userProfile.userType === 'estabelecimento') {
+  if (isEstablishmentUser) {
     bottomNavItems.push({ label: t?.partner || 'Parceiro', screen: 'parceiro', icon: Award });
   }
 
@@ -56,9 +69,71 @@ export function Navbar({
     { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
   ];
 
-  if (userProfile.userType === 'estabelecimento') {
+  if (isEstablishmentUser) {
     desktopNavItems.push({ label: t?.partner || 'Parceiro', screen: 'parceiro' });
   }
+
+  // Dev-only controls for logo positioning + multiple image toggles
+  const localStorageKey = 'sergipanidade_navbar_dev_settings';
+  const navImageOptions = [
+    { name: 'SERGIPANIDADE.png', src: sergipanidadeIcon },
+    { name: 'Sergipanidade fundo claro.png', src: sergipanidadeLight },
+    { name: 'Homem.png', src: homemImage },
+    { name: 'MULHER.png', src: mulherImage },
+    { name: 'FOGUEIRA.png', src: fogueiraImage },
+    { name: 'PALMEIRA.png', src: palmeiraImage },
+  ];
+
+  const defaultNavImageSettings = Object.fromEntries(navImageOptions.map((img) => [img.name, { enabled: false, offsetX: 0, offsetY: 0, scale: 1 }])) as Record<string, { enabled: boolean; offsetX: number; offsetY: number; scale: number }>;
+
+  const readStoredNavbarDevSettings = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const saved = localStorage.getItem(localStorageKey);
+      if (!saved) return null;
+      return JSON.parse(saved) as {
+        navOffsetX: number;
+        navOffsetY: number;
+        navScale: number;
+        navImageSettings: Record<string, { enabled: boolean; offsetX: number; offsetY: number; scale: number }>;
+      };
+    } catch {
+      return null;
+    }
+  };
+
+  const storedNavbarSettings = readStoredNavbarDevSettings();
+  const [navOffsetX, setNavOffsetX] = useState<number>(() => storedNavbarSettings?.navOffsetX ?? 0);
+  const [navOffsetY, setNavOffsetY] = useState<number>(() => storedNavbarSettings?.navOffsetY ?? 0);
+  const [navScale, setNavScale] = useState<number>(() => storedNavbarSettings?.navScale ?? 1);
+  const [navImageSettings, setNavImageSettings] = useState<Record<string, { enabled: boolean; offsetX: number; offsetY: number; scale: number }>>(() => {
+    if (!storedNavbarSettings?.navImageSettings) return defaultNavImageSettings;
+    return {
+      ...defaultNavImageSettings,
+      ...storedNavbarSettings.navImageSettings,
+    };
+  });
+
+  useEffect(() => {
+    if (!isDev || !isAdminUser) return;
+    const payload = {
+      navOffsetX,
+      navOffsetY,
+      navScale,
+      navImageSettings,
+    };
+    try {
+      localStorage.setItem(localStorageKey, JSON.stringify(payload));
+    } catch {
+      // ignore storage errors
+    }
+  }, [navOffsetX, navOffsetY, navScale, navImageSettings, isDev, isAdminUser]);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--navbar-logo-offset', `${navOffsetX}px`);
+    document.documentElement.style.setProperty('--navbar-logo-vertical-offset', `${navOffsetY}px`);
+    document.documentElement.style.setProperty('--navbar-logo-scale', `${navScale}`);
+  }, [navOffsetX, navOffsetY, navScale]);
 
   return (
     <>
@@ -78,12 +153,35 @@ export function Navbar({
               onClick={() => onNavigate('home')}
               className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
             >
-              <div className="flex items-center justify-center h-[56px] w-auto overflow-visible">
-                <SergipanidadeLogo
-                  variant="light"
-                  iconSize={30}
-                  showSlogan={false}
-                />
+              <div className="flex items-center justify-center h-[56px] w-auto overflow-visible relative" style={{ transform: 'translateX(var(--navbar-logo-offset, 0px)) translateY(var(--navbar-logo-vertical-offset, 0px)) scale(var(--navbar-logo-scale, 1))' }}>
+                <div className="relative inline-block">
+                  <SergipanidadeLogo
+                    variant="light"
+                    iconSize={142}
+                    showSlogan={false}
+                  />
+
+                  {/* Render additional dev images (multi-select) as absolute overlays so they don't get pushed */}
+                  {navImageOptions.length > 0 && Object.entries(navImageSettings).map(([name, settings]) => {
+                    if (!settings.enabled) return null;
+                    const item = navImageOptions.find((a) => a.name === name);
+                    if (!item) return null;
+                    return (
+                      <img
+                        key={name}
+                        src={item.src}
+                        alt={name}
+                        className="h-10 object-contain absolute pointer-events-none"
+                        style={{
+                          left: '100%',
+                          top: '50%',
+                          transform: `translate(-50%,-50%) translateX(${settings.offsetX}px) translateY(${settings.offsetY}px) scale(${settings.scale})`,
+                          zIndex: 1100,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </button>
           </div>
@@ -135,6 +233,8 @@ export function Navbar({
                         <span className="text-[12px] text-[#6B7280]">
                           {userProfile.userType === 'turista'
                             ? t?.touristLabel || 'Turista'
+                            : userProfile.userType === 'administrador'
+                            ? 'Administrador'
                             : t?.establishmentLabel || 'Estabelecimento'}
                         </span>
                       </div>
@@ -167,13 +267,33 @@ export function Navbar({
             onClick={() => onNavigate('home')}
             className="flex items-center justify-start gap-2 p-0 bg-transparent border-none cursor-pointer min-h-[44px] overflow-visible"
           >
-            <Logo
-              variant="light"
-              width={110}
-              height={38}
-              showSlogan={false}
-              className="max-h-[38px]"
-            />
+            <div className="relative inline-block" style={{ transform: 'translateX(var(--navbar-logo-offset, 0px)) translateY(var(--navbar-logo-vertical-offset, 0px)) scale(var(--navbar-logo-scale, 1))' }}>
+              <SergipanidadeLogo
+                variant="light"
+                iconSize={110}
+                showSlogan={false}
+              />
+
+              {navImageOptions.length > 0 && Object.entries(navImageSettings).map(([name, settings]) => {
+                if (!settings.enabled) return null;
+                const item = navImageOptions.find((a) => a.name === name);
+                if (!item) return null;
+                return (
+                  <img
+                    key={name}
+                    src={item.src}
+                    alt={name}
+                    className="h-8 object-contain absolute pointer-events-none"
+                    style={{
+                      left: '100%',
+                      top: '50%',
+                      transform: `translate(-50%,-50%) translateX(${settings.offsetX}px) translateY(${settings.offsetY}px) scale(${settings.scale})`,
+                      zIndex: 1100,
+                    }}
+                  />
+                );
+              })}
+            </div>
           </button>
 
           <DropdownMenu>
@@ -206,6 +326,115 @@ export function Navbar({
           </DropdownMenu>
         </div>
       </nav>
+
+      {/* Dev controls (bottom-right) */}
+      {isDev && isAdminUser && (
+        <div className="fixed right-4 bottom-4 z-[1200] bg-white border rounded-lg p-3 shadow-lg w-[320px] text-sm">
+          <div className="font-semibold mb-2">Navbar Dev Controls</div>
+          <div className="mb-2">
+            <label className="text-xs">X offset: <span className="font-medium">{navOffsetX}px</span></label>
+            <input className="w-full" type="range" min={-1000} max={500} step={1} value={navOffsetX} onChange={(e) => setNavOffsetX(Number(e.target.value))} />
+          </div>
+          <div className="mb-2">
+            <label className="text-xs">Y offset: <span className="font-medium">{navOffsetY}px</span></label>
+            <input className="w-full" type="range" min={-500} max={500} step={1} value={navOffsetY} onChange={(e) => setNavOffsetY(Number(e.target.value))} />
+          </div>
+          <div className="mb-2">
+            <label className="text-xs">Scale: <span className="font-medium">{navScale.toFixed(2)}×</span></label>
+            <input className="w-full" type="range" min={0.5} max={3} step={0.05} value={navScale} onChange={(e) => setNavScale(Number(e.target.value))} />
+          </div>
+
+          <div className="mt-2">
+            <div className="font-medium mb-1">Images</div>
+            <div className="max-h-72 overflow-auto space-y-3">
+              {navImageOptions.map((img) => {
+                const settings = navImageSettings[img.name];
+                return (
+                  <div key={img.name} className="border rounded-xl p-3 bg-[#FAFAFA]">
+                    <label className="flex items-center gap-2 mb-3">
+                      <input
+                        type="checkbox"
+                        checked={settings?.enabled ?? false}
+                        onChange={() => setNavImageSettings((prev) => {
+                          const current = prev[img.name] ?? defaultNavImageSettings[img.name];
+                          return {
+                            ...prev,
+                            [img.name]: {
+                              ...current,
+                              enabled: !current.enabled,
+                            },
+                          };
+                        })}
+                      />
+                      <img src={img.src} alt={img.name} className="h-6 object-contain" />
+                      <span className="truncate font-medium">{img.name}</span>
+                    </label>
+                    <div className="space-y-2">
+                      <div className="text-xs text-[#555]">X offset: <span className="font-medium">{settings?.offsetX}px</span></div>
+                      <input
+                        type="range"
+                        min={-1000}
+                        max={500}
+                        step={1}
+                        value={settings?.offsetX ?? 0}
+                        onChange={(e) => setNavImageSettings((prev) => {
+                          const current = prev[img.name] ?? defaultNavImageSettings[img.name];
+                          return {
+                            ...prev,
+                            [img.name]: {
+                              ...current,
+                              offsetX: Number(e.target.value),
+                            },
+                          };
+                        })}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-[#555]">Y offset: <span className="font-medium">{settings?.offsetY}px</span></div>
+                      <input
+                        type="range"
+                        min={-500}
+                        max={500}
+                        step={1}
+                        value={settings?.offsetY ?? 0}
+                        onChange={(e) => setNavImageSettings((prev) => {
+                          const current = prev[img.name] ?? defaultNavImageSettings[img.name];
+                          return {
+                            ...prev,
+                            [img.name]: {
+                              ...current,
+                              offsetY: Number(e.target.value),
+                            },
+                          };
+                        })}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-[#555]">Scale: <span className="font-medium">{(settings?.scale ?? 1).toFixed(2)}×</span></div>
+                      <input
+                        type="range"
+                        min={0.5}
+                        max={3}
+                        step={0.05}
+                        value={settings?.scale ?? 1}
+                        onChange={(e) => setNavImageSettings((prev) => {
+                          const current = prev[img.name] ?? defaultNavImageSettings[img.name];
+                          return {
+                            ...prev,
+                            [img.name]: {
+                              ...current,
+                              scale: Number(e.target.value),
+                            },
+                          };
+                        })}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Bottom Navigation */}
       <div

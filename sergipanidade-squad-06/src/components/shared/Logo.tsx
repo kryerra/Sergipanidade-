@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface LogoProps {
   /**
    * 'light' = dark fill for light backgrounds (default)
@@ -140,6 +138,12 @@ const TEXT_PATHS = (
   </>
 );
 
+void ICON_PATHS;
+void TEXT_PATHS;
+
+const ICON_VIEWBOX = '50 158 108 172';
+const FULL_VIEWBOX = '50 158 385 175';
+
 export function Logo({
   variant = 'light',
   width,
@@ -148,60 +152,59 @@ export function Logo({
   showSlogan = false,
   className = '',
 }: LogoProps) {
-  const fill =
-    variant === 'dark' ? '#FFFFFF' :
-    variant === 'teal' ? '#0D7377' :
-    '#1A1A1A';
-
   const sloganColor =
     variant === 'dark' ? 'rgba(255,255,255,0.65)' :
     variant === 'teal' ? 'rgba(13,115,119,0.7)' :
     'rgba(26,26,26,0.55)';
 
+  const fillColor =
+    variant === 'dark' ? '#FFFFFF' :
+    variant === 'teal' ? '#0D7377' :
+    '#1A1A1A';
+
   if (iconOnly) {
-    const w = width ?? 44;
-    // let height auto-derive from viewBox aspect ratio (108:172) when not specified
-    const h = height ?? (typeof w === 'number' ? Math.round((w as number) * (172 / 108)) : undefined);
+    const iconWidth = width ?? 44;
+    const iconHeight = height ?? iconWidth;
     return (
       <svg
-        viewBox="50 158 108 172"
-        width={w}
-        height={h}
-        fill={fill}
-        aria-label="Sergipanidade"
-        role="img"
+        viewBox={ICON_VIEWBOX}
+        width={iconWidth}
+        height={iconHeight}
         className={className}
-        style={{ display: 'block', flexShrink: 0 }}
+        style={{
+          display: 'block',
+          flexShrink: 0,
+          width: typeof iconWidth === 'number' ? `${iconWidth}px` : iconWidth,
+          height: typeof iconHeight === 'number' ? `${iconHeight}px` : iconHeight,
+          fill: variant === 'dark' ? '#FFFFFF' : variant === 'teal' ? '#0D7377' : '#1A1A1A',
+        }}
+        preserveAspectRatio="xMidYMid meet"
       >
-        <g transform="translate(0,493) scale(0.1,-0.1)" stroke="none">
-          {ICON_PATHS}
-        </g>
+        {ICON_PATHS}
       </svg>
     );
   }
 
   const w = width ?? 145;
   const h = height ?? 64;
+
   return (
     <div className={`flex flex-col items-center ${className}`} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
       <svg
-  viewBox="45 145 410 205"
-  width={w}
-  height={h}
-  fill={fill}
-  aria-label="Sergipanidade"
-  role="img"
-  preserveAspectRatio="xMidYMid meet"
-  style={{
-    display: 'block',
-    flexShrink: 0,
-    overflow: 'visible',
-  }}
->
-        <g transform="translate(0,493) scale(0.1,-0.1)" stroke="none">
-          {ICON_PATHS}
-          {TEXT_PATHS}
-        </g>
+        viewBox={FULL_VIEWBOX}
+        width={w}
+        height={h}
+        style={{
+          display: 'block',
+          flexShrink: 0,
+          width: typeof w === 'number' ? `${w}px` : w,
+          height: typeof h === 'number' ? `${h}px` : h,
+          fill: fillColor,
+        }}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {ICON_PATHS}
+        {TEXT_PATHS}
       </svg>
       {showSlogan && (
         <span
