@@ -12,7 +12,6 @@ function figmaAssetResolver() {
         const filename = id.replace('figma:asset/', '')
         return path.resolve(__dirname, 'src/assets', filename)
       }
-      return null
     },
   }
 }

@@ -1,81 +1,81 @@
 [
   {
-    "id": "Calcinha Preta",
-    "name": "Calcinha Preta",
-    "city": "Aracaju · SE",
-    "linguagem": "Música",
-    "bio": "A Calcinha Preta é uma das maiores bandas de forró eletrônico do Brasil, fundada em 8 de dezembro de 1995, em Aracaju (SE), pelo empresário Gilton Andrade. O nome irreverente surgiu de uma brincadeira do produtor, que se inspirou em sua própria coleção de lingeries.",
-    "bioFull": "Formada em 1995, a banda surgiu de um projeto inicial de networking entre músicos sergipanos e rapidamente se transformou em um dos maiores fenômenos do forró eletrônico. Com uma identidade marcada por figurinos luxuosos, superproduções de palco e uma mistura envolvente de forró com ritmos latinos e sertanejos, a Calcinha Preta conquistou o Brasil e o mundo.",
-    "photo": "/src/assets/images/calcinhapreta.jpg",
-    "coverPhoto": "/src/assets/images/logocp.png",
-    "awards": "Mais de 10 milhões de cópias vendidas.",
-    "years": "30 anos de trajetória artística",
-    "instagram": "@calcinhapreta",
+    "id": "ana",
+    "name": "Ana Lima",
+    "city": "Itabaiana · SE",
+    "linguagem": "musica",
+    "bio": "Cantora e compositora de forró pé-de-serra que mantém viva a tradição do forró sergipano com composições autorais e de fortes raízes nordestinas.",
+    "bioFull": "Ana Lima cresceu rodeada pela musicalidade do agreste sergipano nas festas de São João de Itabaiana. Filha de sanfoneiro, aprendeu a tocar os primeiros acordes na sanfona de oito baixos ainda na infância. Formou sua primeira banda profissional aos 17 anos e, desde então, tem percorrido o Nordeste promovendo o autêntico forró pé-de-serra. Com três álbuns lançados, coordena o projeto social 'Forró nas Escolas', que ensina ritmos tradicionais para crianças da rede pública de ensino de Sergipe.",
+    "photo": "https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Melhor Álbum de Forró — Prêmio SESC de Cultura 2023",
+    "years": "20 anos de trajetória artística",
+    "instagram": "@analima.forro",
     "works": [
       {
-        "title": "Projeto Atemporal",
+        "title": "Álbum 'Raízes'",
         "year": "2023",
-        "img": "/src/assets/images/bandacalcinhapreta.jpg",
-        "desc": "Uma mega homenagem à trajetória da Maior Banda de Forró do Planeta.",
-        "tecnica": "Forró tradicional / Parque de Exposições em Salvador"
+        "img": "https://images.unsplash.com/photo-1732066919734-a905ed7aed24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Compilação de 12 composições autorais de forró pé-de-serra, valorizando instrumentos clássicos como sanfona, zabumba e triângulo.",
+        "tecnica": "Forró tradicional / Gravação de estúdio"
       },
       {
-        "title": "Mágica",
-        "year": "2026",
-        "img": "/src/assets/images/magicacp.png",
-        "desc": "A Calcinha Preta celebrou seu 30º aniversário com uma grande turnê. Famosa pelo forró eletrônico, grandiosidade e vocais potentes, a banda gravou um DVD comemorativo em Belém e lançou projetos como Mágica e a turnê A Voz do São João",
-        "tecnica": "Forró / Forró eletrônico"
+        "title": "EP 'Nas Serras'",
+        "year": "2021",
+        "img": "https://images.unsplash.com/photo-1760965824369-1a867927c1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "EP gravado ao vivo em formato acústico nas paisagens da Serra de Itabaiana, misturando influências regionais e MPB.",
+        "tecnica": "Forró / MPB acústico"
       }
     ]
   },
   {
-    "id": "Tobias Barreto",
-    "name": "Tobias Barreto de Meneses",
-    "city": "Tobias Barreto · SE",
-    "linguagem": "Literatura e Filosofia",
-    "bio": "Filósofo, escritor, jurista e poeta sergipano. Foi o grande líder da célebre \"Escola do Recife\" e um dos maiores pensadores do século XIX no Brasil.",
-    "bioFull": "Tobias Barreto de Meneses foi um filósofo, jurista, magistral crítico literário e poeta nascido na Vila de Campos do Rio Real (atual Tobias Barreto). Atuando como o principal líder da 'Escola do Recife', movimento intelectual que revolucionou a Faculdade de Direito do Recife, ele marcou a história ao introduzir o pensamento alemão no Brasil, propagar o positivismo e o evolucionismo, além de defender ardorosamente a liberdade intelectual e o fim da escravidão.",
-    "photo": "/src/assets/images/TobiasBarreto.png",
-    "coverPhoto": "/src/assets/images/obrastb.png",
-    "awards": "Patrono da Cadeira n.º 38 da Academia Brasileira de Letras",
-    "years": "Líder cultural e acadêmico nas últimas décadas do século XIX",
-    "instagram": "null",
+    "id": "josefa",
+    "name": "Josefa Nascimento",
+    "city": "São Cristóvão · SE",
+    "linguagem": "literatura",
+    "bio": "Escritora e pesquisadora das tradições orais sergipanas. Autora de diversas obras dedicadas ao resgate de lendas e contos populares do sertão.",
+    "bioFull": "Josefa Nascimento é professora universitária, doutora em Antropologia e escritora nascida na histórica cidade de São Cristóvão. Dedica-se há mais de duas décadas a documentar a tradição oral das comunidades ribeirinhas e sertanejas de Sergipe. Seu trabalho meticuloso de campo resgata contos de benzedeiras, memórias de mestres de reisado e versos de repentistas, transformando-os em literatura de alto valor histórico e pedagógico. É membra correspondente da Academia Sergipana de Letras.",
+    "photo": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1762995350070-62072b173bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Prêmio Litteris da Academia Sergipana de Letras 2020",
+    "years": "25 anos de pesquisas e publicações",
+    "instagram": "@josefa.nascimento.se",
     "works": [
       {
-        "title": "Estudos Alemães",
-        "year": "1879",
-        "img": "/src/assets/images/tbestudosalemaes.jpg",
-        "desc": "Ensaio de grande impacto que introduziu o pensamento filosófico e jurídico alemão no cenário intelectual brasileiro.",
-        "tecnica": "Ensaio Filosófico / Crítica"
+        "title": "Livro 'Contos da Caatinga'",
+        "year": "2024",
+        "img": "https://images.unsplash.com/photo-1598893768907-fc3e27c64df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Coletânea literária com 22 contos fundamentados em narrativas orais e causos coletados no semiárido sergipano.",
+        "tecnica": "Literatura de resgate folclórico"
       },
       {
-        "title": "Dias e Noites",
-        "year": "1881",
-        "img": "/src/assets/images/tbdiasenoites.jpg",
-        "desc": "Único livro de poesias publicado pelo autor em vida, caracterizando-o na vertente condoreira da Terceira Geração Romântica com forte teor social.",
-        "tecnica": "Poesia Condoreira / Romantismo"
+        "title": "Romance 'A Benzedeira de Brejo Grande'",
+        "year": "2022",
+        "img": "https://images.unsplash.com/photo-1656747679959-2c7519e49765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Obra de ficção inspirada nas parteiras e curandeiras tradicionais da foz do Rio São Francisco e sua profunda relação com a natureza.",
+        "tecnica": "Ficção / Etnografia literária"
       }
     ]
   },
   {
-    "id": "Quadrilha Junina Asa Branca",
-    "name": "Unidos em Asa Branca",
+    "id": "karoline",
+    "name": "Karoline Ferreira",
     "city": "Aracaju · SE",
-    "linguagem": "Dança",
-    "bio": "Uma das mais tradicionais quadrilhas juninas de Sergipe, reconhecida por seus figurinos luxuosos, coreografias complexas e campeã do Concurso do Gonzagão 2024 com uma pontuação expressiva de 99,9 pontos.",
-    "bioFull": "A Unidos em Asa Branca, teve sua origem em Aracaju (Sergipe) no ambiente de uma igreja. É uma potência cultural em Sergipe. Com décadas de história, o grupo dedica-se a manter viva a tradição da quadrilha junina, inovando a cada ano com temas que retratam a história e a cultura sergipana.",
-    "photo": "/src/assets/images/quadrilheira.jpeg",
-    "coverPhoto": "/src/assets/images/quadrilhaunidos.jpeg",
-    "awards": "Campeã do Concurso Rede Globo Nordeste: Venceu a competição regional no ano de 2009.",
-    "years": "Fundada em 1980",
-    "instagram": "@unidosuab",
+    "linguagem": "danca",
+    "bio": "Bailarina e coreógrafa, diretora do Grupo Sergipano de Danças Populares, reconhecida pela difusão do Reisado e do Samba de Pareia.",
+    "bioFull": "Karoline Ferreira iniciou seus estudos de dança clássica na infância, mas encontrou sua verdadeira paixão nas manifestações folclóricas de Sergipe. Fundadora do Grupo Sergipano de Danças Populares, realiza oficinas em comunidades periféricas da capital para integrar ritmos tradicionais, como o Reisado, Guerreiro e Samba de Pareia, à dança contemporânea. Sob sua direção, o grupo já representou Sergipe em festivais folclóricos internacionais na Europa e na América Latina.",
+    "photo": "https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "coverPhoto": "https://images.unsplash.com/photo-1655770926081-66ec8decf028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+    "awards": "🏆 Prêmio Nacional Funarte de Dança Popular 2022",
+    "years": "16 anos de difusão cultural",
+    "instagram": "@karoline.danca.se",
     "works": [
       {
-        "title": "1 Promessa para ½ Santo'",
-        "year": "2025",
-        "img": "/src/assets/images/quadrilhauab.jpeg",
-        "desc": "Vencedora do Concurso Arranca Unha, apresentou ‘1 Promessa para ½ Santo’, que narra a história de Rosa Morena e José Inocêncio, com a chegada de Urânia para cumprir uma promessa em Juazeiro do Norte. O enredo se desenvolve em torno da promessa de Urânia de acender uma vela aos pés de Santo Antônio, em Louvores, e de como ela tenta solucionar o caso entre José Inocêncio e Rosa Morena, que é alvo de fofocas na cidade.",
-        "tecnica": "Dança e Teatro Junino"
+        "title": "Espetáculo 'Raízes e Movimentos'",
+        "year": "2024",
+        "img": "https://images.unsplash.com/photo-1767979349910-655bdc4e2f4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "desc": "Montagem coreográfica contemporânea que reimagina a gestualidade do maracatu e do cacuriá sob a ótica da dança de teatro.",
+        "tecnica": "Dança contemporânea e pesquisa folclórica"
       }
     ]
   },
@@ -83,12 +83,12 @@
     "id": "Véio",
     "name": "Cícero Alves dos Santos (Véio)",
     "city": "Nossa Senhora da Glória · SE",
-    "linguagem": "Escultura",
+    "linguagem": "escultura",
     "bio": "Escultor de prestígio internacional que transforma galhos secos e troncos caídos do sertão em figuras enigmáticas da cultura popular.",
     "bioFull": "Cícero Alves dos Santos, universalmente conhecido como Véio, é um dos maiores nomes da arte popular brasileira. Nascido no sertão sergipano, começou a esculpir na infância utilizando cera de abelha e sabugo de milho. Autodidata, passou a trabalhar com troncos e raízes de madeira morta da caatinga, revelando figuras humanas e animais que parecem ocultas na própria forma da madeira. Fundou em Nossa Senhora da Glória o Museu do Sertão, que abriga milhares de obras de sua autoria e de outros artistas populares.",
     "photo": "/src/imports/veio.png",
     "coverPhoto": "/src/imports/veio_itau.jpg",
-    "awards": "Título de Doutor Honoris Causa pela Universidade Federal de Sergipe (UFS) & Prêmio Itaú Cultural 30 Anos",
+    "awards": "🏅 Título de Doutor Honoris Causa pela Universidade Federal de Sergipe (UFS) & Prêmio Itaú Cultural 30 Anos",
     "years": "Mais de 65 anos esculpindo a identidade sertaneja",
     "instagram": "@artistaveio",
     "works": [
@@ -112,12 +112,12 @@
     "id": "Alzira-Alves",
     "name": "Alzira Alves",
     "city": "Divina Pastora · SE",
-    "linguagem": "Artesanato",
+    "linguagem": "artesanato",
     "bio": "Mestra artesã da Renda Irlandesa, técnica secular reconhecida como Patrimônio Cultural Imaterial do Brasil.",
     "bioFull": "Dona Alzira Alves é uma das principais guardiãs e mestras da Renda Irlandesa em Divina Pastora, o polo nacional deste saber tradicional. Começou a manusear o lacê e a agulha aos 10 anos de idade, sob a orientação de sua mãe. Ao longo de quase sete décadas dedicadas ao ofício, contribuiu ativamente para a organização das rendeiras locais em associações e para o registro da Renda Irlandesa como Patrimônio Cultural do Brasil pelo Iphan em 2009. Suas mãos delicadas tecem vestidos, toalhas e acessórios que vestem desde colecionadores até figuras da música e da política nacional.",
     "photo": "/src/imports/Alzira_alves.png",
     "coverPhoto": "/src/imports/renda_irlandesa.png",
-    "awards": "Reconhecimento Oficial do Registro de Saberes do Iphan",
+    "awards": "🏅 Reconhecimento Oficial do Registro de Saberes do Iphan",
     "years": "Mais de 68 anos dedicados à costura de lacê",
     "instagram": "@alziraalves25",
     "works": [
@@ -127,35 +127,6 @@
         "img": "/src/imports/Natanzinho_renda_irlandesa.png",
         "desc": "Customização em Renda Irlandesa desenvolvida artesanalmente para compor o figurino do cantor nacional Natanzinho.",
         "tecnica": "Renda Irlandesa clássica sob lacê e linha de algodão"
-      }
-    ]
-  },
-  {
-    "id": "Lambe-Sujo e Caboclinhos",
-    "name": "Festa dos Lambe-Sujos e Caboclinhos",
-    "city": "Laranjeiras · SE",
-    "linguagem": "Cultura Popular",
-    "bio": "Uma das maiores manifestações folclóricas do Brasil, considerada um grandioso teatro a céu aberto.",
-    "bioFull": "Com mais de 160 anos de história, a Festa dos Lambe-Sujos e Caboclinhos acontece anualmente no segundo domingo de outubro, em Laranjeiras. A festividade encena de forma dramática a resistência dos negros dos quilombos (Lambe-Sujos, pintados com melaço de cana e pó preto) contra os indígenas (Caboclinhos, que evocam a presença indígena com trajes e pinturas que destacam sua identidade e participação nessa narrativa festiva.)",
-    "photo": "/src/assets/images/lambesujo.jpg",
-    "coverPhoto": "/src/assets/images/lambe_sujo.jpg",
-    "awards": "Declarada por Lei Estadual como Bem de Interesse Cultural de Sergipe; marco do patrimônio imaterial.",
-    "years": "Desde 1860",
-    "instagram": "null",
-    "works": [
-      {
-        "title": "O Combate do Segundo Domingo",
-        "year": "Anual (Outubro)",
-        "img": "/src/assets/images/lambe-sujo.jpg",
-        "desc": "Cortejo pelas ruas históricas de Laranjeiras com cânticos tradicionais de resistência, culminando no rapto da Rainha dos Caboclinhos e na batalha final.",
-        "tecnica": "Manifestação cultural folclórica de resistência histórica"
-      },
-      {
-        "title": "Caboclinhos",
-        "year": "Anual",
-        "img": "/src/assets/images/lambe-sujo3.jpg",
-        "desc": "Um grande teatro a céu aberto, com cortejos, músicas, danças, brincadeiras e encenações que atraem moradores, visitantes e turistas de diferentes regiões, consolidando a festa como um marco de cultura popular e patrimônio imaterial.",
-        "tecnica": "Registros históricos que remontam ao século XIX."
       }
     ]
   }
