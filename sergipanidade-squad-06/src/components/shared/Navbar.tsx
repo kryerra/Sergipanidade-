@@ -103,15 +103,24 @@ export function Navbar({
   };
 
   const storedNavbarSettings = readStoredNavbarDevSettings();
-  const [navOffsetX, setNavOffsetX] = useState<number>(() => storedNavbarSettings?.navOffsetX ?? 0);
-  const [navOffsetY, setNavOffsetY] = useState<number>(() => storedNavbarSettings?.navOffsetY ?? 0);
-  const [navScale, setNavScale] = useState<number>(() => storedNavbarSettings?.navScale ?? 1);
+  const sharedNavbarSettings = (() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const saved = localStorage.getItem('sergipanidade_navbar_shared_settings');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const [navOffsetX, setNavOffsetX] = useState<number>(() => sharedNavbarSettings?.navOffsetX ?? storedNavbarSettings?.navOffsetX ?? 0);
+  const [navOffsetY, setNavOffsetY] = useState<number>(() => sharedNavbarSettings?.navOffsetY ?? storedNavbarSettings?.navOffsetY ?? 0);
+  const [navScale, setNavScale] = useState<number>(() => sharedNavbarSettings?.navScale ?? storedNavbarSettings?.navScale ?? 1);
   const [navImageSettings, setNavImageSettings] = useState<Record<string, { enabled: boolean; offsetX: number; offsetY: number; scale: number }>>(() => {
-    if (!storedNavbarSettings?.navImageSettings) return defaultNavImageSettings;
-    return {
-      ...defaultNavImageSettings,
-      ...storedNavbarSettings.navImageSettings,
-    };
+    const sharedSettings = sharedNavbarSettings?.navImageSettings;
+    const devSettings = storedNavbarSettings?.navImageSettings;
+    if (sharedSettings) return { ...defaultNavImageSettings, ...sharedSettings };
+    if (devSettings) return { ...defaultNavImageSettings, ...devSettings };
+    return defaultNavImageSettings;
   });
 
   useEffect(() => {
@@ -433,6 +442,28 @@ export function Navbar({
               })}
             </div>
           </div>
+          {/* Save shared settings button */}
+          <button
+            className="mt-2 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              const payload = {
+                navOffsetX,
+                navOffsetY,
+                navScale,
+                navImageSettings,
+              };
+              try {
+                localStorage.setItem('sergipanidade_navbar_shared_settings', JSON.stringify(payload));
+                // Optionally notify user
+                // eslint-disable-next-line no-alert
+                alert('Navbar settings saved as shared defaults.');
+              } catch (e) {
+                console.error('Failed to save shared navbar settings', e);
+              }
+            }}
+          >
+            Save as Default for All Users
+          </button>
         </div>
       )}
 
