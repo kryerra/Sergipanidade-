@@ -586,7 +586,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
       {/* ════════════════════════════════════════════════════════════
           HEADER COM SLIDESHOW
       ════════════════════════════════════════════════════════════ */}
-      <HeroSlideshow images={SERGIPE_BEACHES} height="580px" overlayOpacity={0.55} fit="cover">
+      <HeroSlideshow images={SERGIPE_BEACHES} height="480px" overlayOpacity={0.55} fit="cover">
           <h1
             className="font-['Fjalla_One'] text-white tracking-wide"
             style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}

@@ -1,7 +1,27 @@
-import { Logo } from './Logo';
-import { SergipanidadeLogo } from './SergipanidadeLogo';
+import { useState, useEffect } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
+import logoNav from '@/assets/images/LOGO NAV.png';
+
+// Configuração de posicionamento do logo da Navbar (LOGO NAV.png)
+// Permite mover o logo para a direita, esquerda, cima ou baixo e ajustar a escala sem afetar o restante do site.
+const DESKTOP_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '-1px',      // Ajuste vertical (ex: '-5px' para subir, '5px' para descer)
+  left: '-30px',     // Ajuste horizontal (ex: '-10px' para esquerda, '10px' para direita)
+  transformOrigin: 'left center', // Origem da transformação
+  height: '42px',  // Altura do logo
+  objectFit: 'contain' as const,
+};
+
+const MOBILE_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '0px',      // Ajuste vertical
+  left: '0px',     // Ajuste horizontal
+  transformOrigin: 'left center', // Origem da transformação no mobile
+  height: '32px',  // Altura do logo
+  objectFit: 'contain' as const,
+};
 import {
   Home,
   Map as MapIcon,
@@ -33,6 +53,39 @@ export function Navbar({
   language,
 }: NavbarProps) {
   if (!isVisible) return null;
+
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Determina a escala dinâmica para Desktop com base na largura da janela
+  const getDesktopScale = () => {
+    if (windowWidth > 1400) return 'scale(1.9)';
+    if (windowWidth > 1200) return 'scale(1.6)';
+    if (windowWidth > 1024) return 'scale(1.3)';
+    return 'scale(1.1)';
+  };
+
+  // Determina a escala dinâmica para Mobile
+  const getMobileScale = () => {
+    if (windowWidth < 360) return 'scale(0.85)';
+    return 'scale(1.0)';
+  };
+
+  const desktopLogoStyle = {
+    ...DESKTOP_LOGO_STYLE,
+    transform: getDesktopScale(),
+  };
+
+  const mobileLogoStyle = {
+    ...MOBILE_LOGO_STYLE,
+    transform: getMobileScale(),
+  };
 
   const t = translations[language] as typeof translations.pt;
   const { userProfile } = useAppContext();
@@ -79,10 +132,10 @@ export function Navbar({
               className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
             >
               <div className="flex items-center justify-center h-[56px] w-auto overflow-visible">
-                <SergipanidadeLogo
-                  variant="light"
-                  iconSize={30}
-                  showSlogan={false}
+                <img
+                  src={logoNav}
+                  alt="Logo Navbar"
+                  style={desktopLogoStyle}
                 />
               </div>
             </button>
@@ -167,12 +220,10 @@ export function Navbar({
             onClick={() => onNavigate('home')}
             className="flex items-center justify-start gap-2 p-0 bg-transparent border-none cursor-pointer min-h-[44px] overflow-visible"
           >
-            <Logo
-              variant="light"
-              width={110}
-              height={38}
-              showSlogan={false}
-              className="max-h-[38px]"
+            <img
+              src={logoNav}
+              alt="Logo Navbar"
+              style={mobileLogoStyle}
             />
           </button>
 
