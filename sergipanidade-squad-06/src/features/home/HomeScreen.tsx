@@ -14,8 +14,6 @@ import {
   Waves,
   X,
 } from "lucide-react";
-const ACCENT = "#0D7377";
-const ACCENT_SHADOW = "rgba(13,115,119,0.35)";
 
 import { destinations } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
@@ -37,13 +35,15 @@ const HOTEL_IMG_3 =
   "https://images.unsplash.com/photo-1776761420412-e6451f458162?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiZWFjaGZyb250JTIwaG90ZWwlMjByZXNvcnQlMjBwb29sJTIwb2NlYW4lMjB2aWV3fGVufDF8fHx8MTc3NzkyNzczNXww&ixlib=rb-4.1.0&q=80&w=1080";
 
 const EXPERIENCIAS_BG =
-  "https://images.unsplash.com/photo-1768654040238-8ca1a9588340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb2JzdGVyJTIwc2VhZm9vZCUyMHJlc3RhdXJhbnQlMjB0cm9waWNhbCUyMGNvYXN0YWx8ZW58MXx8fHwxNzc3OTI3NzM4fDA&ixlib=rb-4.1.0&q=80&w=1080";
+  "src/assets/images/orla-exp.jpg";
 
 const EXPERIENCIAS_BG_2 =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600";
+  "src/assets/images/praia-do-mosqueiro-exp.jpg";
 
 const EXPERIENCIAS_BG_3 =
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600";
+  "src/assets/images/mercado-1-exp.jpg";
+
+import hotelsData from "@/constants/hotels.json";
 
 interface HotelMock {
   id: string;
@@ -66,44 +66,8 @@ interface HomeScreenProps {
   userProfile: UserProfile;
 }
 
-const HOTELS_MOCK: HotelMock[] = [
-  {
-    id: "radisson",
-    name: "Radisson Hotel Aracaju",
-    category: "Hotel 4★",
-    bairro: "Atalaia",
-    priceLevel: 3,
-    startingPrice: "R$ 280",
-    rating: 4.8,
-    reviews: "1.2k",
-    image: HOTEL_IMG_1,
-    amenities: ["Piscina", "Wifi", "Café da manhã"],
-  },
-  {
-    id: "pousada",
-    name: "Pousada Beira Mar",
-    category: "Pousada",
-    bairro: "Atalaia",
-    priceLevel: 2,
-    startingPrice: "R$ 180",
-    rating: 4.6,
-    reviews: "342",
-    image: HOTEL_IMG_2,
-    amenities: ["Vista Mar", "Pet OK", "Café"],
-  },
-  {
-    id: "vila-real",
-    name: "Hotel Vila Real",
-    category: "Hotel",
-    bairro: "Centro",
-    priceLevel: 2,
-    startingPrice: "R$ 150",
-    rating: 4.4,
-    reviews: "218",
-    image: HOTEL_IMG_3,
-    amenities: ["Academia", "Wifi", "Estacionamento"],
-  },
-];
+const HOTELS_MOCK: HotelMock[] = hotelsData;
+
 
 const DEST_LIKES: Record<string, string> = {
   "orla-atalaia": "73mil",
@@ -356,7 +320,7 @@ export function HomeScreen({
                          border border-white/20 rounded-full text-white text-[13px] font-medium
                          cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: ACCENT }} />
+              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
               <span>{selectedCity}</span>
               <ChevronDown
                 size={14}
@@ -399,7 +363,7 @@ export function HomeScreen({
                          border border-white/20 rounded-full text-white text-[13px] font-medium
                          cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
             >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: ACCENT }} />
+              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
               <span>{langPillLabel()}</span>
               <ChevronDown
                 size={14}
@@ -419,17 +383,18 @@ export function HomeScreen({
                   {
                     lang: "pt" as const,
                     label: "Sergipanês",
-                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
+                    accent: "text-[var(--primary)] bg-[var(--laranja-leve)]",
                   },
                   {
                     lang: "en" as const,
                     label: "English",
-                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
+                    accent: "text-[var(--azul)] bg-[var(--azul-leve)]",
                   },
                   {
                     lang: "es" as const,
                     label: "Español",
-                    accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
+                    accent:
+                      "text-[var(--vermelho)] bg-[rgba(232,84,58,0.07)]",
                   },
                 ].map(({ lang, label, accent }) => (
                   <button
@@ -510,11 +475,10 @@ export function HomeScreen({
                 className="px-6 py-3.5 text-white border-none rounded-[10px]
                            font-['Fjalla_One'] text-[14px] tracking-widest uppercase cursor-pointer
                            transition-all whitespace-nowrap min-h-11"
-                           style={{
-                            backgroundColor: ACCENT,
-                            boxShadow: `0 4px 20px ${ACCENT_SHADOW}`,
-                          }}
-                
+                style={{
+                  backgroundColor: "var(--primary)",
+                  boxShadow: "0 4px 20px rgba(240,96,48,0.35)",
+                }}
               >
                 {t.searchButton}
               </button>
@@ -565,8 +529,8 @@ export function HomeScreen({
                 style={
                   isActive
                     ? {
-                        backgroundColor: ACCENT,
-                        boxShadow: "0 2px 10px rgba(13,115,119,0.25)",
+                        backgroundColor: "var(--primary)",
+                        boxShadow: "0 2px 10px rgba(240,96,48,0.25)",
                       }
                     : undefined
                 }
@@ -594,9 +558,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "rgba(13,115,119,0.10)",
-                color: ACCENT,
-                border: "1px solid rgba(13,115,119,0.22)",
+                backgroundColor: "#F5EDE6",
+                color: "#0D7377",
+                border: "1px solid rgba(224,92,0,0.22)",
               }}
             >
               {t.vamosCurtirTag}
@@ -620,7 +584,7 @@ export function HomeScreen({
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
-            style={{ color: ACCENT }}
+            style={{ color: "var(--primary)" }}
           >
             {t.viewAll}
           </button>
@@ -653,7 +617,7 @@ export function HomeScreen({
               className="px-6 py-3 text-white border-none rounded-[10px]
                          font-['Fjalla_One'] text-[13px] tracking-wider uppercase cursor-pointer
                          hover:opacity-90 transition-all min-h-11"
-              style={{ backgroundColor: ACCENT }}
+              style={{ backgroundColor: "var(--primary)" }}
             >
               {t.noResults?.clearButton}
             </button>
@@ -723,7 +687,7 @@ export function HomeScreen({
               style={{
                 fontSize: "11px",
                 backgroundColor: "rgba(13,115,119,0.10)",
-                color: ACCENT,
+                color: "var(--azul)",
                 border: "1px solid rgba(13,115,119,0.22)",
               }}
             >
@@ -748,7 +712,7 @@ export function HomeScreen({
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
-            style={{ color: ACCENT }}
+            style={{ color: "var(--azul)" }}
           >
             {t.viewAll}
           </button>
@@ -783,10 +747,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                 backgroundColor: "rgba(13,115,119,0.28)",
-                color: "#7FFCF5",
-                border: "1px solid rgba(127,252,245,0.45)",
-                boxShadow: "0 0 18px rgba(13,115,119,0.28)"
+                backgroundColor: "rgba(255,255,255,0.07)",
+                color: "var(--primary)",
+                border: "1px solid rgba(36, 28, 100, 0.28)",
               }}
             >
               {t.experiencias360Tag}
@@ -823,7 +786,7 @@ export function HomeScreen({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to right, rgba(13,115,119,0.96) 0%, rgba(13,115,119,0.80) 45%, rgba(24,24,27,0.18) 75%, rgba(24,24,27,0.03) 100%)",
+                "linear-gradient(to right, rgba(24,24,27,0.96) 0%, rgba(24,24,27,0.80) 45%, rgba(24,24,27,0.18) 75%, rgba(24,24,27,0.03) 100%)",
             }}
           />
 
@@ -852,11 +815,7 @@ export function HomeScreen({
           <div className="relative z-10 flex flex-col justify-center h-full px-8 py-10 md:px-12 md:py-12 max-w-140">
             <p
               className="font-bold tracking-widest uppercase mb-3"
-              style={{ 
-                fontSize: "11px",
-                color: "#FFFFFF",
-                textShadow: "0 2px 10px rgba(0,0,0,0.45)",
-                }}
+              style={{ fontSize: "11px", color: "var(--primary)" }}
             >
               {currentExperiencia.tagline}
             </p>
@@ -875,8 +834,8 @@ export function HomeScreen({
                   className="px-3 py-1.5 rounded-full text-[12px] font-medium text-white
                              transition-colors cursor-default"
                   style={{
-                    backgroundColor: "rgba(13,115,119,0.15)",
-                    border: "1px solid rgba(13,115,119,0.22)",
+                    backgroundColor: "rgba(255,255,255,0.10)",
+                    border: "1px solid rgba(255,255,255,0.16)",
                     backdropFilter: "blur(4px)",
                   }}
                 >
@@ -904,7 +863,7 @@ export function HomeScreen({
 
           <div
             className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-            style={{ backgroundColor: ACCENT }}
+            style={{ backgroundColor: "var(--primary)" }}
           />
         </div>
 
@@ -921,7 +880,7 @@ export function HomeScreen({
                 height: "8px",
                 backgroundColor:
                   experienciaIndex === index
-                    ? ACCENT
+                    ? "var(--primary)"
                     : "rgba(255,255,255,0.18)",
               }}
             />

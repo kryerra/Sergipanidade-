@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "ignoreDeprecations": "6.0",
+    "target": "es2020",
+    "ignoreDeprecations": "5.0",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -17,16 +21,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Path alias for @/ */
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

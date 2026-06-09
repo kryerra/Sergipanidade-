@@ -8,7 +8,7 @@ import { getDestinationById } from "@/constants/destinations";
 import { useAppContext } from "@/context/AppContext";
 import { AppRoutes } from "@/routes/AppRoutes";
 
-export default function App() {
+export default function App(): JSX.Element {
   const {
     language,
     setLanguage,
@@ -18,14 +18,13 @@ export default function App() {
     hideToast,
     gpsDestinationId,
     showGPSModal,
-    openGPS,
     closeGPS,
   } = useAppContext();
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleNavigate = (screen: string, destinationId?: string) => {
+  const handleNavigate = (screen: string, destinationId?: string): void => {
     switch (screen) {
       case 'home':
         navigate('/home');
@@ -56,11 +55,11 @@ export default function App() {
         break;
     }
   };
-  const handleGPSConfirm = () => {
+  const handleGPSConfirm = (): void => {
     handleToast(translations[language].openingGPS);
   };
 
-  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es') => {
+  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es'): void => {
     setLanguage(lang);
     handleToast(translations[lang].languageChanged);
   };
@@ -82,7 +81,7 @@ export default function App() {
   const gpsDestination = gpsDestinationId ? getDestinationById(gpsDestinationId) : undefined;
 
   return (
-    <div className="min-h-screen bg-[var(--branco)] relative">
+    <div className="min-h-screen bg-(--branco) relative">
       <Navbar
         currentScreen={currentScreen}
         onNavigate={handleNavigate}
