@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { useAppContext } from '@/context/AppContext';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
 import bgImage from "@/assets/images/login_teste.png";
 import googleLogo from "@/imports/Google_Logo.png";
-import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
+import logoSergipanidade from "@/assets/images/LOGO SAO JOAO.png";
 import { DocumentosModal } from '@/components/shared/DocumentosModal';
 
 interface LoginScreenProps {
@@ -91,6 +92,50 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     };
   }, [showLanguageMenu]);
 
+  // Dev-only controls for login logo
+  const isDev = Boolean((import.meta as any).env?.DEV);
+  const { userProfile } = useAppContext();
+  const adminEmail = 'admin@sergipanidade.local';
+  const isAdminUser = Boolean(userProfile?.email === adminEmail || (userProfile as any)?.isAdmin === true);
+  const [loginOffsetX, setLoginOffsetX] = useState<number>(0);
+  const [loginOffsetY, setLoginOffsetY] = useState<number>(6);
+  const [loginScale, setLoginScale] = useState<number>(1.0);
+  const [availableLoginImages, setAvailableLoginImages] = useState<Array<{ name: string; src: string }>>([]);
+  const [selectedLoginImages, setSelectedLoginImages] = useState<Record<string, boolean>>({});
+  const [hasAdminAccount, setHasAdminAccount] = useState(false);
+  const showLoginDevControls = isDev && (isAdminUser || hasAdminAccount || loginData.email.toLowerCase() === adminEmail);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const accounts = JSON.parse(localStorage.getItem('sergipanidade_accounts') || '[]');
+      setHasAdminAccount(accounts.some((acc: any) => acc.email?.toLowerCase() === adminEmail));
+    } catch (error) {
+      setHasAdminAccount(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showLoginDevControls) return;
+    try {
+      const modules = (import.meta as any).globEager('/src/assets/images/*.{png,jpg,jpeg,svg}');
+      const entries = Object.keys(modules).map((k) => ({ name: k.split('/').pop() || k, src: (modules as any)[k].default || (modules as any)[k] }));
+      setAvailableLoginImages(entries);
+      const initial: Record<string, boolean> = {};
+      entries.forEach((e) => (initial[e.name] = false));
+      setSelectedLoginImages(initial);
+    } catch (e) {
+      // ignore
+    }
+  }, [showLoginDevControls]);
+
+  useEffect(() => {
+    if (!showLoginDevControls) return;
+    document.documentElement.style.setProperty('--login-logo-offset-x', `${loginOffsetX}px`);
+    document.documentElement.style.setProperty('--login-logo-offset-y', `${loginOffsetY}px`);
+    document.documentElement.style.setProperty('--login-logo-scale', `${loginScale}`);
+  }, [loginOffsetX, loginOffsetY, loginScale, showLoginDevControls]);
+
   const handleRecoverPassword = (): void => {
     if (!recoverEmail.trim()) {
       onToast(t.enterEmail);
@@ -169,7 +214,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     setShowGoogleAccountSelector(true);
   };
 
-  const handleAccountSelect = (accountName: string, accountEmail: string, accountType: 'turista' | 'estabelecimento'): void => {
+  const handleAccountSelect = (accountName: string, accountEmail: string, accountType: 'turista' | 'estabelecimento' | 'administrador'): void => {
     setShowGoogleAccountSelector(false);
     setShowGoogleAuth(true);
 
@@ -296,10 +341,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         }}>
 
         <div className="relative z-10 max-w-130">
-          <div className="mb-10">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain filter invert -ml-12.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.90)]" />
-          </div>
-
           <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
                          tracking-wide"
             style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.50)' }}>
@@ -313,8 +354,17 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
       <div className="bg-white px-6 sm:px-12 md:px-16 py-12 md:py-20 flex flex-col justify-center w-full">
         <div className="max-w-110 mx-auto w-full">
           {/* Logo */}
-          <div className="flex justify-center mb-12">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain" />
+          <div className="flex justify-center mb-16">
+            <div style={{ transform: 'translateX(var(--login-logo-offset-x, 0px)) translateY(var(--login-logo-offset-y, 6px)) scale(var(--login-logo-scale, 1))' }}>
+              <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-[640px] h-[210px] object-contain" />
+
+              {isDev && isAdminUser && availableLoginImages.length > 0 && Object.entries(selectedLoginImages).map(([name, on]) => {
+                if (!on) return null;
+                const item = availableLoginImages.find((a) => a.name === name);
+                if (!item) return null;
+                return <img key={name} src={item.src} alt={name} className="h-12 ml-3 inline-block object-contain" />;
+              })}
+            </div>
           </div>
 
           {!showLoginForm ? (
@@ -793,6 +843,20 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                 </div>
               </button>
 
+              <button
+                onClick={() => handleAccountSelect('Administrador', 'admin@sergipanidade.local', 'administrador')}
+                className="w-full px-8 py-4 flex items-center gap-4 hover:bg-[#F7F6F3] transition-all border-none bg-transparent cursor-pointer text-left"
+              >
+                <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base shrink-0">
+                  AD
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-[#1A1A1A] truncate">Administrador</div>
+                  <div className="text-xs text-[#777] truncate">admin@sergipanidade.local</div>
+                  <div className="text-xs text-[#0D7377] font-medium mt-1 flex items-center gap-1">Administrador</div>
+                </div>
+              </button>
+
 
 
               <button
@@ -830,6 +894,40 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                 </svg>
                 {t.useAnotherAccount}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLoginDevControls && (
+        <div className="fixed left-4 bottom-4 z-50 bg-white border rounded-lg p-3 shadow-lg w-[300px] text-sm">
+          <div className="font-semibold mb-2">Login Dev Controls</div>
+          <div className="mb-2">
+            <label className="text-xs">X offset: <span className="font-medium">{loginOffsetX}px</span></label>
+            <input className="w-full" type="range" min={-200} max={200} value={loginOffsetX} onChange={(e) => setLoginOffsetX(Number(e.target.value))} />
+          </div>
+          <div className="mb-2">
+            <label className="text-xs">Y offset: <span className="font-medium">{loginOffsetY}px</span></label>
+            <input className="w-full" type="range" min={-200} max={200} value={loginOffsetY} onChange={(e) => setLoginOffsetY(Number(e.target.value))} />
+          </div>
+          <div className="mb-2">
+            <label className="text-xs">Scale: <span className="font-medium">{loginScale.toFixed(2)}×</span></label>
+            <input className="w-full" type="range" min={0.5} max={2} step={0.01} value={loginScale} onChange={(e) => setLoginScale(Number(e.target.value))} />
+          </div>
+          <div className="mt-2">
+            <div className="font-medium mb-1">Images</div>
+            <div className="max-h-36 overflow-auto">
+              {availableLoginImages.length === 0 ? (
+                <div className="text-xs text-[#777]">Nenhuma imagem encontrada em assets/images.</div>
+              ) : (
+                availableLoginImages.map((img) => (
+                  <label key={img.name} className="flex items-center gap-2 mb-1">
+                    <input type="checkbox" checked={!!selectedLoginImages[img.name]} onChange={() => setSelectedLoginImages((p) => ({ ...p, [img.name]: !p[img.name] }))} />
+                    <img src={img.src} alt={img.name} className="h-6 object-contain" />
+                    <span className="truncate">{img.name}</span>
+                  </label>
+                ))
+              )}
             </div>
           </div>
         </div>

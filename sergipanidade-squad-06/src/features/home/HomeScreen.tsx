@@ -80,14 +80,7 @@ const DEST_LIKES: Record<string, string> = {
   "praia-do-saco": "31mil",
 };
 
-const CITIES = [
-  "Aracaju",
-  "São Cristóvão",
-  "Laranjeiras",
-  "Canindé",
-  "Lagarto",
-  "Itabaiana",
-];
+// City selector removed per request — keep destinations list in constants
 
 const FILTER_KEYS = [
   "all",
@@ -140,21 +133,15 @@ export function HomeScreen({
   onChangeLanguage,
 }: HomeScreenProps) {
   const [showLanguageMenu, setShowLanguageMenu] = useState<boolean>(false);
-  const [showCityMenu, setShowCityMenu] = useState<boolean>(false);
-  const [selectedCity, setSelectedCity] = useState<string>("Aracaju");
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [experienciaIndex, setExperienciaIndex] = useState<number>(0);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
-  const cityMenuRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language] as typeof translations.pt;
 
-  const cityOptions = useMemo(
-    () => CITIES.filter((city) => city !== selectedCity),
-    [selectedCity]
-  );
+  // cityOptions removed
 
   const experienciasSlides = useMemo(
     () => [
@@ -286,22 +273,7 @@ export function HomeScreen({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showLanguageMenu]);
 
-  useEffect(() => {
-    if (!showCityMenu) return;
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        cityMenuRef.current &&
-        !cityMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowCityMenu(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showCityMenu]);
+  // city menu outside click handler removed
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--branco)" }}>
@@ -311,49 +283,6 @@ export function HomeScreen({
         overlayOpacity={0.52}
       >
         <>
-          <div className="absolute left-5 top-5 z-20" ref={cityMenuRef}>
-            <button
-              type="button"
-              onClick={() => setShowCityMenu((prev) => !prev)}
-              aria-expanded={showCityMenu}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
-                         border border-white/20 rounded-full text-white text-[13px] font-medium
-                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
-            >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
-              <span>{selectedCity}</span>
-              <ChevronDown
-                size={14}
-                className={`opacity-60 transition-transform ${
-                  showCityMenu ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {showCityMenu && (
-              <div
-                className="absolute top-full left-0 mt-2 bg-white rounded-sm
-                           shadow-(--sombra-md) border border-(--cinza-med)
-                           overflow-hidden min-w-42.5 z-20"
-              >
-                {cityOptions.map((city) => (
-                  <button
-                    type="button"
-                    key={city}
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setShowCityMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-[14px] text-(--cinza-escuro)
-                               hover:bg-(--cinza-mais-claro) transition-colors"
-                  >
-                    {city}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           <div className="absolute top-5 right-5 sm:right-8 z-20" ref={langMenuRef}>
             <button
               type="button"

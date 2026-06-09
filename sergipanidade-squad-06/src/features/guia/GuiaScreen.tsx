@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { HeroSlideshow } from '@/components/shared/HeroSlideshow';
-import { SERGIPE_BEACHES } from "@/constants/sergipeImages";
+import { SERGIPE_HOME_MIX } from "@/constants/sergipeImages";
 
 // ─── Configurações de categoria ──────────────────────────────────────────────
 
@@ -586,7 +586,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
       {/* ════════════════════════════════════════════════════════════
           HEADER COM SLIDESHOW
       ════════════════════════════════════════════════════════════ */}
-      <HeroSlideshow images={SERGIPE_BEACHES} height="580px" overlayOpacity={0.55} fit="cover">
+      <HeroSlideshow images={SERGIPE_HOME_MIX} height="480px" overlayOpacity={0.52}>
           <h1
             className="font-['Fjalla_One'] text-white tracking-wide"
             style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}
