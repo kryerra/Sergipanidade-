@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
-import logoNav from '@/assets/images/LOGO NAV.png';
+import logoNav from '@/assets/images/logo-nav.png';
 
-// Configuração de posicionamento do logo da Navbar (LOGO NAV.png)
+// Configuração de posicionamento do logo da Navbar (logo-nav.png)
 // Permite mover o logo para a direita, esquerda, cima ou baixo e ajustar a escala sem afetar o restante do site.
 const DESKTOP_LOGO_STYLE = {
   position: 'relative' as const,

@@ -1,8 +1,8 @@
-import FOTO_SLIDE_1 from '@/assets/images/FOTO SLIDE (1).jpg';
-import FOTO_SLIDE_2 from '@/assets/images/FOTO SLIDE (2).jpg';
-import FOTO_SLIDE_3 from '@/assets/images/FOTO SLIDE (3).jpg';
-import FOTO_SLIDE_4 from '@/assets/images/FOTO SLIDE (4).jpg';
-import FOTO_SLIDE_6 from '@/assets/images/FOTO SLIDE (6).png';
+import FOTO_SLIDE_1 from '@/assets/images/foto-slide-1.jpg';
+import FOTO_SLIDE_2 from '@/assets/images/foto-slide-2.jpg';
+import FOTO_SLIDE_3 from '@/assets/images/foto-slide-3.jpg';
+import FOTO_SLIDE_4 from '@/assets/images/foto-slide-4.jpg';
+import FOTO_SLIDE_6 from '@/assets/images/foto-slide-6.png';
 
 /**
  * Imagens de Sergipe para slideshows dos headers

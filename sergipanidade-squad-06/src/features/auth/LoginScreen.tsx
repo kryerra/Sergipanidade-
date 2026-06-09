@@ -4,10 +4,10 @@ import type { UserProfile } from '@/types';
 import bgImage from "@/assets/images/login_teste.png";
 import googleLogo from "@/imports/Google_Logo.png";
 import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
-import logoSaoJoao from "@/assets/images/LOGO SAO JOAO.png";
+import logoSaoJoao from '@/assets/images/logo-sao-joao.png';
 import { DocumentosModal } from '@/components/shared/DocumentosModal';
 
-// Configuração de posicionamento e escala do logo da página de login (LOGO SAO JOAO.png)
+// Configuração de posicionamento e escala do logo da página de login (logo-sao-joao.png)
 // Permite mover o logo para a direita, esquerda, cima ou baixo e ajustar a escala sem afetar o restante da página.
 const LOGIN_LOGO_STYLE = {
   position: 'relative' as const,
