@@ -234,7 +234,7 @@ export function HomeScreen({
   );
 
   function langPillLabel() {
-    if (language === "pt") return "Sergipanês";
+    if (language === "pt") return "Português";
     if (language === "en") return "English";
     return "Español";
   }
@@ -384,7 +384,7 @@ export function HomeScreen({
                 {[
                   {
                     lang: "pt" as const,
-                    label: "Sergipanês",
+                    label: "Português",
                     accent: "text-[#0D7377] bg-[rgba(13,115,119,0.10)]",
                   },
                   {
