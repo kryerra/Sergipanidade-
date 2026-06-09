@@ -4,7 +4,21 @@ import type { UserProfile } from '@/types';
 import bgImage from "@/assets/images/login_teste.png";
 import googleLogo from "@/imports/Google_Logo.png";
 import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
+import logoSaoJoao from "@/assets/images/LOGO SAO JOAO.png";
 import { DocumentosModal } from '@/components/shared/DocumentosModal';
+
+// Configuração de posicionamento e escala do logo da página de login (LOGO SAO JOAO.png)
+// Permite mover o logo para a direita, esquerda, cima ou baixo e ajustar a escala sem afetar o restante da página.
+const LOGIN_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '0px',      // Ajuste vertical (ex: '-10px' para subir, '10px' para descer)
+  left: '0px',     // Ajuste horizontal (ex: '-20px' para esquerda, '20px' para direita)
+  transform: 'scale(2.0)', // Escala do logo (ex: 'scale(1.2)' para aumentar 20%, 'scale(0.8)' para diminuir)
+  transformOrigin: 'center center', // Origem da transformação
+  width: '290px',  // Largura (equivalente ao original w-72.5)
+  height: '128px', // Altura (equivalente ao original h-32)
+  objectFit: 'contain' as const,
+};
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
@@ -296,10 +310,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         }}>
 
         <div className="relative z-10 max-w-130">
-          <div className="mb-10">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain filter invert -ml-12.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.90)]" />
-          </div>
-
           <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
                          tracking-wide"
             style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.50)' }}>
@@ -314,7 +324,11 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         <div className="max-w-110 mx-auto w-full">
           {/* Logo */}
           <div className="flex justify-center mb-12">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain" />
+            <img
+              src={logoSaoJoao}
+              alt="Logo São João"
+              style={LOGIN_LOGO_STYLE}
+            />
           </div>
 
           {!showLoginForm ? (
