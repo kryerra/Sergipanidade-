@@ -169,13 +169,14 @@ export function HomeScreen({
   const currentExperiencia = experienciasSlides[experienciaIndex];
 
   const filteredDestinations = useMemo(() => {
-    let result = [...destinations];
 
-    if (activeFilter !== "all") {
-      result = result.filter(
-        (destination) => destination.category === CATEGORY_MAP[activeFilter]
-      );
-    }
+  let result = [...destinations];
+
+  if (activeFilter !== "all") {
+    result = result.filter(
+      (destination) => destination.category === CATEGORY_MAP[activeFilter]
+    );
+  }
 
     const term = searchTerm.trim().toLowerCase();
 
@@ -198,6 +199,7 @@ export function HomeScreen({
       );
     });
   }, [activeFilter, language, searchTerm]);
+
 
   const vamosCurtirItems = useMemo(
     () => filteredDestinations.slice(0, 3),
@@ -455,17 +457,8 @@ export function HomeScreen({
             );
           })}
         </div>
-      </section>
 
-      <section
-        className="px-5 sm:px-8"
-        style={{
-          backgroundColor: "var(--branco)",
-          paddingTop: "48px",
-          paddingBottom: "64px",
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+        <div className="mt-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
@@ -593,17 +586,6 @@ export function HomeScreen({
               {t.arreiMalasSubtitle}
             </p>
           </div>
-
-          <button
-            type="button"
-            onClick={() => onToast("Abrindo todas as hospedagens...")}
-            className="self-start sm:self-auto shrink-0 font-bold
-                       bg-none border-none cursor-pointer hover:underline transition-all
-                       text-[14px] min-h-11 flex items-center gap-1"
-            style={{ color: ACCENT }}
-          >
-            {t.viewAll}
-          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
@@ -628,7 +610,7 @@ export function HomeScreen({
           paddingBottom: "64px",
         }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+        <div className="mt-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
