@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { MapPin } from "lucide-react";
 import type { Destination } from "@/constants/destinations";
 
@@ -5,7 +6,7 @@ interface RoteiroMapaSVGProps {
   stops: Destination[];
 }
 
-export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
+export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
   if (stops.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-[var(--cinza-leve)] rounded-[var(--radius)]">
@@ -172,4 +173,4 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
       </g>
     </svg>
   );
-}
+});

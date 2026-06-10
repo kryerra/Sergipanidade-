@@ -1,4 +1,4 @@
-import { useEffect, useState, Component, ErrorInfo, ReactNode, useRef } from "react";
+import { useEffect, useState, Component, ErrorInfo, ReactNode, useRef, memo } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Destination } from "@/constants/destinations";
@@ -87,6 +87,9 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
   }
 
   // Ajusta os limites (bounds) do mapa para conter todas as paradas
+  // stopsDependency evita re-rodar fitBounds se os destinos reais não mudaram
+  const stopsDependency = stops.map((s) => `${s.id}-${s.lat}-${s.lon}`).join(",");
+
   useEffect(() => {
     if (!mapLoaded || !mapRef.current || stops.length === 0) return;
 
@@ -119,7 +122,7 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
     } catch (err) {
       console.warn("Erro ao ajustar limites do Mapbox:", err);
     }
-  }, [mapLoaded, stops]);
+  }, [mapLoaded, stopsDependency]);
 
   // Estruturação do GeoJSON para desenhar a linha do trajeto
   const geojson: GeoJSON.Feature<GeoJSON.LineString> = {
@@ -323,7 +326,7 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
   );
 }
 
-export function RoteiroMapa({ stops }: RoteiroMapaProps) {
+export const RoteiroMapa = memo(function RoteiroMapa({ stops }: RoteiroMapaProps) {
   const isSupported = isWebGLSupported();
   
   // Se o token estiver em branco ou o navegador não possuir WebGL, fallback automático para SVG
@@ -341,4 +344,4 @@ export function RoteiroMapa({ stops }: RoteiroMapaProps) {
       <InnerRoteiroMapa stops={stops} />
     </MapErrorBoundary>
   );
-}
+});

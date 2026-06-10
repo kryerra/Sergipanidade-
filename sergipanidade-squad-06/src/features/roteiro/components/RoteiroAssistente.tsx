@@ -91,11 +91,15 @@ export function RoteiroAssistente({
                 t={t}
                 days={wizardData.days}
                 startDate={wizardData.startDate}
+                stopsPerDay={wizardData.stopsPerDay ?? 3}
                 onChangeDays={(days) =>
                   setWizardData((d: WizardData) => ({ ...d, days }))
                 }
                 onChangeStartDate={(startDate) =>
                   setWizardData((d: WizardData) => ({ ...d, startDate }))
+                }
+                onChangeStopsPerDay={(stopsPerDay) =>
+                  setWizardData((d: WizardData) => ({ ...d, stopsPerDay }))
                 }
               />
             )}
@@ -143,7 +147,7 @@ export function RoteiroAssistente({
                     onClick={onCancel}
                     className="flex-1 py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border-2 border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all"
                   >
-                    ← {t.wizardPrev}
+                    ← {t.wizardCancel}
                   </Button>
                 )}
                 

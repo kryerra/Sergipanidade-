@@ -45,4 +45,5 @@ export interface WizardData {
   startDate: string;
   interests: string[];
   budget: string;
+  stopsPerDay?: number; // Tarefa 7: quantidade de paradas por dia (1-4), padrão 3
 }

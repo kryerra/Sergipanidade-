@@ -71,38 +71,13 @@ export function RoteiroVazio({
         </button>
       </div>
 
-      {/* Botão Explorar Destinos - Botão Primário Sólido */}
+      {/* Botão Explorar Destinos */}
       <button
         onClick={onExploreDestinations}
-        className="w-full flex items-center justify-center gap-2 py-3.5 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#0A5D61] active:scale-[0.99] transition-all min-h-[46px] mb-3 shadow-sm cursor-pointer border-none"
+        className="w-full flex items-center justify-center gap-2 py-3.5 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[#0A5D61] active:scale-[0.99] transition-all min-h-[46px] shadow-sm cursor-pointer border-none"
       >
         <Compass size={16} />
         {t.exploreDestinations}
-      </button>
-
-      {/* Botão Roteiro Manual - Botão Outline Secundário sutil para corrigir hierarquia */}
-      <button
-        onClick={onExploreDestinations}
-        className="w-full py-2.5 rounded-[var(--radius-sm)] font-semibold text-[13px] transition-all min-h-[40px] cursor-pointer"
-        style={{
-          background: "transparent",
-          border: "2px solid rgba(13,115,119,0.35)",
-          color: "var(--primary)",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = "var(--teal-leve)";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--primary)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13,115,119,0.35)";
-        }}
-      >
-        {language === "pt"
-          ? "CRIAR ROTEIRO MANUAL"
-          : language === "en"
-            ? "CREATE MANUAL ITINERARY"
-            : "CREAR ITINERARIO MANUAL"}
       </button>
     </div>
   );

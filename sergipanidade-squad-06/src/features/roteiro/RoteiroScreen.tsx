@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { translations } from "@/constants/translations";
 import { ParadaGerada, WizardData, RoteiroItem } from "@/types";
 import { gerarRoteiroComIAComFallback } from "@/services/itinerary.service";
@@ -49,38 +49,60 @@ export function RoteiroScreen({
     startDate: new Date().toISOString().slice(0, 10),
     interests: [],
     budget: "",
+    stopsPerDay: 3, // Tarefa 7: valor padrão recomendado
   });
   
   const [paradasGeradas, setParadasGeradas] = useState<ParadaGerada[]>([]);
   const [diasAbertos, setDiasAbertos] = useState<string[]>(["day-1"]);
+  const [geracaoConcluida, setGeracaoConcluida] = useState(false);
   const refMontado = useRef(true);
+  const controllerRef = useRef<AbortController | null>(null);
 
-  // Sincroniza a tela caso o roteiro seja alterado externamente
+  // Sincroniza a tela caso o roteiro seja alterado externamente ou esvaziado
   useEffect(() => {
     if (roteiro.length > 0 && estadoVisual === "empty") {
       setEstadoVisual("view");
+    } else if (roteiro.length === 0 && estadoVisual === "view") {
+      setEstadoVisual("empty");
     }
   }, [roteiro.length, estadoVisual]);
 
-  // Marca o componente como desmontado para evitar atualizações de estado assíncronas após navegação
+  // Marca o componente como desmontado para evitar atualizações de estado assíncronas após navegação e aborta requisições
   useEffect(() => {
     refMontado.current = true;
     return () => {
       refMontado.current = false;
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
     };
   }, []);
+
+  const handleGeracaoConcluida = useCallback(() => {
+    if (!refMontado.current) return;
+    onToast(t.itineraryGenerated);
+    setEstadoVisual("view");
+  }, [onToast, t.itineraryGenerated]);
 
   /**
    * Dispara a requisição assíncrona para gerar o roteiro e configura a resposta.
    */
   const gerarRoteiro = async () => {
     setEstadoVisual("generating");
+    setGeracaoConcluida(false);
     const tempoInicio = Date.now();
     
+    // Aborta qualquer requisição anterior ativa
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = new AbortController();
+    
     try {
-      const { paradas, isAI } = await gerarRoteiroComIAComFallback(
+      const { paradas } = await gerarRoteiroComIAComFallback(
         dadosWizard,
         language,
+        controllerRef.current.signal
       );
 
       // Garante uma exibição mínima da animação para evitar flashes visuais abruptos
@@ -110,28 +132,18 @@ export function RoteiroScreen({
 
       setDiasAbertos(Array.from(new Set(paradas.map((p) => `day-${p.dia}`))));
 
-      const mensagemSucesso = isAI
-        ? language === "pt"
-          ? "✨ Roteiro gerado com Inteligência Artificial!"
-          : language === "es"
-            ? "✨ ¡Itinerario generado con Inteligencia Artificial!"
-            : "✨ Itinerary generated with Artificial Intelligence!"
-        : t.itineraryGenerated;
-
-      onToast(mensagemSucesso);
-      setEstadoVisual("view");
-    } catch (erro) {
+      setGeracaoConcluida(true);
+    } catch (erro: any) {
+      // Ignora erro se a requisição foi cancelada intencionalmente
+      if (erro.name === "AbortError" || erro.message === "Request aborted") {
+        return;
+      }
+      
       if (!refMontado.current) return;
       if (import.meta.env.DEV) {
         console.error("[DEV] Erro inesperado em gerarRoteiro:", erro);
       }
-      onToast(
-        language === "pt"
-          ? "Erro ao gerar roteiro. Tente novamente."
-          : language === "es"
-            ? "Error al generar itinerario. Inténtalo de nuevo."
-            : "Error generating itinerary. Please try again.",
-      );
+      onToast(t.itineraryError);
       setEstadoVisual("empty");
     }
   };
@@ -160,7 +172,11 @@ export function RoteiroScreen({
   if (estadoVisual === "generating") {
     return (
       <FundoVisual className="pt-[62px] flex items-center justify-center">
-        <RoteiroGerando language={language} />
+        <RoteiroGerando
+          language={language}
+          concluido={geracaoConcluida}
+          onAnimacaoConcluida={handleGeracaoConcluida}
+        />
       </FundoVisual>
     );
   }

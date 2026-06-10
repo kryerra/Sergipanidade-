@@ -36,7 +36,7 @@ export function isCotaDiariaEsgotada(erro: unknown): boolean {
  * Faz a chamada HTTP para a API oficial do Google AI Studio (Gemini).
  * Retorna em 1-2 segundos e é 100% gratuito (15 requisições por minuto).
  */
-async function chamarGoogleAIStudio(prompt: string): Promise<string> {
+async function chamarGoogleAIStudio(prompt: string, signal?: AbortSignal): Promise<string> {
   if (!API_KEY) {
     throw new Error(
       'Chave de API do Gemini não definida. Crie um arquivo .env com VITE_GEMINI_API_KEY.'
@@ -50,6 +50,7 @@ async function chamarGoogleAIStudio(prompt: string): Promise<string> {
       headers: {
         "Content-Type": "application/json",
       },
+      signal,
       body: JSON.stringify({
         contents: [
           {
@@ -57,7 +58,7 @@ async function chamarGoogleAIStudio(prompt: string): Promise<string> {
           },
         ],
         generationConfig: {
-          temperature: 0.7,
+          temperature: 0.2,
           responseMimeType: "application/json", // Força o Gemini a retornar JSON estruturado puro
         },
       }),
@@ -89,32 +90,51 @@ async function chamarGoogleAIStudio(prompt: string): Promise<string> {
  * Interface pública para geração de conteúdo com a IA.
  * Trata tentativas automáticas (retries) em caso de limite de requisições (erros 429).
  */
-export async function gerarRoteiroComIA(prompt: string): Promise<string> {
+export async function gerarRoteiroComIA(prompt: string, signal?: AbortSignal): Promise<string> {
   try {
-    return await chamarGoogleAIStudio(prompt);
+    return await chamarGoogleAIStudio(prompt, signal);
   } catch (erroApi: unknown) {
+    if (signal?.aborted || (erroApi instanceof Error && erroApi.name === 'AbortError')) {
+      throw erroApi;
+    }
     const mensagem = (erroApi as { message?: string })?.message ?? '';
     const is429 = mensagem.includes('429') || mensagem.includes('Too Many Requests');
 
     if (is429 && !isCotaDiariaEsgotada(erroApi)) {
       const tempoEsperaMs = extrairTempoEsperaMs(erroApi) ?? 15000;
 
-      if (tempoEsperaMs <= 30000) {
-        console.info(`Limite de requisições atingido (429) — tentando novamente em ${tempoEsperaMs / 1000}s…`);
-        await new Promise(r => setTimeout(r, tempoEsperaMs));
+      if (tempoEsperaMs <= 3000) {
+        if (import.meta.env.DEV) {
+          console.info(`Limite de requisições atingido (429) — tentando novamente em ${tempoEsperaMs / 1000}s…`);
+        }
+        await new Promise((r, reject) => {
+          const t = setTimeout(r, tempoEsperaMs);
+          if (signal) {
+            signal.addEventListener('abort', () => {
+              clearTimeout(t);
+              reject(new DOMException("Aborted", "AbortError"));
+            });
+          }
+        });
 
         try {
-          return await chamarGoogleAIStudio(prompt);
+          return await chamarGoogleAIStudio(prompt, signal);
         } catch (erroTentativa: unknown) {
-          console.warn('Falha na nova tentativa:', (erroTentativa as { message?: string })?.message ?? erroTentativa);
+          if (import.meta.env.DEV) {
+            console.warn('Falha na nova tentativa:', (erroTentativa as { message?: string })?.message ?? erroTentativa);
+          }
           throw erroTentativa;
         }
       } else {
-        console.warn('Tempo de espera muito longo. Falhando para acionar fallback.');
+        if (import.meta.env.DEV) {
+          console.warn('Tempo de espera muito longo. Falhando para acionar fallback.');
+        }
         throw erroApi;
       }
     } else {
-      console.warn('API de IA indisponível:', mensagem);
+      if (import.meta.env.DEV) {
+        console.warn('API de IA indisponível:', mensagem);
+      }
       throw erroApi;
     }
   }

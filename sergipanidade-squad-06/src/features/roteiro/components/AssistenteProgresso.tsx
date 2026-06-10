@@ -59,7 +59,7 @@ export function AssistenteProgresso({ step, total, language = "pt" }: Assistente
                     ? "text-[var(--primary)] scale-105"
                     : isCompleted
                     ? "text-[var(--preto)] opacity-95"
-                    : "text-[var(--cinza-txt)] opacity-60"
+                    : "text-[var(--texto-secundario)]"
                 }`}
               >
                 {labels[i]}
