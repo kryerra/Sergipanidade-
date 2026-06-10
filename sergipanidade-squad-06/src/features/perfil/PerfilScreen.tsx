@@ -143,7 +143,7 @@ function Toggle({
 // ─── Prop types ────────────────────────────────────────────────
 interface PerfilScreenProps {
   onToast: (message: string) => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
 }
@@ -353,6 +353,7 @@ export function PerfilScreen({
           {/* Avatar */}
           <UserAvatar
             name={userProfile.name}
+            photoUrl={userProfile.photo}
             size={72}
             bgColor="var(--primary)"
           />

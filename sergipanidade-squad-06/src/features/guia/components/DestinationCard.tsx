@@ -21,7 +21,7 @@ interface Destination {
 
 interface DestinationCardProps {
   destination: Destination;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   onNavigate: (screen: string, id: string) => void;
   exploreLabel?: string;
   onAction?: (e: React.MouseEvent) => void;
