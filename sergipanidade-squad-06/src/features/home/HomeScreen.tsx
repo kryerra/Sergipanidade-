@@ -477,7 +477,7 @@ export function HomeScreen({
                            transition-all whitespace-nowrap min-h-11"
                 style={{
                   backgroundColor: "var(--primary)",
-                  boxShadow: "0 4px 20px rgba(240,96,48,0.35)",
+                  boxShadow: "0 4px 20px rgba(13,115,119,0.22)",
                 }}
               >
                 {t.searchButton}
@@ -558,9 +558,9 @@ export function HomeScreen({
                          font-bold tracking-widest uppercase"
               style={{
                 fontSize: "11px",
-                backgroundColor: "#F5EDE6",
-                color: "#0D7377",
-                border: "1px solid rgba(224,92,0,0.22)",
+                backgroundColor: "rgba(13,115,119,0.10)",
+                color: "var(--azul)",
+                border: "1px solid rgba(13,115,119,0.22)",
               }}
             >
               {t.vamosCurtirTag}
