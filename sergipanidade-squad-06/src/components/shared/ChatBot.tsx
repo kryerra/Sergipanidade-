@@ -4,7 +4,7 @@ import { translations } from "@/constants/translations";
 
 interface ChatBotProps {
   isVisible: boolean;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 interface Message {

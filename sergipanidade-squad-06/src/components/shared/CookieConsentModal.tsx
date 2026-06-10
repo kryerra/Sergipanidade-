@@ -8,7 +8,7 @@ import { CookiePreferences } from '@/services/cache.service';
 
 interface CookieConsentModalProps {
   isOpen: boolean;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   defaultPreferences?: CookiePreferences | null;
   onSave: (consent: CookiePreferences) => void;
   onAcceptAll: () => void;
