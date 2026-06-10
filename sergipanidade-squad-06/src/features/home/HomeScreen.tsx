@@ -38,10 +38,10 @@ const EXPERIENCIAS_BG =
   "src/assets/images/orla-exp.jpg";
 
 const EXPERIENCIAS_BG_2 =
-  "src/assets/images/praia-do-mosqueiro-exp.jpg";
+  "src/assets/images/orla-por-do-sol-exp.jpg";
 
 const EXPERIENCIAS_BG_3 =
-  "src/assets/images/mercado-1-exp.jpg";
+  "src/assets/images/sj-exp1.png";
 
 import hotelsData from "@/constants/hotels.json";
 
@@ -588,7 +588,7 @@ export function HomeScreen({
 
         <div
           className="relative rounded-2xl overflow-hidden group"
-          style={{ minHeight: "300px" }}
+          style={{ minHeight: "450px" }}
         >
           <div
             key={currentExperiencia.id}
