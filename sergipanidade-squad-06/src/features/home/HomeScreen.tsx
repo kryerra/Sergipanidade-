@@ -557,32 +557,6 @@ export function HomeScreen({
             ))}
           </div>
         )}
-
-        {vamosCurtirItems.length > 0 && (
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <div
-              className="h-px flex-1"
-              style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
-            />
-
-            <span className="text-[12px] text-(--cinza-txt) whitespace-nowrap">
-              {filteredDestinations.length > 3
-                ? `${t.viewAll?.replace("→", "").trim()} ${
-                    filteredDestinations.length - 3
-                  } ${
-                    filteredDestinations.length - 3 === 1 ? t.result : t.results
-                  }`
-                : `${filteredDestinations.length} ${
-                    filteredDestinations.length === 1 ? t.result : t.results
-                  }`}
-            </span>
-
-            <div
-              className="h-px flex-1"
-              style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
-            />
-          </div>
-        )}
       </section>
 
       <section
