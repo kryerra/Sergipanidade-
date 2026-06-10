@@ -1,4 +1,4 @@
-export const translations = {
+const translationsBase = {
   pt: {
     // Home Screen
     greeting: {
@@ -165,8 +165,8 @@ export const translations = {
     timelineRegenerateBtn: 'Gerar novo roteiro',
 
     // Login Screen
-    welcomeBack: 'Bem-vindo de volta',
-    accessAccount: 'Acesse sua conta e continue explorando',
+    welcomeBack: 'Bem-vindo',
+    accessAccount: 'Acesse sua conta e descubra mais de Sergipe',
     email: 'E-mail',
     password: 'Senha',
     forgotPassword: 'Esqueci minha senha',
@@ -449,7 +449,8 @@ export const translations = {
     languages: {
       portuguese: 'Português',
       english: 'Inglês',
-      spanish: 'Espanhol'
+      spanish: 'Espanhol',
+      sergipanes: 'Sergipanês'
     },
 
     // Navbar
@@ -929,7 +930,8 @@ export const translations = {
     languages: {
       portuguese: 'Portuguese',
       english: 'English',
-      spanish: 'Spanish'
+      spanish: 'Spanish',
+      sergipanes: 'Sergipanês'
     },
 
     // Navbar
@@ -1409,7 +1411,8 @@ export const translations = {
     languages: {
       portuguese: 'Portugués',
       english: 'Inglés',
-      spanish: 'Español'
+      spanish: 'Español',
+      sergipanes: 'Sergipanês'
     },
 
     // Navbar
@@ -1440,6 +1443,14 @@ export const translations = {
     },
   },
 };
+
+export const translations = {
+  ...translationsBase,
+  sp: {
+    ...translationsBase.pt,
+    languageChanged: 'Idioma alterado para Sergipanês',
+  },
+} as const;
 
 export type Language = keyof typeof translations;
 export type TranslationKeys = typeof translations.pt;

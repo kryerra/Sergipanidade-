@@ -80,57 +80,8 @@ const DEST_LIKES: Record<string, string> = {
   "praia-do-saco": "31mil",
 };
 
-const CITIES = [
-  "Aracaju",
-  "São Cristóvão",
-  "Laranjeiras",
-  "Canindé",
-  "Lagarto",
-  "Itabaiana",
-];
-
-const FILTER_KEYS = [
-  "all",
-  "gastronomy",
-  "culture",
-  "beaches",
-  "history",
-  "nature",
-  "petFriendly",
-] as const;
-
-type FilterKey = (typeof FILTER_KEYS)[number];
-
-const CATEGORY_MAP: Record<FilterKey, string> = {
-  all: "TODOS",
-  gastronomy: "GASTRONOMIA",
-  culture: "CULTURA",
-  beaches: "PRAIA",
-  history: "HISTÓRIA",
-  nature: "NATUREZA",
-  petFriendly: "PET FRIENDLY",
-};
-
 function getLikes(id: string) {
   return DEST_LIKES[id] ?? "12mil";
-}
-
-function getFilterIcon(key: FilterKey) {
-  switch (key) {
-    case "gastronomy":
-      return UtensilsCrossed;
-    case "culture":
-    case "history":
-      return Landmark;
-    case "nature":
-      return TreePine;
-    case "petFriendly":
-      return PawPrint;
-    case "all":
-    case "beaches":
-    default:
-      return Waves;
-  }
 }
 
 export function HomeScreen({
@@ -140,21 +91,12 @@ export function HomeScreen({
   onChangeLanguage,
 }: HomeScreenProps) {
   const [showLanguageMenu, setShowLanguageMenu] = useState<boolean>(false);
-  const [showCityMenu, setShowCityMenu] = useState<boolean>(false);
-  const [selectedCity, setSelectedCity] = useState<string>("Aracaju");
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [experienciaIndex, setExperienciaIndex] = useState<number>(0);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
-  const cityMenuRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language] as typeof translations.pt;
-
-  const cityOptions = useMemo(
-    () => CITIES.filter((city) => city !== selectedCity),
-    [selectedCity]
-  );
 
   const experienciasSlides = useMemo(
     () => [
@@ -196,19 +138,11 @@ export function HomeScreen({
   const currentExperiencia = experienciasSlides[experienciaIndex];
 
   const filteredDestinations = useMemo(() => {
-    let result = [...destinations];
-
-    if (activeFilter !== "all") {
-      result = result.filter(
-        (destination) => destination.category === CATEGORY_MAP[activeFilter]
-      );
-    }
-
     const term = searchTerm.trim().toLowerCase();
 
-    if (!term) return result;
+    if (!term) return destinations;
 
-    return result.filter((destination) => {
+    return destinations.filter((destination) => {
       const desc =
         language === "en" && destination.shortDesc_en
           ? destination.shortDesc_en
@@ -224,7 +158,7 @@ export function HomeScreen({
         destination.bairro.toLowerCase().includes(term)
       );
     });
-  }, [activeFilter, language, searchTerm]);
+  }, [language, searchTerm]);
 
   const vamosCurtirItems = useMemo(
     () => filteredDestinations.slice(0, 3),
@@ -286,23 +220,6 @@ export function HomeScreen({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showLanguageMenu]);
 
-  useEffect(() => {
-    if (!showCityMenu) return;
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        cityMenuRef.current &&
-        !cityMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowCityMenu(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showCityMenu]);
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--branco)" }}>
       <HeroSlideshow
@@ -311,48 +228,6 @@ export function HomeScreen({
         overlayOpacity={0.52}
       >
         <>
-          <div className="absolute left-5 top-5 z-20" ref={cityMenuRef}>
-            <button
-              type="button"
-              onClick={() => setShowCityMenu((prev) => !prev)}
-              aria-expanded={showCityMenu}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
-                         border border-white/20 rounded-full text-white text-[13px] font-medium
-                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
-            >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
-              <span>{selectedCity}</span>
-              <ChevronDown
-                size={14}
-                className={`opacity-60 transition-transform ${
-                  showCityMenu ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {showCityMenu && (
-              <div
-                className="absolute top-full left-0 mt-2 bg-white rounded-sm
-                           shadow-(--sombra-md) border border-(--cinza-med)
-                           overflow-hidden min-w-42.5 z-20"
-              >
-                {cityOptions.map((city) => (
-                  <button
-                    type="button"
-                    key={city}
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setShowCityMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-[14px] text-(--cinza-escuro)
-                               hover:bg-(--cinza-mais-claro) transition-colors"
-                  >
-                    {city}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
           <div className="absolute top-5 right-5 sm:right-8 z-20" ref={langMenuRef}>
             <button
@@ -490,62 +365,6 @@ export function HomeScreen({
       <section
         className="px-5 sm:px-8"
         style={{
-          backgroundColor: "#FFFFFF",
-          paddingTop: "28px",
-          paddingBottom: "28px",
-        }}
-      >
-        <h2
-          className="font-['Fjalla_One'] text-(--preto) tracking-wide mb-4"
-          style={{ fontSize: "19px" }}
-        >
-          {t.filterTitle}
-        </h2>
-
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          {FILTER_KEYS.map((key) => {
-            const isActive = activeFilter === key;
-            const FilterIcon = getFilterIcon(key);
-
-            return (
-              <button
-                type="button"
-                key={key}
-                onClick={() => {
-                  setActiveFilter(key);
-
-                  if (key !== "all") {
-                    onToast(`${t.filteringBy}: ${t.filters[key]}`);
-                  }
-                }}
-                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-medium
-                            cursor-pointer transition-all duration-150 min-h-9.5
-                            whitespace-nowrap border
-                            ${
-                              isActive
-                                ? "text-white border-transparent"
-                                : "bg-white text-(--cinza-txt) border-(--cinza-med) hover:border-(--primary)/50 hover:text-primary"
-                            }`}
-                style={
-                  isActive
-                    ? {
-                        backgroundColor: "var(--primary)",
-                        boxShadow: "0 2px 10px rgba(240,96,48,0.25)",
-                      }
-                    : undefined
-                }
-              >
-                <FilterIcon size={14} strokeWidth={2} />
-                <span>{t.filters[key]}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      <section
-        className="px-5 sm:px-8"
-        style={{
           backgroundColor: "var(--branco)",
           paddingTop: "48px",
           paddingBottom: "64px",
@@ -611,7 +430,6 @@ export function HomeScreen({
               type="button"
               onClick={() => {
                 setSearchTerm("");
-                setActiveFilter("all");
                 onToast(t.noResults?.cleared);
               }}
               className="px-6 py-3 text-white border-none rounded-[10px]

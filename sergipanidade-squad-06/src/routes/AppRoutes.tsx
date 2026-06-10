@@ -3,7 +3,7 @@
  * Extracted from App.tsx to separate concerns
  */
 import React, { Suspense } from 'react';
-import { Routes, Route, useNavigate, useLocation, useParams } from 'react-router';
+import { Routes, Route, useNavigate, useParams } from 'react-router';
 import { useAppContext } from "@/context/AppContext";
 import { translations } from "@/constants/translations";
 import { getDestinationById } from "@/constants/destinations";
@@ -17,13 +17,14 @@ const RoteiroScreen = React.lazy(() => import("@/features/roteiro/RoteiroScreen"
 const ParceiroScreen = React.lazy(() => import("@/features/parceiro/ParceiroScreen").then(m => ({ default: m.ParceiroScreen })));
 const PerfilScreen = React.lazy(() => import("@/features/perfil/PerfilScreen").then(m => ({ default: m.PerfilScreen })));
 const CulturaScreen = React.lazy(() => import("@/features/cultura/CulturaScreen").then(m => ({ default: m.CulturaScreen })));
+const PlaylistScreen = React.lazy(() => import("@/features/playlist/PlaylistScreen").then(m => ({ default: m.PlaylistScreen })));
 
 export interface AppRoutesProps {
   onNavigate: (screen: string, destinationId?: string) => void;
   onToast: (msg: string) => void;
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
+  onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   currentScreen: string;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: AppRoutesProps) {
@@ -122,6 +123,10 @@ export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: A
 
         <Route path="/cultura" element={
           <CulturaScreen onToast={onToast} language={language} />
+        } />
+
+        <Route path="/playlist" element={
+          <PlaylistScreen onNavigate={onNavigate} onToast={onToast} language={language} />
         } />
       </Routes>
     </Suspense>

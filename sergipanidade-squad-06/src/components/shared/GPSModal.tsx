@@ -5,7 +5,7 @@ interface GPSModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   destinationName?: string;
   lat?: number;
   lon?: number;

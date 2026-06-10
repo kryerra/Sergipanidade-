@@ -1,3 +1,5 @@
+import arcoOrlaImage from '@/assets/images/arco-orla.jpg';
+
 export interface Destination {
   id: string;
   icon: string;
@@ -51,7 +53,7 @@ export const destinations: Destination[] = [
     phone: '(79) 3179-1947',
     email: 'turismo@aracaju.se.gov.br',
     social: '@visitearacaju',
-    image: 'https://imgmd.net/images/c_limit%2Cw_1600/v1/guia/1702820/arcos-da-orla-de-atalaia-em-aracaju.jpg',
+    image: arcoOrlaImage,
     gradient: 'from-[#458B8B] to-[#2A6B6B]',
     iconBg: 'bg-[rgba(69,139,139,0.12)]',
     tip: 'Vá ao final da tarde para ver o pôr do sol espetacular. Alugue uma bicicleta e explore toda a orla. Não perca o Oceanário de Aracaju!',

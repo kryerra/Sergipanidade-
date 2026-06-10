@@ -49,6 +49,9 @@ export default function App(): JSX.Element {
       case 'cultura':
         navigate('/cultura');
         break;
+      case 'playlist':
+        navigate('/playlist');
+        break;
       case 'login':
       default:
         navigate('/');
@@ -59,7 +62,7 @@ export default function App(): JSX.Element {
     handleToast(translations[language].openingGPS);
   };
 
-  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es'): void => {
+  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es' | 'sp'): void => {
     setLanguage(lang);
     handleToast(translations[lang].languageChanged);
   };
@@ -74,6 +77,7 @@ export default function App(): JSX.Element {
   else if (currentPath.includes('/parceiro')) currentScreen = 'parceiro';
   else if (currentPath.includes('/perfil')) currentScreen = 'perfil';
   else if (currentPath.includes('/cultura')) currentScreen = 'cultura';
+  else if (currentPath.includes('/playlist')) currentScreen = 'playlist';
 
   const isNavbarVisible = currentScreen !== 'login';
   const isChatBotVisible = currentScreen !== 'login';

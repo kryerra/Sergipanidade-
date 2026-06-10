@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { destinations, type Destination } from "@/constants/destinations";
 import { translations } from "@/constants/translations";
 import {
-  Search, X, ChevronDown, Map, List, MapPin, Star,
+  Search, X, ChevronDown, MapPin, Star,
   ThumbsUp, ThumbsDown, Share2, Bookmark, CheckCircle2,
   SlidersHorizontal, ArrowLeft, Navigation, UtensilsCrossed,
   Landmark, Waves, TreePine, PawPrint, Users,
@@ -58,17 +58,6 @@ const SORT_OPTIONS = [
   { value: 'distance',  label: 'Mais próximos' },
 ];
 
-// ─── Mapa — bounds de Sergipe ────────────────────────────────────────────────
-
-const MAP_BOUNDS = { minLat: -11.3, maxLat: -9.4, minLon: -38.2, maxLon: -36.7 };
-const MAP_BG = 'https://images.unsplash.com/photo-1694186391291-f898903fb0aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTZXJnaXBlJTIwQnJhemlsJTIwYWVyaWFsJTIwY29hc3QlMjBzYXRlbGxpdGUlMjB2aWV3fGVufDF8fHx8MTc3NzkzOTg4OXww&ixlib=rb-4.1.0&q=80&w=1080';
-
-function getPinPos(lat: number, lon: number) {
-  const x = ((lon - MAP_BOUNDS.minLon) / (MAP_BOUNDS.maxLon - MAP_BOUNDS.minLon)) * 100;
-  const y = ((MAP_BOUNDS.maxLat - lat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat)) * 100;
-  return { x: Math.max(3, Math.min(95, x)), y: Math.max(3, Math.min(93, y)) };
-}
-
 function parseDistance(d: string): number {
   return parseFloat(d.replace(/[^0-9.]/g, '')) || 0;
 }
@@ -79,7 +68,7 @@ interface CardProps {
   dest: Destination;
   onNavigate: (screen: string, id: string) => void;
   onToast: (msg: string) => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
@@ -247,297 +236,12 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
 
 // ─── MapView ─────────────────────────────────────────────────────────────────
 
-interface MapViewProps {
-  filteredDests: Destination[];
-  onNavigate: (screen: string, id: string) => void;
-  onSwitchList: () => void;
-  onToast: (msg: string) => void;
-}
-
-function MapView({ filteredDests, onNavigate, onSwitchList, onToast }: MapViewProps) {
-  const [activePin, setActivePin] = useState<string | null>(null);
-  const [hoveredPin, setHoveredPin] = useState<string | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
-
-  const activeDest = activePin ? filteredDests.find(d => d.id === activePin) : null;
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (mapRef.current && !mapRef.current.contains(e.target as Node)) {
-        setActivePin(null);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  return (
-    <div className="relative flex" style={{ height: '600px' }}>
-
-      {/* ── Mapa principal ── */}
-      <div ref={mapRef} className="relative flex-1 overflow-hidden bg-[#d6e8f0]">
-
-        {/* Background aerial image */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${MAP_BG})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'saturate(0.85) brightness(0.95)',
-          }}
-        />
-
-        {/* Tint overlay */}
-        <div className="absolute inset-0 bg-[#1B3A4B]/20" />
-
-        {/* Grid decorativo */}
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-
-        {/* Label do estado */}
-        <div className="absolute top-4 left-4 z-20">
-          <span className="px-3 py-1.5 rounded-full text-[11px] font-bold text-white/90 tracking-widest uppercase flex items-center gap-1.5"
-                style={{ backgroundColor: 'rgba(24,24,27,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-            <MapPin size={12} strokeWidth={2.5} />
-            Sergipe, Brasil
-          </span>
-        </div>
-
-        {/* Pins */}
-        {filteredDests.map((dest) => {
-          const pos  = getPinPos(dest.lat, dest.lon);
-          const cat  = CATEGORY_CONFIG[dest.category] ?? { color: '#78716C', bg: '#F5F5F4', label: dest.category, icon: MapPin };
-          const isActive  = activePin === dest.id;
-          const isHovered = hoveredPin === dest.id;
-          const IconComponent = cat.icon;
-
-          return (
-            <button
-              key={dest.id}
-              onClick={() => setActivePin(isActive ? null : dest.id)}
-              onMouseEnter={() => setHoveredPin(dest.id)}
-              onMouseLeave={() => setHoveredPin(null)}
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center
-                         cursor-pointer border-none bg-transparent p-0 transition-all duration-150"
-              style={{
-                left: `${pos.x}%`,
-                top:  `${pos.y}%`,
-                zIndex: isActive ? 30 : isHovered ? 20 : 10,
-                transform: `translate(-50%, -50%) scale(${isActive ? 1.2 : isHovered ? 1.1 : 1})`,
-              }}
-            >
-              {/* Pin body */}
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center
-                           shadow-[0_3px_12px_rgba(0,0,0,0.35)] border-2 border-white"
-                style={{ backgroundColor: cat.color }}
-              >
-                <IconComponent size={18} strokeWidth={2.5} className="text-white" />
-              </div>
-              {/* Pin stem */}
-              <div
-                className="w-0 h-0"
-                style={{
-                  borderLeft: '5px solid transparent',
-                  borderRight: '5px solid transparent',
-                  borderTop: `8px solid ${cat.color}`,
-                  marginTop: '-1px',
-                  filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.25))',
-                }}
-              />
-
-              {/* Label on hover/active */}
-              {(isActive || isHovered) && (
-                <div
-                  className="absolute bottom-full mb-2 px-2 py-1 rounded-lg text-[11px] font-bold
-                             text-white whitespace-nowrap shadow-lg"
-                  style={{ backgroundColor: 'rgba(24,24,27,0.88)', backdropFilter: 'blur(4px)' }}
-                >
-                  {dest.name}
-                </div>
-              )}
-            </button>
-          );
-        })}
-
-        {/* Popup do pin ativo */}
-        {activeDest && (
-          <div
-            className="absolute z-40 w-[240px] bg-white rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.35)]"
-            style={{
-              left: `${Math.min(getPinPos(activeDest.lat, activeDest.lon).x, 72)}%`,
-              top:  `${Math.min(getPinPos(activeDest.lat, activeDest.lon).y, 65)}%`,
-              transform: 'translate(-50%, -110%)',
-            }}
-          >
-            {/* Foto miniatura */}
-            <div className="relative overflow-hidden" style={{ height: '110px' }}>
-              <ImageWithFallback
-                src={activeDest.image}
-                alt={activeDest.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              <button
-                onClick={() => setActivePin(null)}
-                className="absolute top-2 right-2 w-6 h-6 bg-black/50 text-white rounded-full border-none cursor-pointer
-                           flex items-center justify-center hover:bg-black/70 transition-colors"
-              >
-                <X size={12} />
-              </button>
-              {VERIFIED_IDS.has(activeDest.id) && (
-                <div className="absolute bottom-2 left-2">
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[rgba(22,163,74,0.90)] text-white">
-                    <CheckCircle2 size={9} /> VERIFICADO
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Info */}
-            <div className="p-3">
-              <h4 className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide mb-0.5" style={{ fontSize: '14px' }}>
-                {activeDest.name}
-              </h4>
-              <div className="flex items-center gap-1 mb-2">
-                <MapPin size={10} className="text-[var(--cinza-txt)]" />
-                <span className="text-[11px] text-[var(--cinza-txt)]">{activeDest.bairro}</span>
-                <div className="flex items-center gap-1 ml-auto">
-                <Star size={10} fill="#F59E0B" stroke="#F59E0B" strokeWidth={2} />
-                <span className="text-[11px] text-[var(--cinza-txt)]">{activeDest.rating}</span>
-              </div>
-              </div>
-              <button
-                onClick={() => { setActivePin(null); onNavigate('detalhe', activeDest.id); }}
-                className="w-full py-2 rounded-[8px] text-white text-[12px] font-bold border-none cursor-pointer
-                           transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ backgroundColor: 'var(--primary)' }}
-              >
-                Ver detalhes →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Legenda de categorias — canto inferior esquerdo */}
-        <div
-          className="absolute bottom-4 left-4 z-20 rounded-xl p-2.5 flex flex-col gap-1.5"
-          style={{ backgroundColor: 'rgba(24,24,27,0.70)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)' }}
-        >
-          <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest mb-0.5">Categorias</p>
-          {Object.entries(CATEGORY_CONFIG).slice(0, 5).map(([key, val]) => (
-            <div key={key} className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: val.color }} />
-              <span className="text-[10px] text-white/80">{val.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Painel lateral direito — 300px ── */}
-      <div
-        className="hidden md:flex flex-col border-l border-[var(--cinza-med)] bg-white overflow-hidden"
-        style={{ width: '300px', flexShrink: 0 }}
-      >
-        {/* Header do painel */}
-        <div className="px-4 py-3 border-b border-[var(--cinza-med)] bg-[var(--cinza-leve)]">
-          <p className="font-bold text-[var(--preto)]" style={{ fontSize: '13px' }}>
-            {filteredDests.length} destinos no mapa
-          </p>
-          <p className="text-[11px] text-[var(--cinza-txt)]">Clique no pin ou no card para ver detalhes</p>
-        </div>
-
-        {/* Lista scrollável */}
-        <div className="flex-1 overflow-y-auto">
-          {filteredDests.map((dest) => {
-            const cat = CATEGORY_CONFIG[dest.category] ?? { color: '#78716C', bg: '#F5F5F4', label: dest.category, icon: MapPin };
-            const isActive = activePin === dest.id;
-            const IconComponent = cat.icon;
-
-            return (
-              <button
-                key={dest.id}
-                onClick={() => setActivePin(isActive ? null : dest.id)}
-                className="w-full flex items-start gap-3 px-4 py-3 text-left border-none cursor-pointer
-                           border-b border-[var(--cinza-med)] transition-colors"
-                style={{ backgroundColor: isActive ? 'var(--laranja-leve)' : 'white' }}
-                onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--cinza-leve)'; }}
-                onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'white'; }}
-              >
-                {/* Ícone colorido */}
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: cat.color + '22' }}
-                >
-                  <IconComponent size={18} strokeWidth={2.5} style={{ color: cat.color }} />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="font-bold truncate"
-                    style={{ fontSize: '13px', color: isActive ? 'var(--primary)' : 'var(--preto)' }}
-                  >
-                    {dest.name}
-                  </p>
-                  <p className="text-[11px] text-[var(--cinza-txt)] truncate">{dest.bairro} · {dest.distance}</p>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <Star size={10} fill="#F59E0B" stroke="#F59E0B" strokeWidth={2} />
-                    <span className="text-[11px] font-medium text-[var(--preto)]">{dest.rating}</span>
-                  </div>
-                </div>
-
-                {/* Indicador ativo */}
-                {isActive && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] mt-2 flex-shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── Botão flutuante "Voltar para lista" ── */}
-      <button
-        onClick={onSwitchList}
-        className="absolute bottom-5 right-[316px] md:right-[316px] z-30 flex items-center gap-2
-                   px-4 py-2.5 rounded-full text-white font-bold text-[13px] cursor-pointer
-                   border-none transition-all hover:opacity-90 active:scale-[0.98]
-                   shadow-[0_4px_20px_rgba(0,0,0,0.35)] md:hidden"
-        style={{ backgroundColor: 'var(--navbar)', right: '16px', bottom: '80px' }}
-      >
-        <List size={15} />
-        Voltar para lista
-      </button>
-
-      <button
-        onClick={onSwitchList}
-        className="absolute bottom-5 z-30 hidden md:flex items-center gap-2
-                   px-4 py-2.5 rounded-full text-white font-bold text-[13px] cursor-pointer
-                   border-none transition-all hover:opacity-90 active:scale-[0.98]
-                   shadow-[0_4px_20px_rgba(0,0,0,0.35)]"
-        style={{ backgroundColor: 'var(--navbar)', left: '50%', transform: 'translateX(-50%)', bottom: '20px' }}
-      >
-        <List size={15} />
-        Voltar para lista
-      </button>
-    </div>
-  );
-}
-
-// ─── GuiaScreen principal ────────────────────────────────────────────────────
 
 interface GuiaScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
   onToast: (message: string) => void;
   onOpenGPS: (destinationId?: string) => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScreenProps) {
@@ -545,7 +249,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchTerm, setSearchTerm]       = useState('');
   const [sortOrder, setSortOrder]         = useState('relevance');
-  const [viewMode, setViewMode]           = useState<'list' | 'map'>('list');
   const [showSortMenu, setShowSortMenu]   = useState(false);
 
   const t      = translations[language] as any;
@@ -711,29 +414,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
               )}
             </div>
 
-            {/* Toggle Ver Mapa */}
-            <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-              <span className="text-[12px] font-medium text-[var(--cinza-txt)] hidden sm:inline whitespace-nowrap">
-                {viewMode === 'map' ? 'Ver Lista' : 'Ver Mapa'}
-              </span>
-              <button
-                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] text-[13px] font-medium
-                           cursor-pointer border transition-all min-h-[36px]"
-                style={viewMode === 'map' ? {
-                  backgroundColor: 'var(--primary)',
-                  borderColor: 'var(--primary)',
-                  color: '#fff',
-                } : {
-                  backgroundColor: '#fff',
-                  borderColor: 'var(--cinza-med)',
-                  color: 'var(--preto)',
-                }}
-              >
-                {viewMode === 'map' ? <List size={14} /> : <Map size={14} />}
-                <span className="hidden sm:inline">{viewMode === 'map' ? 'Lista' : 'Mapa'}</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -742,15 +422,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
           CONTEÚDO — LISTA ou MAPA
       ════════════════════════════════════════════════════════════ */}
 
-      {viewMode === 'map' ? (
-        <MapView
-          filteredDests={result}
-          onNavigate={(screen, id) => onNavigate(screen, id)}
-          onSwitchList={() => setViewMode('list')}
-          onToast={onToast}
-        />
-      ) : (
-        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-8">
 
           {/* Contador de resultados */}
           {(searchTerm || activeCategory !== 'Todos') && (
@@ -806,7 +478,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
             </div>
           )}
         </div>
-      )}
 
       {/* Espaço inferior para bottom nav mobile */}
       <div className="md:hidden h-[calc(64px+env(safe-area-inset-bottom))]" />
