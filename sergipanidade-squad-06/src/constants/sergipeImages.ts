@@ -1,8 +1,9 @@
-import FOTO_SLIDE_1 from '@/assets/images/foto-slide-1.jpg';
-import FOTO_SLIDE_3 from '@/assets/images/foto-slide-3.jpg';
-import FOTO_SLIDE_4 from '@/assets/images/foto-slide-4.jpg';
-import QUADRILHEIRA from '@/assets/images/quadrilheira.jpeg';
-import QUADRILHA_UNIDOS from '@/assets/images/quadrilhaunidos.jpeg';
+import FOTO_SLIDE_1 from '@/assets/images/tartaruga-slide.png';
+import FOTO_SLIDE_3 from '@/assets/images/foto-slide-6.png';
+import FOTO_SLIDE_4 from '@/assets/images/estatua-slide.png';
+import QUADRILHEIRA from '@/assets/images/rio-slide.png';
+import QUADRILHA_UNIDOS from '@/assets/images/bar-slide1.png';
+
 
 /**
  * Imagens de Sergipe para slideshows dos headers
