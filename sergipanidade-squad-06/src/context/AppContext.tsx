@@ -3,8 +3,8 @@ import { UserProfile, RoteiroItem, Review } from '@/types'; // Fix 6: fonte úni
 import { translations } from '@/constants/translations';
 
 interface AppContextType {
-  language: 'pt' | 'en' | 'es';
-  setLanguage: (lang: 'pt' | 'en' | 'es') => void;
+  language: 'pt' | 'en' | 'es' | 'sp';
+  setLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   userProfile: UserProfile;
   setUserProfile: (profile: UserProfile) => void;
   roteiro: RoteiroItem[];
@@ -33,6 +33,7 @@ const getInitialUserProfile = (): UserProfile => {
       name: 'Marina Andrade',
       email: 'marina.andrade@email.com',
       userType: 'turista',
+      photo: '',
       phone: '(79) 98765-4321',
       notifications: {
         nearby: true,
@@ -56,6 +57,7 @@ const getInitialUserProfile = (): UserProfile => {
     name: 'Marina Andrade',
     email: 'marina.andrade@email.com',
     userType: 'turista',
+    photo: '',
     phone: '(79) 98765-4321',
     notifications: {
       nearby: true,
@@ -67,7 +69,7 @@ const getInitialUserProfile = (): UserProfile => {
 };
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<'pt' | 'en' | 'es'>('pt');
+  const [language, setLanguage] = useState<'pt' | 'en' | 'es' | 'sp'>('pt');
   const [roteiro, setRoteiro] = useState<RoteiroItem[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
 

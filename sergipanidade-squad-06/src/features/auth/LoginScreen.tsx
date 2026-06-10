@@ -1,16 +1,37 @@
 import { useState, useRef, useEffect } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
-import bgImage from "@/assets/images/login_teste.png";
+import loginBg1 from '@/assets/images/lambesujo.jpg';
+import loginBgTeste from '@/assets/images/login_teste.png';
+import loginBg3 from '@/assets/images/samba-de-coco-laranjeiras.jpg';
+import loginBg4 from '@/assets/images/amendoim.jpg';
 import googleLogo from "@/imports/Google_Logo.png";
 import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
+import logoSaoJoao from '@/assets/images/logo-sao-joao.png';
+import avatarJoao from '@/assets/images/AVATAR JOAO.jpg';
+import avatarMiauteria from '@/assets/images/miauteriapf.jpeg';
 import { DocumentosModal } from '@/components/shared/DocumentosModal';
+
+const LOGIN_BACKGROUNDS = [loginBg1, loginBgTeste, loginBg3, loginBg4];
+
+// Configuração de posicionamento e escala do logo da página de login (logo-sao-joao.png)
+const LOGIN_LOGO_SCALE = 3; // Ajuste este valor para alterar a escala do logo na página de login
+const LOGIN_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '0px',      // Ajuste vertical (ex: '-10px' para subir, '10px' para descer)
+  left: '-30px',     // Ajuste horizontal (ex: '-20px' para esquerda, '20px' para direita)
+  transform: `scale(${LOGIN_LOGO_SCALE})`,
+  transformOrigin: 'center center', // Origem da transformação
+  width: '290px',  // Largura (equivalente ao original w-72.5)
+  height: '128px', // Altura (equivalente ao original h-32)
+  objectFit: 'contain' as const,
+};
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
   onToast: (message: string) => void;
-  language: 'pt' | 'en' | 'es';
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
+  language: 'pt' | 'en' | 'es' | 'sp';
+  onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   onLogin: (profile: UserProfile) => void;
 }
 
@@ -31,6 +52,14 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [recoverEmail, setRecoverEmail] = useState('');
   const languageMenuRef = useRef<HTMLDivElement>(null);
+
+  // Ajuste o valor de x e y diretamente no código para mover o texto do login.
+  // x positivo move para a direita; x negativo move para a esquerda.
+  // y positivo move para baixo; y negativo move para cima.
+  const heroOffset = { x: 620, y: 60 };
+  const [activeLoginBg, setActiveLoginBg] = useState(0);
+  const isLargoBg = false;
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -90,6 +119,14 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showLanguageMenu]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveLoginBg((prev) => (prev + 1) % LOGIN_BACKGROUNDS.length);
+    }, 7000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleRecoverPassword = (): void => {
     if (!recoverEmail.trim()) {
@@ -169,7 +206,12 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     setShowGoogleAccountSelector(true);
   };
 
-  const handleAccountSelect = (accountName: string, accountEmail: string, accountType: 'turista' | 'estabelecimento'): void => {
+  const handleAccountSelect = (
+    accountName: string,
+    accountEmail: string,
+    accountType: 'turista' | 'estabelecimento',
+    accountPhoto?: string,
+  ): void => {
     setShowGoogleAccountSelector(false);
     setShowGoogleAuth(true);
 
@@ -179,6 +221,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         name: accountName,
         email: accountEmail,
         userType: accountType,
+        photo: accountPhoto,
         notifications: {
           nearby: true,
           promotions: true,
@@ -214,6 +257,11 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
     onToast(t.loginSuccess);
   };
 
+  const handleBackToLoginOptions = (): void => {
+    setShowLoginForm(false);
+    setLoginData({ email: '', password: '' });
+  };
+
   return (
     <div className="min-h-screen bg-white grid grid-cols-1 md:grid-cols-2 relative">
       {/* Language Selector */}
@@ -230,7 +278,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             <line x1="2" y1="12" x2="22" y2="12" />
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
-          <span>{language === 'pt' ? 'PT' : language === 'en' ? 'EN' : 'ES'}</span>
+          <span>{language === 'pt' ? 'PT' : language === 'en' ? 'EN' : language === 'es' ? 'ES' : 'SP'}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="6 9 12 15 18 9" />
           </svg>
@@ -283,29 +331,41 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
               <span>{t.languages.spanish}</span>
               {language === 'es' && <span className="ml-auto text-[#0D7377]">✓</span>}
             </button>
+            <button
+              onClick={() => {
+                onChangeLanguage('sp');
+                setShowLanguageMenu(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium
+                          transition-all border-none cursor-pointer ${language === 'sp'
+                  ? 'bg-[#0D7377]/10 text-[#0D7377]'
+                  : 'bg-white text-[#555] hover:bg-[#F7F6F3]'
+                }`}
+            >
+              <span>{t.languages.sergipanes}</span>
+              {language === 'sp' && <span className="ml-auto text-[#0D7377]">✓</span>}
+            </button>
           </div>
         )}
       </div>
 
       {/* Left Panel */}
-      <div className="hidden md:flex bg-[#0D7377] px-8 sm:px-12 md:px-16 py-16 md:py-24 flex-col justify-center relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'left center'
-        }}>
+      <div className="hidden md:flex bg-[#0D7377] px-8 sm:px-12 md:px-16 py-16 md:py-24 flex-col justify-center relative overflow-hidden">
+        {LOGIN_BACKGROUNDS.map((bg, index) => (
+          <div
+            key={bg}
+            className="absolute inset-0 bg-no-repeat bg-cover"
+            style={{
+              backgroundImage: `url(${bg})`,
+              backgroundPosition: 'left center',
+              opacity: activeLoginBg === index ? 1 : 0,
+              transition: 'opacity 0.8s ease-in-out',
+            }}
+          />
+        ))}
 
         <div className="relative z-10 max-w-130">
-          <div className="mb-10">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain filter invert -ml-12.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.90)]" />
-          </div>
-
-          <h1 className="font-['Fjalla_One'] text-[56px] leading-[1.1] text-white mb-6
-                         tracking-wide"
-            style={{ textShadow: '0 14px 28px rgba(0, 0, 0, 0.50)' }}>
-            {t.loginHeroLine1}<br />{t.loginHeroLine2}<br />
-            <span className="text-[#F7F6F3] opacity-90">{t.loginHeroHighlight}</span>
-          </h1>
+          {/* Hero text removed per request */}
         </div>
       </div>
 
@@ -314,7 +374,11 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
         <div className="max-w-110 mx-auto w-full">
           {/* Logo */}
           <div className="flex justify-center mb-12">
-            <img src={logoSergipanidade} alt="Logo Sergipanidade" className="w-72.5 h-32 object-contain" />
+            <img
+              src={logoSaoJoao}
+              alt="Logo São João"
+              style={LOGIN_LOGO_STYLE}
+            />
           </div>
 
           {!showLoginForm ? (
@@ -330,6 +394,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
               <div className="space-y-4">
                 {/* Botão Fazer Login */}
                 <button
+                  type="button"
                   onClick={() => setShowLoginForm(true)}
                   className="w-full px-6 py-4 bg-[#0D7377] text-white font-semibold text-base
                              rounded-xl shadow-[0_2px_8px_rgba(13,115,119,0.25)]
@@ -348,14 +413,9 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   {t.createAccount}
                 </button>
 
-                {/* Divider */}
-                <div className="text-center text-xs text-[#bbb] my-6 relative">
-                  <span className="relative z-10 bg-white px-3">{t.or}</span>
-                  <div className="absolute top-1/2 left-0 right-0 h-px bg-[#E0E0E0] -translate-y-1/2 -z-10" />
-                </div>
-
                 {/* Botão Google */}
                 <button
+                  type="button"
                   onClick={handleGoogleLogin}
                   className="w-full px-6 py-4 bg-white text-[#333] font-semibold text-base
                              rounded-xl border border-[#E0E0E0] shadow-[0_1px_3px_rgba(0,0,0,0.015)]
@@ -366,33 +426,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   {t.loginWithGoogle}
                 </button>
 
-                {/* Botão Apple */}
-                <button
-                  onClick={() => onToast('Login com Apple em desenvolvimento')}
-                  className="w-full px-6 py-4 bg-[#1A1A1A] text-white font-semibold text-base
-                             rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.15)]
-                             hover:bg-black transition-all duration-200
-                             flex items-center justify-center gap-3"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-                  </svg>
-                  {t.loginWithApple}
-                </button>
-
-                {/* Botão Facebook */}
-                <button
-                  onClick={() => onToast('Login com Facebook em desenvolvimento')}
-                  className="w-full px-6 py-4 bg-[#1877F2] text-white font-semibold text-base
-                             rounded-xl shadow-[0_1px_3px_rgba(24,119,242,0.25)]
-                             hover:bg-[#166FE5] transition-all duration-200
-                             flex items-center justify-center gap-3"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                  {t.loginWithFacebook}
-                </button>
               </div>
 
               {/* Termos e Política */}
@@ -417,16 +450,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
           ) : (
             <>
               {/* Tela de Login */}
-              <button
-                onClick={() => setShowLoginForm(false)}
-                className="flex items-center gap-2 text-sm text-[#0D7377] mb-8 hover:underline"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-                Voltar
-              </button>
-
               <h2 className="font-['Fjalla_One'] text-[32px] text-(--preto) mb-2 tracking-wide">
                 {t.welcomeBack}
               </h2>
@@ -482,6 +505,14 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   className="block text-center w-full text-sm font-medium text-[#0D7377] hover:underline"
                 >
                   {t.forgotPassword}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBackToLoginOptions}
+                  className="block text-center w-full text-sm font-medium text-[#0D7377] hover:underline mt-4"
+                >
+                  Voltar
                 </button>
               </div>
             </>
@@ -775,12 +806,14 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             {/* Account List */}
             <div className="py-3">
               <button
-                onClick={() => handleAccountSelect('João Silva', 'joao.silva@gmail.com', 'turista')}
+                onClick={() => handleAccountSelect('João Silva', 'joao.silva@gmail.com', 'turista', avatarJoao)}
                 className="w-full px-8 py-4 flex items-center gap-4 hover:bg-[#F7F6F3] transition-all border-none bg-transparent cursor-pointer text-left"
               >
-                <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base shrink-0">
-                  JS
-                </div>
+                {avatarJoao ? (
+                  <img src={avatarJoao} alt="João Silva" className="w-11 h-11 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base shrink-0">JS</div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-[#1A1A1A] truncate">João Silva</div>
                   <div className="text-xs text-[#777] truncate">joao.silva@gmail.com</div>
@@ -796,12 +829,14 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
 
 
               <button
-                onClick={() => handleAccountSelect('Miauteria', 'contato@miauteriacafe.com.br', 'estabelecimento')}
+                onClick={() => handleAccountSelect('Miauteria', 'contato@miauteriacafe.com.br', 'estabelecimento', avatarMiauteria)}
                 className="w-full px-8 py-4 flex items-center gap-4 hover:bg-[#F7F6F3] transition-all border-none bg-transparent cursor-pointer text-left"
               >
-                <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base shrink-0">
-                  M
-                </div>
+                {avatarMiauteria ? (
+                  <img src={avatarMiauteria} alt="Miauteria" className="w-11 h-11 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-11 h-11 rounded-full bg-[#0D7377] flex items-center justify-center text-white font-semibold text-base shrink-0">M</div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-[#1A1A1A] truncate">Miauteria Cat Café</div>
                   <div className="text-xs text-[#777] truncate">contato@miauteriacafe.com.br</div>

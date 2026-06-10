@@ -1,13 +1,37 @@
-import { Logo } from './Logo';
-import { SergipanidadeLogo } from './SergipanidadeLogo';
 import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
+import logoNav from '@/assets/images/logo-nav.png';
+
+const NAVBAR_DESKTOP_LOGO_SCALE = 1.9; // Ajuste este valor para alterar a escala do logo da navbar no desktop
+const NAVBAR_MOBILE_LOGO_SCALE = 1.0; // Ajuste este valor para alterar a escala do logo da navbar no mobile
+
+// Configuração de posicionamento e escala do logo da Navbar (logo-nav.png)
+const DESKTOP_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '-2px',      // Ajuste vertical (ex: '-5px' para subir, '5px' para descer)
+  left: '-31px',     // Ajuste horizontal (ex: '-10px' para esquerda, '10px' para direita)
+  transformOrigin: 'left center', // Origem da transformação
+  transform: `scale(${NAVBAR_DESKTOP_LOGO_SCALE})`,
+  height: '42px',  // Altura do logo
+  objectFit: 'contain' as const,
+};
+
+const MOBILE_LOGO_STYLE = {
+  position: 'relative' as const,
+  top: '0px',      // Ajuste vertical
+  left: '0px',     // Ajuste horizontal
+  transformOrigin: 'left center', // Origem da transformação no mobile
+  transform: `scale(${NAVBAR_MOBILE_LOGO_SCALE})`,
+  height: '32px',  // Altura do logo
+  objectFit: 'contain' as const,
+};
 import {
   Home,
   Map as MapIcon,
   Route,
   Landmark,
   Award,
+  Music,
   ChevronDown,
 } from 'lucide-react';
 import {
@@ -18,12 +42,19 @@ import {
 } from '../ui/dropdown-menu';
 import { useAppContext } from '../../context/AppContext';
 
+type NavItem = {
+  label: string;
+  screen: string;
+  icon?: typeof Home;
+  href?: string;
+};
+
 interface NavbarProps {
   currentScreen: string;
   onNavigate: (screen: string) => void;
   isVisible: boolean;
-  language: 'pt' | 'en' | 'es';
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
+  language: 'pt' | 'en' | 'es' | 'sp';
+  onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
 }
 
 export function Navbar({
@@ -34,14 +65,26 @@ export function Navbar({
 }: NavbarProps) {
   if (!isVisible) return null;
 
+  const desktopLogoStyle = DESKTOP_LOGO_STYLE;
+  const mobileLogoStyle = MOBILE_LOGO_STYLE;
+
   const t = translations[language] as typeof translations.pt;
   const { userProfile } = useAppContext();
 
-  const bottomNavItems = [
+  const bottomNavItems: NavItem[] = [
     { label: 'Home', screen: 'home', icon: Home },
     { label: t?.destinations || 'Destinos', screen: 'guia', icon: MapIcon },
     { label: 'Cultura', screen: 'cultura', icon: Landmark },
   ];
+
+  if (userProfile.userType === 'turista') {
+    bottomNavItems.push({
+      label: 'Playlist',
+      screen: 'playlist',
+      icon: Music,
+      href: 'https://open.spotify.com/playlist/3WH1Mj7Vu760FuV4nz8G4K',
+    });
+  }
 
   if (userProfile.userType === 'estabelecimento') {
     bottomNavItems.push({ label: t?.partner || 'Parceiro', screen: 'parceiro', icon: Award });
@@ -49,12 +92,21 @@ export function Navbar({
 
   bottomNavItems.push({ label: t?.itinerary || 'Roteiro', screen: 'roteiro', icon: Route });
 
-  const desktopNavItems = [
+  const desktopNavItems: NavItem[] = [
     { label: 'Home', screen: 'home' },
     { label: t?.destinations || 'Destinos', screen: 'guia' },
     { label: 'Cultura', screen: 'cultura' },
-    { label: t?.itinerary || 'Roteiro', screen: 'roteiro' },
   ];
+
+  if (userProfile.userType === 'turista') {
+    desktopNavItems.push({
+      label: 'Playlist',
+      screen: 'playlist',
+      href: 'https://open.spotify.com/playlist/3WH1Mj7Vu760FuV4nz8G4K',
+    });
+  }
+
+  desktopNavItems.push({ label: t?.itinerary || 'Roteiro', screen: 'roteiro' });
 
   if (userProfile.userType === 'estabelecimento') {
     desktopNavItems.push({ label: t?.partner || 'Parceiro', screen: 'parceiro' });
@@ -79,10 +131,10 @@ export function Navbar({
               className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
             >
               <div className="flex items-center justify-center h-[56px] w-auto overflow-visible">
-                <SergipanidadeLogo
-                  variant="light"
-                  iconSize={30}
-                  showSlogan={false}
+                <img
+                  src={logoNav}
+                  alt="Logo Navbar"
+                  style={desktopLogoStyle}
                 />
               </div>
             </button>
@@ -96,7 +148,13 @@ export function Navbar({
                 return (
                   <button
                     key={item.screen}
-                    onClick={() => onNavigate(item.screen)}
+                    onClick={() => {
+                      if (item.href) {
+                        window.open(item.href, '_blank', 'noopener noreferrer');
+                      } else {
+                        onNavigate(item.screen);
+                      }
+                    }}
                     className={`relative min-h-[60px] min-w-[120px] px-5 py-3 flex items-center justify-center border-none rounded-full transition-all duration-200 ease-out text-[18px] font-semibold bg-white ${
                       isActive
                         ? 'text-[#1A1A1A]'
@@ -124,6 +182,7 @@ export function Navbar({
                     <div className="flex items-center gap-3">
                       <UserAvatar
                         name={userProfile.name || t?.profile || 'Perfil'}
+                        photoUrl={userProfile.photo}
                         size={38}
                         bgColor="#0D7377"
                         textColor="#FFFFFF"
@@ -167,12 +226,10 @@ export function Navbar({
             onClick={() => onNavigate('home')}
             className="flex items-center justify-start gap-2 p-0 bg-transparent border-none cursor-pointer min-h-[44px] overflow-visible"
           >
-            <Logo
-              variant="light"
-              width={110}
-              height={38}
-              showSlogan={false}
-              className="max-h-[38px]"
+            <img
+              src={logoNav}
+              alt="Logo Navbar"
+              style={mobileLogoStyle}
             />
           </button>
 
@@ -184,6 +241,7 @@ export function Navbar({
               >
                 <UserAvatar
                   name={userProfile.name || t?.profile || 'Perfil'}
+                    photoUrl={userProfile.photo}
                   size={32}
                   bgColor="#0D7377"
                   textColor="#FFFFFF"
@@ -220,12 +278,18 @@ export function Navbar({
       >
         {bottomNavItems.map((item) => {
           const isActive = currentScreen === item.screen;
-          const Icon = item.icon;
+          const Icon = item.icon as typeof Home;
 
           return (
             <button
               key={item.screen}
-              onClick={() => onNavigate(item.screen)}
+              onClick={() => {
+                if (item.href) {
+                  window.open(item.href, '_blank', 'noopener noreferrer');
+                } else {
+                  onNavigate(item.screen);
+                }
+              }}
               className="flex flex-col items-center justify-center flex-1 h-full gap-1 bg-transparent border-none cursor-pointer min-h-[44px]"
               aria-label={item.label}
             >

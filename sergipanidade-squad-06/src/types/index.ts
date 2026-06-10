@@ -22,6 +22,7 @@ export interface UserProfile {
   name: string;
   email: string;
   userType: 'turista' | 'estabelecimento';
+  photo?: string;
   phone?: string;
   notifications?: {
     nearby: boolean;

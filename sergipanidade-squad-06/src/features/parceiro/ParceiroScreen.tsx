@@ -272,7 +272,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
             <div>
               <h1
                 className="font-bold tracking-tight leading-tight"
-                style={{ fontSize: "36px", color: '#1E293B', fontFamily: 'Inter, sans-serif' }}
+                style={{ fontSize: "36px", color: '#1E293B', fontFamily: "'Fjalla One', sans-serif" }}
               >
                 {t.partnerPortal}
               </h1>
