@@ -11,6 +11,8 @@ interface UserAvatarProps {
   bgColor?: string;
   /** Cor do texto (padrão branco) */
   textColor?: string;
+  /** URL da foto do usuário, se disponível */
+  photoUrl?: string;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ export function UserAvatar({
   size = 40,
   bgColor = '#000080',
   textColor = '#FFFFFF',
+  photoUrl,
   className = '',
 }: UserAvatarProps) {
   const initials = getInitials(name || '?');
@@ -39,7 +42,7 @@ export function UserAvatar({
         width: size,
         height: size,
         borderRadius: '50%',
-        backgroundColor: bgColor,
+        backgroundColor: photoUrl ? 'transparent' : bgColor,
         color: textColor,
         display: 'flex',
         alignItems: 'center',
@@ -49,9 +52,23 @@ export function UserAvatar({
         letterSpacing: '0.04em',
         flexShrink: 0,
         userSelect: 'none',
+        overflow: 'hidden',
       }}
     >
-      {initials}
+      {photoUrl ? (
+        <img
+          src={photoUrl}
+          alt={`Foto de perfil de ${name}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+          }}
+        />
+      ) : (
+        initials
+      )}
     </div>
   );
 }

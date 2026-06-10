@@ -108,7 +108,7 @@ export function HotelCard({
         {/* Localização */}
         <div className="flex items-center gap-1 mb-3">
           <MapPin size={12} className="text-[var(--azul)] shrink-0" />
-          <span className="text-[12px] text-[var(--cinza-txt)]">{bairro}, Aracaju — SE</span>
+          <span className="text-[12px] text-[var(--cinza-txt)]">{bairro}</span>
         </div>
 
         {/* Faixa de preço + Avaliação */}

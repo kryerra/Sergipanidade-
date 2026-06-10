@@ -73,7 +73,7 @@ const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
 // ─── COMPONENT ───────────────────────────────────────────────
 interface CulturaScreenProps {
   onToast: (msg: string) => void;
-  language?: 'pt' | 'en' | 'es';
+  language?: 'pt' | 'en' | 'es' | 'sp';
 }
 
 export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
@@ -512,7 +512,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
               >
                 <CategoryPin Icon={Icon} isActive={isActive} />
                 <span style={{
-                  fontFamily: 'Urbanist, sans-serif',
+                  fontFamily: "'Fjalla One', sans-serif",
                   fontSize: '14px',
                   fontWeight: 500,
                   letterSpacing: '0.02em'
@@ -755,18 +755,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
                         <span>{event.local} · {event.city}</span>
                       </div>
 
-                      <p className="mb-4 line-clamp-2" style={{ color: '#4A4A4A', fontSize: '13px', lineHeight: 1.6 }}>
+                      <p className="mb-4" style={{ color: '#4A4A4A', fontSize: '13px', lineHeight: 1.6 }}>
                         {event.desc}
                       </p>
-
-                      <button
-                        onClick={(): void => onToast(`🎟️ Saiba mais: ${event.name}`)}
-                        className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5"
-                        style={{ color: '#0D7377', fontSize: '13px' }}
-                      >
-                        Saiba mais
-                        <ArrowRight size={14} />
-                      </button>
                     </div>
                   </div>
                 ))}

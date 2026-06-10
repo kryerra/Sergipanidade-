@@ -1,8 +1,9 @@
 import FOTO_SLIDE_1 from '@/assets/images/tartaruga-slide.png';
-import FOTO_SLIDE_2 from '@/assets/images/rio-slide.png';
-import FOTO_SLIDE_3 from '@/assets/images/bar-slide1.png';
+import FOTO_SLIDE_3 from '@/assets/images/foto-slide-6.png';
 import FOTO_SLIDE_4 from '@/assets/images/estatua-slide.png';
-import FOTO_SLIDE_6 from '@/assets/images/foto-slide-6.png';
+import QUADRILHEIRA from '@/assets/images/rio-slide.png';
+import QUADRILHA_UNIDOS from '@/assets/images/bar-slide1.png';
+
 
 /**
  * Imagens de Sergipe para slideshows dos headers
@@ -12,10 +13,10 @@ import FOTO_SLIDE_6 from '@/assets/images/foto-slide-6.png';
 // ── Praias e Paisagens de Sergipe ──
 export const SERGIPE_BEACHES = [
   FOTO_SLIDE_1,
-  FOTO_SLIDE_2,
   FOTO_SLIDE_3,
   FOTO_SLIDE_4,
-  FOTO_SLIDE_6,
+  QUADRILHEIRA,
+  QUADRILHA_UNIDOS,
 ];
 
 // ── Cultura e Festas Folclóricas ──
@@ -30,8 +31,8 @@ export const SERGIPE_CULTURE = [
 // ── Mix de Paisagens, Praias e Cidade (para Home) ──
 export const SERGIPE_HOME_MIX = [
   FOTO_SLIDE_1,
-  FOTO_SLIDE_2,
   FOTO_SLIDE_3,
   FOTO_SLIDE_4,
-  FOTO_SLIDE_6,
+  QUADRILHEIRA,
+  QUADRILHA_UNIDOS,
 ];
