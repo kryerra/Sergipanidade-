@@ -1,7 +1,7 @@
-import FOTO_SLIDE_1 from '@/assets/images/foto-slide-1.jpg';
-import FOTO_SLIDE_2 from '@/assets/images/foto-slide-2.jpg';
-import FOTO_SLIDE_3 from '@/assets/images/foto-slide-3.jpg';
-import FOTO_SLIDE_4 from '@/assets/images/foto-slide-4.jpg';
+import FOTO_SLIDE_1 from '@/assets/images/tartaruga-slide.png';
+import FOTO_SLIDE_2 from '@/assets/images/rio-slide.png';
+import FOTO_SLIDE_3 from '@/assets/images/bar-slide1.png';
+import FOTO_SLIDE_4 from '@/assets/images/estatua-slide.png';
 import FOTO_SLIDE_6 from '@/assets/images/foto-slide-6.png';
 
 /**
