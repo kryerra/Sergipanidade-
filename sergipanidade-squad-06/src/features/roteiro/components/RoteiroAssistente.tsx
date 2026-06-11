@@ -59,16 +59,18 @@ export function RoteiroAssistente({
         >
           {/* Cabeçalho */}
           <div className="flex items-center gap-3.5 mb-8">
-            <div className="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center shrink-0 shadow-lg shadow-[var(--primary)]/20">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[var(--primary)] to-teal-400 flex items-center justify-center shrink-0 shadow-lg shadow-[var(--primary)]/20">
               <Bot size={22} className="text-white animate-pulse" />
             </div>
             <div>
               <h1 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] leading-tight tracking-wide">
                 {t.aiItineraryTitle}
               </h1>
-              <p className="text-xs text-[var(--cinza-txt)] font-medium">
-                {t.wizardStep} {wizardStep + 1} {t.wizardOf} {TOTAL_STEPS}
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="inline-flex items-center bg-[var(--teal-leve)] text-[var(--primary)] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {t.wizardStep} {wizardStep + 1} / {TOTAL_STEPS}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -137,7 +139,7 @@ export function RoteiroAssistente({
                   <Button
                     variant="outline"
                     onClick={handlePrev}
-                    className="flex-1 py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border-2 border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all"
+                    className="flex-1 py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all cursor-pointer"
                   >
                     ← {t.wizardPrev}
                   </Button>
@@ -145,7 +147,7 @@ export function RoteiroAssistente({
                   <Button
                     variant="outline"
                     onClick={onCancel}
-                    className="flex-1 py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border-2 border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all"
+                    className="flex-1 py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all cursor-pointer"
                   >
                     ← {t.wizardCancel}
                   </Button>
@@ -155,10 +157,10 @@ export function RoteiroAssistente({
                   onClick={handleNext}
                   disabled={!canAdvance()}
                   variant={canAdvance() ? "default" : "secondary"}
-                  className={`flex-1 py-3 font-bold text-sm min-h-[46px] rounded-[var(--radius-sm)] transition-all shadow-md ${
+                  className={`flex-1 py-3 font-bold text-sm min-h-[46px] rounded-[var(--radius-sm)] transition-all border-none cursor-pointer ${
                     canAdvance()
-                      ? "bg-[var(--primary)] text-white hover:opacity-95 shadow-[var(--primary)]/10"
-                      : "bg-[var(--cinza-med)] text-[var(--cinza-txt)] cursor-not-allowed border-none shadow-none opacity-50"
+                      ? "bg-gradient-to-r from-[#0D7377] to-[#14544A] text-white hover:opacity-95 shadow-lg shadow-[var(--primary)]/15 hover:scale-[1.01]"
+                      : "bg-[var(--cinza-med)] text-[var(--cinza-txt)] cursor-not-allowed opacity-50 shadow-none"
                   }`}
                 >
                   {t.wizardNext}
@@ -170,7 +172,7 @@ export function RoteiroAssistente({
               <Button
                 variant="outline"
                 onClick={() => setWizardStep(2)}
-                className="w-full py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border-2 border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all"
+                className="w-full py-3 text-[var(--preto)] font-bold text-sm min-h-[46px] border border-[var(--cinza-med)] rounded-[var(--radius-sm)] hover:bg-[var(--cinza-leve)] transition-all cursor-pointer"
               >
                 ← {t.wizardPrev}
               </Button>

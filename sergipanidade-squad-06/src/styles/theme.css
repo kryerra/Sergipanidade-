@@ -25,6 +25,7 @@
   --preto: var(--grafite);  /* Alias para grafite */
   --branco: var(--off-white); /* Alias para off-white */
   --navbar: var(--branco-puro);
+  --navbar-height: 76px;
 
   /* Fundos e bordas */
   --cinza-leve: #EEEDE9;    /* Fundo alternado de seção */
@@ -215,4 +216,20 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --navbar-height: 56px;
+  }
+}
+
+@keyframes cronogramaFadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes confirmFadeIn {
+  from { opacity: 0; transform: translateX(6px); }
+  to   { opacity: 1; transform: translateX(0); }
 }

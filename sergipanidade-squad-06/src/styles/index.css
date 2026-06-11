@@ -6,6 +6,18 @@
 body {
   font-family: 'Fjalla One', sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fjalla One', sans-serif;
+}
+
+/* Reset interactive controls to clean UI font to prevent faux-bold blurriness */
+button, input, select, textarea, label, .font-sans-ui {
+  font-family: 'Inter', 'Roboto', 'Urbanist', sans-serif;
 }
 
 /* Hide scrollbar utility */

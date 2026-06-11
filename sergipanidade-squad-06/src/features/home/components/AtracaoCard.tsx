@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Heart, Share2, Bookmark, Clock } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
+import { useToast } from "@/context/AppContext";
 
 interface AtracaoCardProps {
   id: string;
@@ -13,8 +14,8 @@ interface AtracaoCardProps {
   hours: string;
   image: string;
   likes: string;
+  address?: string;
   onNavigate: (screen: string, id: string) => void;
-  onToast: (message: string) => void;
   curtirLabel: string;
   compartilharLabel: string;
   salvarLabel: string;
@@ -28,14 +29,15 @@ export function AtracaoCard({
   hours,
   image,
   likes,
+  address,
   onNavigate,
-  onToast,
   curtirLabel,
   compartilharLabel,
   salvarLabel,
   curtidoToast,
   compartilhadoToast,
 }: AtracaoCardProps) {
+  const { toast: onToast } = useToast();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -47,9 +49,11 @@ export function AtracaoCard({
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (address) {
+      navigator.clipboard.writeText(address);
+    }
     onToast(compartilhadoToast);
   };
-
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
     setSaved(!saved);

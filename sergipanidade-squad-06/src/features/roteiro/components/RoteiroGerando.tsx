@@ -269,49 +269,7 @@ export function RoteiroGerando({ language, concluido, onAnimacaoConcluida }: Rot
         })}
       </div>
 
-      {/* Skeleton cards de pré-visualização */}
-      <div className="flex flex-col w-full gap-2">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl"
-            style={{
-              background: "var(--cinza-leve)",
-              animation: `fadeInUp 0.5s ease-out both`,
-              animationDelay: `${0.5 + i * 0.12}s`,
-            }}
-          >
-            <div
-              className="w-8 h-8 rounded-full flex-shrink-0"
-              style={{
-                background: "rgba(0,0,0,0.08)",
-                animation: "skeletonPulse 1.5s ease-in-out infinite",
-                animationDelay: `${i * 0.2}s`,
-              }}
-            />
-            <div className="flex flex-col gap-1.5 flex-1">
-              <div
-                className="h-2.5 rounded-full"
-                style={{
-                  width: `${60 + i * 12}%`,
-                  background: "rgba(0,0,0,0.08)",
-                  animation: "skeletonPulse 1.5s ease-in-out infinite",
-                  animationDelay: `${i * 0.15}s`,
-                }}
-              />
-              <div
-                className="h-2 rounded-full"
-                style={{
-                  width: `${40 + i * 8}%`,
-                  background: "rgba(0,0,0,0.05)",
-                  animation: "skeletonPulse 1.5s ease-in-out infinite",
-                  animationDelay: `${i * 0.2 + 0.1}s`,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+
 
       <style>{`
         @keyframes fadeScale {

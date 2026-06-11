@@ -165,10 +165,10 @@ const translationsBase = {
     timelineRegenerateBtn: 'Gerar novo roteiro',
     wizardStopsPerDayLabel: "Paradas por dia",
     wizardStopsRecommended: "Recomendado",
-    wizardStopsRelaxed: "relaxado",
-    wizardStopsModerate: "moderado",
-    wizardStopsIdeal: "ideal",
-    wizardStopsIntense: "intenso",
+    wizardStopsRelaxed: "Relaxado",
+    wizardStopsModerate: "Moderado",
+    wizardStopsIdeal: "Ideal",
+    wizardStopsIntense: "Intenso",
     wizardStopsHint1: "Ritmo tranquilo — tempo de sobra em cada local",
     wizardStopsHint2: "Bom equilíbrio entre exploração e descanso",
     wizardStopsHint3: "Recomendado para aproveitar o dia completo",
@@ -190,7 +190,7 @@ const translationsBase = {
     loginHeroLine1: 'Descubra',
     loginHeroLine2: 'a alma de',
     loginHeroHighlight: 'Sergipe',
-    loginHeroDesc: 'Explore praias, gastronomia, cultura e experiências únicas no menor e mais acolhedor estado do Brasil.',
+    loginHeroDesc: 'Explore praias, gastronomia, cultura e experiências únicas no menor e mais acolhedor Estado do Brasil.',
     recoverMessage: 'Digite seu e-mail e enviaremos um link para redefinir sua senha',
     sendLink: 'ENVIAR LINK',
     cancel: 'CANCELAR',
@@ -332,7 +332,7 @@ const translationsBase = {
     close: 'FECHAR',
 
     // Parceiro Screen v2
-    editProfile: '✏️ EDITAR PERFIL',
+    editProfile: 'EDITAR PERFIL',
     viewsGrowth: '+31% vs mês anterior',
     insightMessage: 'Seu perfil teve +31% mais acessos que no mês anterior. Turistas estão descobrindo seu estabelecimento!',
     sealTitle: 'Selo de Excelência',
@@ -379,7 +379,7 @@ const translationsBase = {
     nearbyHealthUnits: '3 Unidades Mais Próximas',
     getDirections: 'Como Chegar',
     helpCenterTitle: 'Central de Ajuda',
-    faqRoteiro: 'Como usar o roteiro IA?',
+    faqRoteiro: 'Como usar o roteiro com IA?',
     faqParceiro: 'Como me tornar parceiro?',
     faqAvaliar: 'Como avaliar um destino?',
     seeAnswer: 'Ver resposta →',
@@ -393,7 +393,7 @@ const translationsBase = {
 
     // AI Itinerary
     aiItineraryTitle: 'Roteiro Inteligente com IA',
-    aiItineraryDesc: 'Responda algumas perguntas e nossa IA criará um roteiro personalizado para você em Sergipe.',
+    aiItineraryDesc: 'Responda a algumas perguntas e nossa IA criará um roteiro personalizado para você em Sergipe.',
     generateWithAI: 'GERAR COM IA',
     howManyDays: 'Quantos dias você vai ficar?',
     budget: 'Qual seu orçamento?',
@@ -410,7 +410,7 @@ const translationsBase = {
       who: 'Quem vai viajar?',
       days: 'Quantos dias de viagem?',
       interests: 'O que você mais curte? (pode escolher vários)',
-      pace: 'Qual seu estilo de viagem'
+      pace: 'Qual seu estilo de viagem?'
     },
     options: {
       who: {
@@ -457,7 +457,7 @@ const translationsBase = {
     touristLabel: 'Turista',
     establishmentLabel: 'Estabelecimento',
     languages: {
-      portuguese: 'Português',
+      portuguese: 'Sergipanês pt-BR',
       english: 'Inglês',
       spanish: 'Espanhol',
       sergipanes: 'Sergipanês'
@@ -948,7 +948,7 @@ const translationsBase = {
     touristLabel: 'Tourist',
     establishmentLabel: 'Establishment',
     languages: {
-      portuguese: 'Portuguese',
+      portuguese: 'Sergipanês pt-BR',
       english: 'English',
       spanish: 'Spanish',
       sergipanes: 'Sergipanês'
@@ -1314,7 +1314,7 @@ const translationsBase = {
     close: 'CERRAR',
 
     // Parceiro Screen v2
-    editProfile: '✏️ EDITAR PERFIL',
+    editProfile: 'EDITAR PERFIL',
     viewsGrowth: '+31% vs mes anterior',
     insightMessage: '¡Tu perfil tuvo +31% más visitas que el mes anterior. ¡Los turistas están descubriendo tu establecimiento!',
     sealTitle: 'Sello de Excelencia',
@@ -1439,7 +1439,7 @@ const translationsBase = {
     touristLabel: 'Turista',
     establishmentLabel: 'Establecimiento',
     languages: {
-      portuguese: 'Portugués',
+      portuguese: 'Sergipanés pt-BR',
       english: 'Inglés',
       spanish: 'Español',
       sergipanes: 'Sergipanês'

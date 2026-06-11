@@ -6,6 +6,7 @@
 import { MapPin, ExternalLink } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { StarRating } from '@/components/ui/StarRating';
+import { useToast } from "@/context/AppContext";
 
 interface HotelCardProps {
   id: string;
@@ -21,7 +22,7 @@ interface HotelCardProps {
   verOpcoesLabel: string;
   apartirDeLabel: string;
   porNoiteLabel: string;
-  onToast: (msg: string) => void;
+  link?: string;
 }
 
 /** Renderiza $ $ $ $ com os ativos em âmbar */
@@ -58,8 +59,9 @@ export function HotelCard({
   verOpcoesLabel,
   apartirDeLabel,
   porNoiteLabel,
-  onToast,
+  link,
 }: HotelCardProps) {
+  const { toast: onToast } = useToast();
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden flex flex-col
@@ -135,17 +137,33 @@ export function HotelCard({
 
         {/* Botão "Ver opções" */}
         <div className="mt-auto">
-          <button
-            onClick={() => onToast('Abrindo opções de hospedagem...')}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
-                       text-white font-['Fjalla_One'] text-[13px] tracking-wider uppercase
-                       cursor-pointer border-none transition-all min-h-[44px]
-                       hover:opacity-90 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--azul)' }}
-          >
-            <ExternalLink size={14} strokeWidth={2.5} />
-            {verOpcoesLabel}
-          </button>
+          {link ? (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
+                         text-white font-['Fjalla_One'] text-[13px] tracking-wider uppercase
+                         cursor-pointer border-none transition-all min-h-[44px]
+                         hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--azul)', textDecoration: 'none' }}
+            >
+              <ExternalLink size={14} strokeWidth={2.5} />
+              {verOpcoesLabel}
+            </a>
+          ) : (
+            <button
+              onClick={() => onToast('Abrindo opções de hospedagem...')}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
+                         text-white font-['Fjalla_One'] text-[13px] tracking-wider uppercase
+                         cursor-pointer border-none transition-all min-h-[44px]
+                         hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--azul)' }}
+            >
+              <ExternalLink size={14} strokeWidth={2.5} />
+              {verOpcoesLabel}
+            </button>
+          )}
         </div>
       </div>
     </div>

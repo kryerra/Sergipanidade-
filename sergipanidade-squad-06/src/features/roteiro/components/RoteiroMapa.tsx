@@ -69,6 +69,7 @@ class MapErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState>
 /* ─── Componente Principal do Mapa Mapbox ─── */
 function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
   const mapRef = useRef<MapRef>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedStop, setSelectedStop] = useState<Destination | null>(null);
   const [popupIndex, setPopupIndex] = useState<number>(-1);
@@ -90,20 +91,20 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
   // stopsDependency evita re-rodar fitBounds se os destinos reais não mudaram
   const stopsDependency = stops.map((s) => `${s.id}-${s.lat}-${s.lon}`).join(",");
 
-  useEffect(() => {
-    if (!mapLoaded || !mapRef.current || stops.length === 0) return;
+  // Ref para fitBounds para reuso no resize observer
+  const fitBoundsRef = useRef<() => void>(() => {});
 
+  fitBoundsRef.current = () => {
+    if (!mapRef.current || stops.length === 0) return;
     try {
       if (stops.length === 1) {
         mapRef.current.easeTo({
           center: [stops[0].lon, stops[0].lat],
           zoom: 14,
-          duration: 1200,
+          duration: 800,
         });
         return;
       }
-
-      // Calcula os limites extremos da rota
       const lons = stops.map((s) => s.lon);
       const lats = stops.map((s) => s.lat);
       const minLon = Math.min(...lons);
@@ -115,13 +116,41 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
         [minLon, minLat, maxLon, maxLat],
         {
           padding: { top: 50, bottom: 50, left: 50, right: 50 },
-          duration: 1200,
+          duration: 800,
           maxZoom: 15,
         }
       );
     } catch (err) {
-      console.warn("Erro ao ajustar limites do Mapbox:", err);
+      console.warn("Erro no fitBounds:", err);
     }
+  };
+
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current || !containerRef.current) return;
+
+    // Executa fitBounds inicial
+    fitBoundsRef.current();
+
+    // Observer para atualizar o tamanho do Mapbox e recalcular limites quando o container redimensionar
+    const observer = new ResizeObserver(() => {
+      if (mapRef.current) {
+        try {
+          mapRef.current.resize();
+        } catch (err) {
+          console.warn("Erro ao redimensionar mapa:", err);
+        }
+      }
+      // Pequeno timeout para dar tempo de atualizar o canvas
+      setTimeout(() => {
+        fitBoundsRef.current();
+      }, 100);
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
   }, [mapLoaded, stopsDependency]);
 
   // Estruturação do GeoJSON para desenhar a linha do trajeto
@@ -142,7 +171,7 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
   };
 
   return (
-    <div className="roteiro-mapa-container" style={{ position: "relative" }}>
+    <div ref={containerRef} className="roteiro-mapa-container" style={{ position: "relative" }}>
       {/* Toggle de Estilo do Mapa */}
       <div
         style={{

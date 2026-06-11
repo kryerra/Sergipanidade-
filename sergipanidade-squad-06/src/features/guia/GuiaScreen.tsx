@@ -14,6 +14,7 @@ import {
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { HeroSlideshow } from '@/components/shared/HeroSlideshow';
 import { SERGIPE_BEACHES } from "@/constants/sergipeImages";
+import { useToast } from "@/context/AppContext";
 
 // ─── Configurações de categoria ──────────────────────────────────────────────
 
@@ -67,11 +68,11 @@ function parseDistance(d: string): number {
 interface CardProps {
   dest: Destination;
   onNavigate: (screen: string, id: string) => void;
-  onToast: (msg: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
 }
 
-function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
+function DestinationCard({ dest, onNavigate, language }: CardProps) {
+  const { toast: onToast } = useToast();
   const [liked, setLiked]   = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [saved, setSaved]   = useState(false);
@@ -196,7 +197,14 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
 
           {/* Compartilhar */}
           <button
-            onClick={() => onToast(`Link copiado!`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(dest.address);
+              const msg = language === 'en' ? 'Location copied!'
+                        : language === 'es' ? '¡Ubicación copiada!'
+                        : 'Localização copiada!';
+              onToast(msg);
+            }}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px]
                        border border-[var(--cinza-med)] text-[var(--cinza-txt)] transition-all min-h-[30px]
                        hover:border-[var(--azul)]/40 hover:text-[var(--azul)]"
@@ -239,12 +247,11 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
 
 interface GuiaScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
-  onToast: (message: string) => void;
   onOpenGPS: (destinationId?: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
 }
 
-export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScreenProps) {
+export function GuiaScreen({ onNavigate, onOpenGPS, language }: GuiaScreenProps) {
   const [activeRegion, setActiveRegion]   = useState('Todos');
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchTerm, setSearchTerm]       = useState('');
@@ -449,7 +456,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                   key={dest.id}
                   dest={dest}
                   onNavigate={(screen, id) => onNavigate(screen, id)}
-                  onToast={onToast}
                   language={language}
                 />
               ))}

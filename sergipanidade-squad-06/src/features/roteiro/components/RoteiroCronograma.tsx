@@ -13,6 +13,8 @@ import {
   Star,
   Check,
   X,
+  FileText,
+  Image,
 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { useMemo, useState, useEffect, useRef } from "react";
@@ -33,6 +35,7 @@ interface RoteiroCronogramaProps {
   roteiro: RoteiroItem[];
   wizardData: WizardData;
   generatedParadas: ParadaGerada[];
+  isAI: boolean;
   onNavigate: (tela: string, idDestino?: string) => void;
   onToast: (mensagem: string) => void;
   onRemoveFromRoteiro: (idDestino: string) => void;
@@ -113,6 +116,7 @@ export function RoteiroCronograma({
   roteiro,
   wizardData,
   generatedParadas,
+  isAI,
   onNavigate,
   onToast,
   onRemoveFromRoteiro,
@@ -147,7 +151,14 @@ export function RoteiroCronograma({
           destinationId: item.destinationId,
           dia: Math.floor(i / paradasPorDia) + 1,
           periodo: periodosFallback[i % paradasPorDia] ?? periodosFallback[i % periodosFallback.length],
-          dica: item.note || dest.tip || "",
+          dica:
+            item.note ||
+            (language === "en"
+              ? dest.tip_en || dest.tip
+              : language === "es"
+              ? dest.tip_es || dest.tip
+              : dest.tip) ||
+            "",
           destination: dest,
         };
       })
@@ -186,8 +197,14 @@ export function RoteiroCronograma({
     return chunked;
   }, [dias]);
 
-
   const compartilharRoteiro = async () => {
+    const labelDia =
+      language === "en"
+        ? "Day"
+        : language === "es"
+        ? "Día"
+        : "Dia";
+
     const linhasResumo = dias.flatMap((dia) => {
       const dataDia = capitalizar(formatarDataDia(dataInicio, dia - 1, language));
       const paradas = todasParadasDoDia(dia).map((p) => {
@@ -195,11 +212,18 @@ export function RoteiroCronograma({
         return `- ${p.destination.name} (${p.periodo}, ${horario})`;
       });
 
-      return [`Dia ${dia} - ${dataDia}`, ...paradas];
+      return [`${labelDia} ${dia} - ${dataDia}`, ...paradas];
     });
 
+    const titulo =
+      language === "en"
+        ? "My Itinerary in Aracaju - Sergipanidade"
+        : language === "es"
+        ? "Mi Itinerario en Aracaju - Sergipanidade"
+        : "Meu Roteiro em Aracaju - Sergipanidade";
+
     const texto = [
-      "Meu Roteiro em Aracaju - Sergipanidade",
+      titulo,
       "",
       ...linhasResumo,
       "",
@@ -209,7 +233,7 @@ export function RoteiroCronograma({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Meu Roteiro em Aracaju",
+          title: titulo,
           text: texto,
         });
         return;
@@ -352,66 +376,7 @@ export function RoteiroCronograma({
     });
   };
 
-  const exportarParaCalendario = () => {
-    const formatarDataICS = (dataBase: string, offsetDia: number, hora: string): string => {
-      const d = new Date(dataBase + "T12:00:00");
-      d.setDate(d.getDate() + offsetDia);
-      const [hh, mm] = hora.split(":").map(Number);
-      d.setHours(hh, mm, 0, 0);
-      return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    };
-
-    const horaFim = (hora: string): string => {
-      const [hh, mm] = hora.split(":").map(Number);
-      const total = hh * 60 + mm + 120; // +2 horas de duração estimada
-      return `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
-    };
-
-    const linhas: string[] = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Sergipanidade//Roteiro//PT",
-      "CALSCALE:GREGORIAN",
-      "METHOD:PUBLISH",
-    ];
-
-    paradasTimeline.forEach((p, i) => {
-      const hora = PERIODO_TIME[p.periodo] || "09:00";
-      const dtStart = formatarDataICS(dataInicio, p.dia - 1, hora);
-      const dtEnd = formatarDataICS(dataInicio, p.dia - 1, horaFim(hora));
-
-      linhas.push(
-        "BEGIN:VEVENT",
-        `UID:sergipanidade-${p.destinationId}-${i}@app`,
-        `DTSTART:${dtStart}`,
-        `DTEND:${dtEnd}`,
-        `SUMMARY:${p.destination.name}`,
-        `DESCRIPTION:${p.dica.replace(/,/g, "\\,")}`,
-        `LOCATION:${p.destination.address}`,
-        "END:VEVENT"
-      );
-    });
-
-    linhas.push("END:VCALENDAR");
-
-    const blob = new Blob([linhas.join("\r\n")], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "roteiro-aracaju.ics";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    onToast(
-      language === "pt"
-        ? "📅 Roteiro exportado! Abra o arquivo .ics para importar no seu calendário."
-        : language === "es"
-        ? "📅 ¡Itinerario exportado! Abra el archivo .ics para importar en su calendario."
-        : "📅 Itinerary exported! Open the .ics file to import into your calendar."
-    );
-  };
+  // exportarParaCalendario obsoleta removida em prol de exportarCalendarioICS
 
   /* ── Estado de confirmação de remoção por parada ── */
   const exportarCalendarioICS = () => {
@@ -554,6 +519,7 @@ export function RoteiroCronograma({
 
   const [confirmando, setConfirmando] = useState<string | null>(null);
   const timerConfirmRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [abrirOpcoesCompartilhar, setAbrirOpcoesCompartilhar] = useState(false);
 
   const iniciarConfirmacao = (id: string) => {
     if (timerConfirmRef.current) clearTimeout(timerConfirmRef.current);
@@ -579,15 +545,16 @@ export function RoteiroCronograma({
     <FundoVisual className="pb-16">
       {/* ── Cabeçalho premium ── */}
       <div
-        className="px-4 sm:px-8 pt-[70px] pb-6"
+        className="px-4 sm:px-8 pb-6"
         style={{
           background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
+          paddingTop: "calc(var(--navbar-height) + 24px)",
         }}
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center flex-wrap gap-2 mb-2">
                 <span
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
                   style={{
@@ -600,27 +567,43 @@ export function RoteiroCronograma({
                   <Calendar size={11} />
                   {t.myItinerary}
                 </span>
+
+                {isAI && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase"
+                    style={{
+                      background: "rgba(20,184,166,0.15)",
+                      backdropFilter: "blur(8px)",
+                      color: "#99f6e4",
+                      border: "1px solid rgba(20,184,166,0.3)",
+                    }}
+                  >
+                    {language === "pt" ? "✨ Gerado por IA" : language === "es" ? "✨ Generado por IA" : "✨ Generated by AI"}
+                  </span>
+                )}
               </div>
               <h1 className="font-['Fjalla_One'] text-white text-2xl sm:text-3xl leading-tight mb-1">
                 {subtituloCabecalho}
               </h1>
-              <p className="text-white/50 text-xs">
-                {paradasTimeline.length}{" "}
-                {language === "pt" ? "paradas planejadas" : language === "es" ? "paradas planeadas" : "planned stops"}
-              </p>
+              {wizardData.who && (
+                <p className="text-white/50 text-xs">
+                  {paradasTimeline.length}{" "}
+                  {language === "pt" ? "paradas planejadas" : language === "es" ? "paradas planeadas" : "planned stops"}
+                </p>
+              )}
             </div>
 
             {/* Ações do cabeçalho */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 w-full sm:w-auto">
               {[
-                { icon: <Share2 size={14} />, label: t.timelineShareBtn, onClick: compartilharComoImagem },
+                { icon: <Share2 size={14} />, label: t.timelineShareBtn, onClick: () => setAbrirOpcoesCompartilhar(true) },
                 { icon: <Calendar size={14} />, label: t.timelineCalendarBtn, onClick: exportarCalendarioICS },
               ].map(({ icon, label, onClick }) => (
                 <button
                   key={label}
                   onClick={onClick}
                   title={label}
-                  className="flex items-center gap-1.5 px-3 py-2 text-white/80 rounded-[var(--radius-sm)] hover:text-white transition-all min-h-[44px]"
+                  className="col-span-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-2 text-white/80 rounded-[var(--radius-sm)] hover:text-white transition-all min-h-[44px]"
                   style={{
                     background: "rgba(255,255,255,0.1)",
                     backdropFilter: "blur(8px)",
@@ -635,7 +618,7 @@ export function RoteiroCronograma({
               {/* Botão Regenerar — destaque */}
               <button
                 onClick={onRegenerate}
-                className="flex items-center gap-1.5 px-4 py-2 text-white rounded-[var(--radius-sm)] transition-all hover:scale-105 min-h-[44px]"
+                className="col-span-2 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 text-white rounded-[var(--radius-sm)] transition-all hover:scale-105 min-h-[44px]"
                 style={{
                   background: "linear-gradient(135deg, #E9D8B4 0%, #d4c09a 100%)",
                   color: "#0D2B2E",
@@ -652,7 +635,7 @@ export function RoteiroCronograma({
 
       {/* ── Conteúdo: Linha do Tempo + Mapa ── */}
       <div
-        className="max-w-7xl mx-auto px-4 sm:px-8 py-8"
+        className="max-w-7xl mx-auto px-2 sm:px-8 py-8"
         style={{ animation: "cronogramaFadeInUp 0.4s ease-out both" }}
       >
         <div className="flex flex-col lg:flex-row gap-8">
@@ -688,7 +671,7 @@ export function RoteiroCronograma({
                     }}
                   >
                     <AccordionPrimitive.Header>
-                      <AccordionPrimitive.Trigger className="w-full flex items-center justify-between px-5 py-4 group">
+                      <AccordionPrimitive.Trigger className="w-full flex items-center justify-between px-2.5 sm:px-5 py-4 group">
                         <div className="flex items-center gap-3">
                           {/* Badge do dia */}
                           <div
@@ -727,13 +710,13 @@ export function RoteiroCronograma({
                     <AccordionPrimitive.Content className="data-[state=open]:animate-none">
                       {/* Linha divisória teal quando aberto */}
                       <div
-                        className="h-px mx-5"
+                        className="h-px mx-2.5 sm:mx-5"
                         style={{
                           background: "linear-gradient(90deg, var(--primary), transparent)",
                         }}
                       />
 
-                      <div className="px-5 pb-5 pt-4">
+                      <div className="px-2.5 sm:px-5 pb-5 pt-4">
                         {paradas.map((parada, si) => {
                           const dest = parada.destination;
                           const horario = PERIODO_TIME[parada.periodo] || "09:00";
@@ -746,12 +729,12 @@ export function RoteiroCronograma({
                           return (
                             <div key={parada.destinationId + si}>
                               {/* Card da parada */}
-                              <div className="flex items-stretch gap-4">
+                              <div className="flex items-stretch gap-2 sm:gap-4">
                                 {/* Conector da linha do tempo */}
-                                <div className="flex flex-col items-center w-10 shrink-0 py-1">
+                                <div className="flex flex-col items-center w-7 sm:w-10 shrink-0 py-1">
                                   {/* Bullet numerado */}
                                   <div
-                                    className="w-9 h-9 rounded-full text-white flex items-center justify-center text-sm font-bold shrink-0"
+                                    className="w-7 h-7 sm:w-9 sm:h-9 rounded-full text-white flex items-center justify-center text-xs sm:text-sm font-bold shrink-0"
                                     style={{
                                       background: "linear-gradient(135deg, #0D7377, #14544A)",
                                       boxShadow: "0 0 0 3px rgba(13,115,119,0.2), 0 2px 8px rgba(13,115,119,0.3)",
@@ -772,7 +755,7 @@ export function RoteiroCronograma({
 
                                 {/* Conteúdo do card */}
                                 <div
-                                  className="flex-1 rounded-[var(--radius-sm)] p-4 mb-2 transition-all duration-200 hover:shadow-[var(--sombra-md)] cursor-default group/card"
+                                  className="flex-1 rounded-[var(--radius-sm)] p-3 sm:p-4 mb-2 transition-all duration-200 hover:shadow-[var(--sombra-md)] cursor-default group/card"
                                   style={{
                                     background: "#fff",
                                     border: "1px solid var(--cinza-med)",
@@ -785,10 +768,10 @@ export function RoteiroCronograma({
                                     (e.currentTarget as HTMLDivElement).style.borderColor = "var(--cinza-med)";
                                   }}
                                 >
-                                  <div className="flex items-start gap-3">
-                                    {/* Imagem maior do destino */}
+                                  <div className="flex items-start gap-2 sm:gap-3">
+                                    {/* Imagem do destino */}
                                     <div
-                                      className="w-20 h-20 rounded-[10px] overflow-hidden shrink-0"
+                                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-[10px] overflow-hidden shrink-0"
                                       style={{
                                         boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
                                       }}
@@ -860,10 +843,10 @@ export function RoteiroCronograma({
                                   </div>
 
                                   {/* Linha de ações */}
-                                  <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: "1px solid var(--cinza-leve)" }}>
+                                  <div className="flex flex-wrap sm:flex-nowrap gap-2 mt-3 pt-3" style={{ borderTop: "1px solid var(--cinza-leve)" }}>
                                     <button
                                       onClick={() => onOpenGPS(dest.id)}
-                                      className="flex items-center gap-1.5 px-3 py-1.5 text-white rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px]"
+                                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 text-white rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px]"
                                       style={{
                                         background: "linear-gradient(135deg, #0D9488, #0D7377)",
                                         boxShadow: "0 2px 8px rgba(13,148,136,0.35)",
@@ -874,7 +857,7 @@ export function RoteiroCronograma({
                                     </button>
                                     <button
                                       onClick={() => onNavigate("detalhe", dest.id)}
-                                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px]"
+                                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px]"
                                       style={{
                                         border: "1px solid var(--cinza-med)",
                                         background: "#fff",
@@ -903,7 +886,7 @@ export function RoteiroCronograma({
                                         </span>
                                         <button
                                           onClick={() => confirmarRemocao(dest.id)}
-                                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-[6px] text-xs font-bold min-h-[32px] transition-all hover:scale-105"
+                                          className="flex items-center gap-1 px-3 py-1.5 rounded-[6px] text-xs font-bold min-h-[38px] transition-all hover:scale-105"
                                           style={{
                                             background: "#EF4444",
                                             color: "#fff",
@@ -914,7 +897,7 @@ export function RoteiroCronograma({
                                         </button>
                                         <button
                                           onClick={cancelarConfirmacao}
-                                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-[6px] text-xs font-bold min-h-[32px] transition-all hover:scale-105"
+                                          className="flex items-center gap-1 px-3 py-1.5 rounded-[6px] text-xs font-bold min-h-[38px] transition-all hover:scale-105"
                                           style={{
                                             border: "1px solid var(--cinza-med)",
                                             background: "#fff",
@@ -980,18 +963,17 @@ export function RoteiroCronograma({
                             onClick={() => onNavigate("guia")}
                             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-[var(--radius-sm)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px]"
                             style={{
-                              border: "2px dashed var(--cinza-med)",
-                              color: "var(--cinza-txt)",
+                              background: "var(--teal-leve)",
+                              border: "2px dashed rgba(13, 115, 119, 0.35)",
+                              color: "var(--primary)",
                             }}
                             onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--primary)";
-                              (e.currentTarget as HTMLButtonElement).style.color = "var(--primary)";
-                              (e.currentTarget as HTMLButtonElement).style.background = "rgba(13,115,119,0.04)";
+                              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.75)";
+                              (e.currentTarget as HTMLButtonElement).style.background = "rgba(13, 115, 119, 0.12)";
                             }}
                             onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--cinza-med)";
-                              (e.currentTarget as HTMLButtonElement).style.color = "var(--cinza-txt)";
-                              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.35)";
+                              (e.currentTarget as HTMLButtonElement).style.background = "var(--teal-leve)";
                             }}
                           >
                             <Plus size={16} />
@@ -1014,60 +996,35 @@ export function RoteiroCronograma({
                 boxShadow: "var(--sombra-sm)",
               }}
             >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <button
-                  onClick={compartilharRoteiro}
-                  className="min-h-[48px] flex items-center justify-center gap-2 rounded-[var(--radius-sm)] px-4 py-3 text-sm font-bold transition-all hover:scale-[1.01]"
-                  style={{
-                    background: "linear-gradient(135deg, #0D7377, #14544A)",
-                    color: "#fff",
-                    boxShadow: "0 4px 14px rgba(13,115,119,0.25)",
-                  }}
-                >
-                  <Share2 size={17} />
-                  Compartilhar roteiro
-                </button>
-                <button
-                  onClick={compartilharComoImagem}
-                  className="min-h-[48px] flex items-center justify-center gap-2 rounded-[var(--radius-sm)] px-4 py-3 text-sm font-bold transition-all hover:scale-[1.01]"
-                  style={{
-                    background: "#fff",
-                    color: "var(--primary)",
-                    border: "1.5px solid rgba(13,115,119,0.35)",
-                  }}
-                >
-                  <Share2 size={17} />
-                  Compartilhar como imagem
-                </button>
-                <button
-                  onClick={exportarCalendarioICS}
-                  className="min-h-[48px] flex items-center justify-center gap-2 rounded-[var(--radius-sm)] px-4 py-3 text-sm font-bold transition-all hover:scale-[1.01]"
-                  style={{
-                    background: "rgba(233,216,180,0.45)",
-                    color: "#0D2B2E",
-                    border: "1.5px solid rgba(13,115,119,0.16)",
-                  }}
-                >
-                  <Calendar size={17} />
-                  Salvar no calendário
-                </button>
-              </div>
+              <button
+                onClick={() => setAbrirOpcoesCompartilhar(true)}
+                className="w-full min-h-[46px] flex items-center justify-center gap-2 rounded-[var(--radius-sm)] px-3 py-2.5 text-xs sm:text-sm font-bold transition-all hover:scale-[1.01]"
+                style={{
+                  background: "linear-gradient(135deg, #0D7377, #14544A)",
+                  color: "#fff",
+                  boxShadow: "0 4px 14px rgba(13,115,119,0.25)",
+                }}
+              >
+                <Share2 size={15} />
+                {language === "en" ? "Share itinerary" : language === "es" ? "Compartir itinerario" : "Compartilhar roteiro"}
+              </button>
             </div>
 
             <button
               onClick={() => onNavigate("guia")}
               className="mt-4 w-full py-3.5 rounded-[var(--radius)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px]"
               style={{
-                border: "2px dashed var(--cinza-med)",
-                color: "var(--cinza-txt)",
+                background: "var(--teal-leve)",
+                border: "2px dashed rgba(13, 115, 119, 0.35)",
+                color: "var(--primary)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--primary)";
-                (e.currentTarget as HTMLButtonElement).style.color = "var(--primary)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.75)";
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(13, 115, 119, 0.12)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--cinza-med)";
-                (e.currentTarget as HTMLButtonElement).style.color = "var(--cinza-txt)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.35)";
+                (e.currentTarget as HTMLButtonElement).style.background = "var(--teal-leve)";
               }}
             >
               {t.addNewStop}
@@ -1108,7 +1065,7 @@ export function RoteiroCronograma({
                     {language === "pt" ? "paradas" : language === "es" ? "paradas" : "stops"}
                   </span>
                 </div>
-                <div className="p-3" style={{ height: "420px" }}>
+                <div className="p-3 h-[300px] sm:h-[420px]">
                   <RoteiroMapa stops={mapStops} />
                 </div>
               </div>
@@ -1167,179 +1124,268 @@ export function RoteiroCronograma({
         </div>
       </div>
 
-      {/* ── Cards de captura para html2canvas — um por grupo de dias (fora do fluxo visual) ── */}
-      {paginasDias.map((grupoDias, pagIndex) => (
-        <div
-          key={`captura-pag-${pagIndex}`}
-          id={`roteiro-captura-${pagIndex}`}
-          style={{
-            position: "absolute",
-            left: "-9999px",
-            top: 0,
-            width: "400px",
-            background: "#ffffff",
-            fontFamily: "'Inter', sans-serif",
-            padding: "0",
-            overflow: "hidden",
-            borderRadius: "12px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-          }}
-        >
-          {/* Linha decorativa teal no topo */}
-          <div style={{ height: "6px", background: "#0D7377" }}></div>
-
-          {/* Cabeçalho do card de captura */}
+      {/* ── Cards de captura para html2canvas — um por grupo de dias (isolado em wrapper de tamanho zero para evitar overflow no mobile) ── */}
+      <div style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", pointerEvents: "none", zIndex: -100, left: 0, top: 0 }}>
+        {paginasDias.map((grupoDias, pagIndex) => (
           <div
+            key={`captura-pag-${pagIndex}`}
+            id={`roteiro-captura-${pagIndex}`}
             style={{
-              background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
-              padding: "24px 24px 20px",
+              position: "absolute",
+              left: "-9999px",
+              top: 0,
+              width: "400px",
+              background: "#ffffff",
+              fontFamily: "'Inter', sans-serif",
+              padding: "0",
+              overflow: "hidden",
+              borderRadius: "12px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
             }}
           >
-            <p style={{ margin: 0 }}>
-              <span style={{
-                fontFamily: "'Fjalla One', 'Inter', sans-serif",
-                fontWeight: 900,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "#E9D8B4",
-                fontSize: "22px",
-                lineHeight: 1.1,
-                display: "block"
-              }}>
-                Sergipanidade
-              </span>
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px", margin: "6px 0 0", fontWeight: 500 }}>
-              Meu Roteiro em Aracaju
-              {paginasDias.length > 1 && (
-                <span style={{
-                  marginLeft: "8px",
-                  background: "rgba(255,255,255,0.18)",
-                  borderRadius: "20px",
-                  padding: "1px 8px",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                }}>
-                  Parte {pagIndex + 1}/{paginasDias.length}
-                </span>
-              )}
-            </p>
-          </div>
+            {/* Linha decorativa teal no topo */}
+            <div style={{ height: "6px", background: "#0D7377" }}></div>
 
-          {/* Lista de paradas agrupadas pelos dias desta página */}
-          <div style={{ padding: "20px 24px", background: "#fff" }}>
-            {grupoDias.map((dia) => {
-              const paradasDoDia = todasParadasDoDia(dia);
-              return (
-                <div key={`captura-dia-${pagIndex}-${dia}`} style={{ marginBottom: "16px" }}>
-                  {/* Cabeçalho do dia */}
-                  <div
-                    style={{
-                      display: "inline-block",
-                      background: "#0D7377",
-                      color: "#fff",
-                      fontWeight: 800,
-                      fontSize: "12px",
-                      letterSpacing: "0.08em",
-                      padding: "6px 12px",
-                      borderRadius: "6px",
-                      marginBottom: "12px",
-                      textTransform: "uppercase",
-                      boxShadow: "0 2px 4px rgba(13,115,119,0.2)",
-                    }}
-                  >
-                    Dia {dia} — {capitalizar(formatarDataDia(dataInicio, dia - 1, language))}
-                  </div>
-                  {paradasDoDia.map((p, i) => (
+            {/* Cabeçalho do card de captura */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
+                padding: "24px 24px 20px",
+              }}
+            >
+              <p style={{ margin: 0 }}>
+                <span style={{
+                  fontFamily: "'Fjalla One', 'Inter', sans-serif",
+                  fontWeight: 900,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "#E9D8B4",
+                  fontSize: "22px",
+                  lineHeight: 1.1,
+                  display: "block"
+                }}>
+                  Sergipanidade
+                </span>
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px", margin: "6px 0 0", fontWeight: 500 }}>
+                Meu Roteiro em Aracaju
+                {paginasDias.length > 1 && (
+                  <span style={{
+                    marginLeft: "8px",
+                    background: "rgba(255,255,255,0.18)",
+                    borderRadius: "20px",
+                    padding: "1px 8px",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                  }}>
+                    Parte {pagIndex + 1}/{paginasDias.length}
+                  </span>
+                )}
+              </p>
+            </div>
+
+            {/* Lista de paradas agrupadas pelos dias desta página */}
+            <div style={{ padding: "20px 24px", background: "#fff" }}>
+              {grupoDias.map((dia) => {
+                const paradasDoDia = todasParadasDoDia(dia);
+                return (
+                  <div key={`captura-dia-${pagIndex}-${dia}`} style={{ marginBottom: "16px" }}>
+                    {/* Cabeçalho do dia */}
                     <div
-                      key={`captura-parada-${pagIndex}-${p.destinationId}-${i}`}
                       style={{
-                        display: "flex",
-                        gap: "12px",
-                        alignItems: "flex-start",
-                        padding: "10px 12px",
-                        borderRadius: "8px",
-                        background: i % 2 === 0 ? "#f9fafb" : "#fff",
-                        border: "1px solid rgba(13,115,119,0.10)",
-                        marginBottom: "6px",
+                        display: "inline-block",
+                        background: "#0D7377",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "12px",
+                        letterSpacing: "0.08em",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        marginBottom: "12px",
+                        textTransform: "uppercase",
+                        boxShadow: "0 2px 4px rgba(13,115,119,0.2)",
                       }}
                     >
-                      {/* Número — inline-block com line-height para centralização confiável no html2canvas */}
+                      Dia {dia} — {capitalizar(formatarDataDia(dataInicio, dia - 1, language))}
+                    </div>
+                    {paradasDoDia.map((p, i) => (
                       <div
+                        key={`captura-parada-${pagIndex}-${p.destinationId}-${i}`}
                         style={{
-                          width: "26px",
-                          height: "26px",
-                          borderRadius: "50%",
-                          background: "linear-gradient(135deg, #0D7377, #14544A)",
-                          color: "#fff",
-                          display: "inline-block",
-                          textAlign: "center",
-                          lineHeight: "26px",
-                          fontSize: "11px",
-                          fontWeight: 700,
-                          flexShrink: 0,
+                          display: "flex",
+                          gap: "12px",
+                          alignItems: "flex-start",
+                          padding: "10px 12px",
+                          borderRadius: "8px",
+                          background: i % 2 === 0 ? "#f9fafb" : "#fff",
+                          border: "1px solid rgba(13,115,119,0.10)",
+                          marginBottom: "6px",
                         }}
                       >
-                        {i + 1}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Nome do destino sem emojis */}
-                        <p style={{ margin: 0, fontWeight: 800, fontSize: "13px", color: "#111", lineHeight: 1.3 }}>
-                          {removerEmojis(p.destination.name)}
-                        </p>
-                        {/* Período com ícone SVG */}
-                        <p style={{ margin: "4px 0 0", fontSize: "11px", color: "#0D7377", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-                          {getPeriodIcon(p.periodo)}
-                          <span>{p.periodo} · {PERIODO_TIME[p.periodo] || "09:00"}</span>
-                        </p>
-                        {p.dica && (
-                          <p
-                            style={{
-                              margin: "4px 0 0",
-                              fontSize: "11px",
-                              color: "#555",
-                              lineHeight: 1.4,
-                              borderLeft: "2px solid #0D7377",
-                              paddingLeft: "6px",
-                            }}
-                          >
-                            {truncarTexto(p.dica)}
+                        {/* Número — inline-block com line-height para centralização confiável no html2canvas */}
+                        <div
+                          style={{
+                            width: "26px",
+                            height: "26px",
+                            borderRadius: "50%",
+                            background: "linear-gradient(135deg, #0D7377, #14544A)",
+                            color: "#fff",
+                            display: "inline-block",
+                            textAlign: "center",
+                            lineHeight: "26px",
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {i + 1}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {/* Nome do destino sem emojis */}
+                          <p style={{ margin: 0, fontWeight: 800, fontSize: "13px", color: "#111", lineHeight: 1.3 }}>
+                            {removerEmojis(p.destination.name)}
                           </p>
-                        )}
+                          {/* Período com ícone SVG */}
+                          <p style={{ margin: "4px 0 0", fontSize: "11px", color: "#0D7377", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+                            {getPeriodIcon(p.periodo)}
+                            <span>{p.periodo} · {PERIODO_TIME[p.periodo] || "09:00"}</span>
+                          </p>
+                          {p.dica && (
+                            <p
+                              style={{
+                                margin: "4px 0 0",
+                                fontSize: "11px",
+                                color: "#555",
+                                lineHeight: 1.4,
+                                borderLeft: "2px solid #0D7377",
+                                paddingLeft: "6px",
+                              }}
+                            >
+                               {truncarTexto(p.dica)}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
 
-          {/* Rodapé */}
+            {/* Rodapé */}
+            <div
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #0D2B2E, #0D7377)",
+                textAlign: "center",
+              }}
+            >
+              <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: "11px", fontWeight: 600, letterSpacing: "0.04em" }}>
+                sergipanidade.com.br
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ══════════════════ MODAL DE COMPARTILHAMENTO ══════════════════ */}
+      {abrirOpcoesCompartilhar && (
+        <div
+          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in"
+          onClick={() => setAbrirOpcoesCompartilhar(false)}
+        >
           <div
+            className="bg-white rounded-[16px] p-6 w-full max-w-[380px] shadow-2xl relative animate-scale-up animate-duration-200"
+            onClick={(e) => e.stopPropagation()}
             style={{
-              padding: "12px 24px",
-              background: "linear-gradient(135deg, #0D2B2E, #0D7377)",
-              textAlign: "center",
+              background: "#fff",
+              border: "1px solid var(--cinza-med)",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
             }}
           >
-            <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: "11px", fontWeight: 600, letterSpacing: "0.04em" }}>
-              sergipanidade.com.br
-            </p>
+            {/* Botão fechar */}
+            <button
+              onClick={() => setAbrirOpcoesCompartilhar(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--cinza-leve)] transition-colors text-[var(--cinza-txt)] cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+
+            {/* Cabeçalho */}
+            <div className="flex items-center gap-2.5 mb-5 mt-1">
+              <div className="w-10 h-10 rounded-full bg-[rgba(13,115,119,0.1)] flex items-center justify-center">
+                <Share2 size={18} className="text-[var(--primary)]" />
+              </div>
+              <div>
+                <h3 className="font-['Fjalla_One'] text-lg text-[var(--preto)] leading-snug">
+                  {language === "pt" ? "Compartilhar Roteiro" : language === "es" ? "Compartir Itinerario" : "Share Itinerary"}
+                </h3>
+                <p className="text-xs text-[var(--cinza-txt)] mt-0.5">
+                  {language === "pt"
+                    ? "Selecione o formato de compartilhamento"
+                    : language === "es"
+                    ? "Seleccione el formato de compartir"
+                    : "Select the share format"}
+                </p>
+              </div>
+            </div>
+
+            {/* Opções */}
+            <div className="space-y-3">
+              {/* Opção 1: Texto */}
+              <button
+                onClick={() => {
+                  setAbrirOpcoesCompartilhar(false);
+                  compartilharRoteiro();
+                }}
+                className="w-full text-left p-4 rounded-xl border border-[var(--cinza-med)] hover:border-[var(--primary)] hover:bg-[rgba(13,115,119,0.02)] transition-all flex items-start gap-3.5 group min-h-[44px] cursor-pointer"
+              >
+                <div className="w-9 h-9 rounded-lg bg-[var(--cinza-leve)] flex items-center justify-center text-[var(--cinza-txt)] group-hover:bg-[rgba(13,115,119,0.1)] group-hover:text-[var(--primary)] transition-colors shrink-0">
+                  <FileText size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-sm text-[var(--preto)] group-hover:text-[var(--primary)] transition-colors">
+                    {language === "pt" ? "Compartilhar como Texto" : language === "es" ? "Compartir como Texto" : "Share as Text"}
+                  </h4>
+                  <p className="text-xs text-[var(--cinza-txt)] mt-1 leading-relaxed">
+                    {language === "pt"
+                      ? "Lista organizada com nomes, dias e horários ideal para WhatsApp."
+                      : language === "es"
+                      ? "Lista organizada con nombres, días y horarios ideal para WhatsApp."
+                      : "Organized list with names, days, and times ideal for WhatsApp."}
+                  </p>
+                </div>
+              </button>
+
+              {/* Opção 2: Imagem */}
+              <button
+                onClick={() => {
+                  setAbrirOpcoesCompartilhar(false);
+                  compartilharComoImagem();
+                }}
+                className="w-full text-left p-4 rounded-xl border border-[var(--cinza-med)] hover:border-[var(--primary)] hover:bg-[rgba(13,115,119,0.02)] transition-all flex items-start gap-3.5 group min-h-[44px] cursor-pointer"
+              >
+                <div className="w-9 h-9 rounded-lg bg-[var(--cinza-leve)] flex items-center justify-center text-[var(--cinza-txt)] group-hover:bg-[rgba(13,115,119,0.1)] group-hover:text-[var(--primary)] transition-colors shrink-0">
+                  <Image size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-sm text-[var(--preto)] group-hover:text-[var(--primary)] transition-colors">
+                    {language === "pt" ? "Compartilhar como Imagem" : language === "es" ? "Compartir como Imagen" : "Share as Image"}
+                  </h4>
+                  <p className="text-xs text-[var(--cinza-txt)] mt-1 leading-relaxed">
+                    {language === "pt"
+                      ? "Imagem premium estilizada para redes sociais ou galeria."
+                      : language === "es"
+                      ? "Imagen premium estilizada para redes sociales o galería."
+                      : "Premium styled image for social networks or gallery."}
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
-      ))}
-
-      <style>{`
-        @keyframes cronogramaFadeInUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes confirmFadeIn {
-          from { opacity: 0; transform: translateX(6px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
+      )}
     </FundoVisual>
   );
 }

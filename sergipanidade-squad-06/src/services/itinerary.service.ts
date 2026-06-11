@@ -74,14 +74,15 @@ function gerarChaveCache(
 }
 
 /**
- * Remove paradas com `destinationId` duplicado, mantendo sempre a primeira ocorrência.
- * Retorna um novo array sem duplicatas.
+ * Remove paradas com `destinationId` duplicado no MESMO DIA, mantendo sempre a primeira ocorrência.
+ * Retorna um novo array sem duplicatas diárias.
  */
 function removerParadasDuplicadas(paradas: ParadaGerada[]): ParadaGerada[] {
-  const idsVistos = new Set<string>();
+  const chavesVistas = new Set<string>();
   return paradas.filter((p) => {
-    if (idsVistos.has(p.destinationId)) return false;
-    idsVistos.add(p.destinationId);
+    const chave = `${p.dia}-${p.destinationId}`;
+    if (chavesVistas.has(chave)) return false;
+    chavesVistas.add(chave);
     return true;
   });
 }
@@ -104,9 +105,13 @@ function preencherVagas(
   const paradasPorDia = dados.stopsPerDay ?? 3;
 
   // Ordena destinos disponíveis priorizando os compatíveis com interesses
-  const candidatos = embaralharArray(
-    destinations.filter((d) => !idsUsados.has(d.id)),
-  ).sort((a, b) => {
+  let candidatosFiltrados = destinations.filter((d) => !idsUsados.has(d.id));
+  if (candidatosFiltrados.length === 0) {
+    // Se todos os destinos já foram usados, relaxa a restrição e permite reuso
+    candidatosFiltrados = destinations;
+  }
+
+  const candidatos = embaralharArray(candidatosFiltrados).sort((a, b) => {
     const scoreA =
       categoriasCompativeis.size > 0 &&
       [...categoriasCompativeis].some((cat) => a.category.toUpperCase().includes(cat))
@@ -123,8 +128,8 @@ function preencherVagas(
   const resultado = [...paradasExistentes];
   let indiceCandidato = 0;
 
-  while (resultado.length < totalEsperado && indiceCandidato < candidatos.length) {
-    const dest = candidatos[indiceCandidato];
+  while (resultado.length < totalEsperado && candidatos.length > 0) {
+    const dest = candidatos[indiceCandidato % candidatos.length];
     const index = resultado.length;
     const dia = Math.floor(index / paradasPorDia) + 1;
     const periodo = periodos[index % paradasPorDia] ?? periodos[index % periodos.length];
@@ -226,6 +231,26 @@ function encontrarSubstitutoInteligente(
  * O resultado final é um array de objetos `ParadaGerada` contendo
  * `destinationId`, `dia`, `periodo` e a `dica` resumida.
  */
+/**
+ * Classifica um destino em termos de custo orçamentário.
+ */
+function obterCustoDestino(id: string): "economico" | "moderado" | "premium" {
+  switch (id) {
+    case "canion-xingo":
+      return "premium";
+    case "miauteria":
+    case "memorial-sergipe":
+    case "museu-gente":
+      return "moderado";
+    case "orla-atalaia":
+    case "parque-sementeira":
+    case "centro-historico":
+    case "mercado-thales":
+    default:
+      return "economico";
+  }
+}
+
 export function gerarRoteiroLocal(
   dados: {
     who: string;
@@ -244,17 +269,36 @@ export function gerarRoteiroLocal(
   // Embaralha primeiro para que desempates de pontuação sejam aleatórios
   const embaralhado = embaralharArray(destinations);
 
-  // Calcula pontuação estática (não leva em conta uso ainda)
-  const pontuados = embaralhado.map((d) => ({
-    destination: d,
-    score:
+  // Calcula pontuação estática considerando categorias e orçamento
+  const pontuados = embaralhado.map((d) => {
+    let score = 1;
+
+    // Bônus se categoria bate com interesses
+    const matchesInterests =
       categoriasCompativeis.size > 0 &&
       [...categoriasCompativeis].some((cat) =>
         d.category.toUpperCase().includes(cat),
-      )
-        ? 2
-        : 1,
-  }));
+      );
+    if (matchesInterests) {
+      score += 2;
+    }
+
+    // Bônus/penalidade baseados no orçamento (budget)
+    const custoDestino = obterCustoDestino(d.id);
+    if (custoDestino === dados.budget) {
+      score += 1.0;
+    } else if (
+      (dados.budget === "economico" && custoDestino === "premium") ||
+      (dados.budget === "premium" && custoDestino === "economico")
+    ) {
+      score -= 0.5;
+    }
+
+    return {
+      destination: d,
+      score,
+    };
+  });
 
   // Ordena por pontuação decrescente – o embaralhar já introduz variação
   pontuados.sort((a, b) => b.score - a.score);
@@ -412,12 +456,6 @@ export async function gerarRoteiroComIAComFallback(
       name: d.name,
       category: d.category,
       bairro: d.bairro,
-      description:
-        idioma === "en"
-          ? d.shortDesc_en || d.shortDesc
-          : idioma === "es"
-            ? d.shortDesc_es || d.shortDesc
-            : d.shortDesc,
     }));
 
     const periodos = getPeriodLabels(idioma);
@@ -425,9 +463,9 @@ export async function gerarRoteiroComIAComFallback(
     const totalParadas = dados.days * paradasPorDia;
     const maxDestinosUnicos = destinations.length;
 
-    const prompt = `\nYou are the AI assistant of "Sergipanidade", a tourism portal for Aracaju, Sergipe, Brazil.\nYour ONLY task is to return a valid JSON array representing a travel itinerary. Do not write anything else.\n\nUSER PREFERENCES:\n- Companion profile: ${dados.who} (solo, casal/couple, familia/family, grupo/group)\n- Trip duration: ${dados.days} day(s)\n- Interests: ${dados.interests.join(", ")}\n- Budget: ${dados.budget} (economico=budget-friendly, moderado=mid-range, premium=luxury)\n- Language for the "dica" field: ${idioma === "pt" ? "Brazilian Portuguese" : idioma === "es" ? "Spanish" : "English"}\n\nAVAILABLE DESTINATIONS (use ONLY these exact IDs — do NOT invent new ones):\n${JSON.stringify(destinosDisponiveis, null, 2)}\n\nALLOWED PERIOD VALUES (use EXACTLY one of these per stop, in this cyclic order within each day):\n${JSON.stringify(periodos)}\n\nRULES:\n1. Generate exactly ${totalParadas} stops total (${dados.days} day(s) × ${paradasPorDia} stops/day).\n2. Within each day, assign periods in order: ${periodos.slice(0, paradasPorDia).map((p, i) => `stop ${i + 1} → "${p}"`).join(", ")}.\n3. Prioritize destinations that match the user's interests and budget level.\n4. Never repeat the same destination within the same day.\n5. There are only ${maxDestinosUnicos} unique destinations available. If ${totalParadas} > ${maxDestinosUnicos}, reuse destinations minimally and NEVER place the same destination on consecutive days.\n6. The "dica" field must be written in the requested language, personalized for the companion profile (${dados.who}) and budget (${dados.budget}). Make it specific and practical.\n7. Return ONLY the JSON array. No markdown fences, no explanation text. Start with [ and end with ].\n\nEXPECTED FORMAT:\n[\n  { "destinationId": "exact-id-string", "dia": 1, "periodo": "${periodos[0]}", "dica": "personalized tip in the correct language" }\n]\n`;
+    const prompt = `\nYou are the AI assistant of "Sergipanidade", a tourism portal for Aracaju, Sergipe, Brazil.\nYour ONLY task is to return a valid JSON array representing a travel itinerary. Do not write anything else.\n\nUSER PREFERENCES:\n- Companion profile: ${dados.who} (solo, casal/couple, familia/family, grupo/group)\n- Trip duration: ${dados.days} day(s)\n- Interests: ${dados.interests.join(", ")}\n- Budget: ${dados.budget} (economico=budget-friendly, moderado=mid-range, premium=luxury)\n- Language for the "dica" field: ${idioma === "pt" ? "Brazilian Portuguese" : idioma === "es" ? "Spanish" : "English"}\n\nAVAILABLE DESTINATIONS (use ONLY these exact IDs — do NOT invent new ones):\n${JSON.stringify(destinosDisponiveis, null, 2)}\n\nALLOWED PERIOD VALUES (use EXACTLY one of these per stop, in this cyclic order within each day):\n${JSON.stringify(periodos)}\n\nRULES:\n1. Generate exactly ${totalParadas} stops total (${dados.days} day(s) × ${paradasPorDia} stops/day).\n2. Within each day, assign periods in order: ${periodos.slice(0, paradasPorDia).map((p, i) => `stop ${i + 1} → "${p}"`).join(", ")}.\n3. Prioritize destinations that match the user's interests and budget level.\n4. Never repeat the same destination within the same day.\n5. There are only ${maxDestinosUnicos} unique destinations available. If ${totalParadas} > ${maxDestinosUnicos}, reuse destinations minimally and NEVER place the same destination on consecutive days.\n6. The "dica" field must be written in the requested language, personalized for the companion profile (${dados.who}) and budget (${dados.budget}). Keep it very short, direct and practical (at most 1 sentence, maximum 15-20 words) to optimize response latency. Crucial: Do NOT include any emojis (e.g., no 🚗, no 🏖️, no ✨, etc.) in the "dica" field.\n7. Return ONLY the JSON array. No markdown fences, no explanation text. Start with [ and end with ].\n\nEXPECTED FORMAT:\n[\n  { "destinationId": "exact-id-string", "dia": 1, "periodo": "${periodos[0]}", "dica": "personalized tip in the correct language" }\n]\n`;
 
-    // ── Tarefa 1: Timeout rígido de 7 segundos ──
+    // ── Tarefa 1: Timeout rígido de 5 segundos ──
     // Cria um AbortController interno para o timeout, combinado com o signal externo
     const timeoutController = new AbortController();
     const timeoutId = setTimeout(() => timeoutController.abort(), TIMEOUT_IA_MS);
@@ -442,9 +480,36 @@ export async function gerarRoteiroComIAComFallback(
       signal.addEventListener("abort", onExternalAbort);
     }
 
+    const schemaRoteiro = {
+      type: "ARRAY",
+      description: "Lista de paradas que compõem o roteiro turístico",
+      items: {
+        type: "OBJECT",
+        properties: {
+          destinationId: {
+            type: "STRING",
+            description: "ID exato do destino selecionado a partir da lista AVAILABLE DESTINATIONS (ex: 'museu-gente', 'orla-atalaia'). Não use o nome do destino, use apenas seu ID exato."
+          },
+          dia: {
+            type: "INTEGER",
+            description: "O número do dia da parada, iniciando em 1."
+          },
+          periodo: {
+            type: "STRING",
+            description: "O período correspondente da parada de acordo com ALLOWED PERIOD VALUES."
+          },
+          dica: {
+            type: "STRING",
+            description: "Dica de viagem personalizada para a parada no idioma solicitado."
+          }
+        },
+        required: ["destinationId", "dia", "periodo", "dica"]
+      }
+    };
+
     let textoRespostaIA: string;
     try {
-      textoRespostaIA = await gerarRoteiroComIA(prompt, timeoutController.signal);
+      textoRespostaIA = await gerarRoteiroComIA(prompt, timeoutController.signal, schemaRoteiro);
     } finally {
       clearTimeout(timeoutId);
       if (signal) {
@@ -488,15 +553,24 @@ export async function gerarRoteiroComIAComFallback(
         );
       }
 
+      // Remove emojis do campo dica para manter o texto limpo e profissional
+      const dicaLimpa = item.dica
+        .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
       const destinoExiste = destinations.some(
         (d) => d.id === item.destinationId,
       );
 
       if (!destinoExiste) {
-        // Tenta inferir a categoria do item inválido
-        const categoriaInferida = destinosDisponiveis.find(
-          (d) => d.id === item.destinationId,
-        )?.category;
+        // Tenta inferir a categoria do item inválido por similaridade parcial
+        const idProximo = destinosDisponiveis.find(
+          (d) =>
+            item.destinationId.toLowerCase().includes(d.id.toLowerCase()) ||
+            d.id.toLowerCase().includes(item.destinationId.toLowerCase()),
+        );
+        const categoriaInferida = idProximo?.category;
 
         const idSubstituto = encontrarSubstitutoInteligente(
           item.destinationId,
@@ -504,11 +578,11 @@ export async function gerarRoteiroComIAComFallback(
           categoriaInferida,
         );
         idsJaUsados.add(idSubstituto);
-        return { ...item, destinationId: idSubstituto };
+        return { ...item, destinationId: idSubstituto, dica: dicaLimpa };
       }
 
       idsJaUsados.add(item.destinationId);
-      return item;
+      return { ...item, dica: dicaLimpa };
     });
 
     // ── Tarefa 8: Remover paradas duplicadas do fluxo IA ──
@@ -518,6 +592,18 @@ export async function gerarRoteiroComIAComFallback(
     if (paradasFinais.length < totalParadas) {
       paradasFinais = preencherVagas(paradasFinais, totalParadas, dados, idioma);
     }
+
+    // Normaliza dias e períodos para garantir a consistência absoluta do roteiro e respeitar a escolha do usuário
+    const periodosCabecalho = getPeriodLabels(idioma);
+    paradasFinais = paradasFinais.map((p, index) => {
+      const diaCalculado = Math.floor(index / paradasPorDia) + 1;
+      const periodoCalculado = periodosCabecalho[index % paradasPorDia] ?? periodosCabecalho[index % periodosCabecalho.length];
+      return {
+        ...p,
+        dia: diaCalculado,
+        periodo: periodoCalculado,
+      };
+    });
 
     // Salvar no cache de sessão (apenas resultados de IA)
     try {

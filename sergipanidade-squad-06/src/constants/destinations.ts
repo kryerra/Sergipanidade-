@@ -1,4 +1,63 @@
-import arcoOrlaImage from '@/assets/images/arco-orla.jpg';
+import arcoOrlaImage from "@/assets/images/arco-orla.jpg";
+import memorialPrincipal from "@/assets/images/gallery/memorial-de-sergipe.png";
+
+
+// Imports das fotos de galeria para Orla de Atalaia
+import orla1 from "@/assets/images/gallery/orla-atalaia/orla.jpg";
+import orla2 from "@/assets/images/gallery/orla-atalaia/orla-1.jpg";
+import orla3 from "@/assets/images/gallery/orla-atalaia/orla-2.png";
+import orla4 from "@/assets/images/gallery/orla-atalaia/orla-3.jpg";
+import orla5 from "@/assets/images/gallery/orla-atalaia/orla-4.png";
+import orla6 from "@/assets/images/gallery/orla-atalaia/orla-5.jpg";
+
+// Imports das fotos de galeria para Miauteria Cat Café
+import miauteria1 from "@/assets/images/gallery/miauteria/miauteria-1.jpg";
+import miauteria2 from "@/assets/images/gallery/miauteria/miauteria-2.jpg";
+import miauteria3 from "@/assets/images/gallery/miauteria/miauteria-3.jpg";
+import miauteria4 from "@/assets/images/gallery/miauteria/miauteria-4.jpg";
+import miauteria5 from "@/assets/images/gallery/miauteria/miauteria-5.jpg";
+
+// Imports das fotos de galeria para Museu da gente Sergipana
+import museu1 from "@/assets/images/gallery/museu-gente/museu-1.png";
+import museu2 from "@/assets/images/gallery/museu-gente/museu-2.png";
+import museu3 from "@/assets/images/gallery/museu-gente/museu-3.png";
+import museu4 from "@/assets/images/gallery/museu-gente/museu-4.png";
+import museu5 from "@/assets/images/gallery/museu-gente/museu-5.png";
+
+// Imports das fotos de galeria para Cânions de Xingó
+import canion1 from "@/assets/images/gallery/canion-xingo/canions-dt.png";
+import canion2 from "@/assets/images/gallery/canion-xingo/canions-dt2.png";
+import canion3 from "@/assets/images/gallery/canion-xingo/canions-dt3.png";
+import canion4 from "@/assets/images/gallery/canion-xingo/canions-dt4.png";
+import canion5 from "@/assets/images/gallery/canion-xingo/canions-dt5.png";
+
+// Imports das fotos de galeria para Mercado Thales Ferraz
+import mercado1 from "@/assets/images/gallery/mercado-thales/mercado-dt.png";
+import mercado2 from "@/assets/images/gallery/mercado-thales/mercado-dt2.png";
+import mercado3 from "@/assets/images/gallery/mercado-thales/mercado-dt3.png";
+import mercado4 from "@/assets/images/gallery/mercado-thales/mercado-dt5.png";
+import mercado5 from "@/assets/images/gallery/mercado-thales/mercado-dt7.png";
+
+// Imports das fotos de galeria para Centro Histórico
+import centroHistorico1 from "@/assets/images/gallery/centro-historico/centrohistorico-dt.png";
+import centroHistorico2 from "@/assets/images/gallery/centro-historico/centrohistorico-dt4.png";
+import centroHistorico3 from "@/assets/images/gallery/centro-historico/centrohistorico-dt5.png";
+import centroHistorico4 from "@/assets/images/gallery/centro-historico/centrohistorico-dt7.png";
+import centroHistorico5 from "@/assets/images/gallery/centro-historico/centrohistorico-dt8.png";
+
+// Imports das fotos de galeria para Parque da Sementeira
+import sementeira1 from "@/assets/images/gallery/parque-sementeira/sementeira-dt.jpg";
+import sementeira2 from "@/assets/images/gallery/parque-sementeira/sementeira-dt2.jpg";
+import sementeira3 from "@/assets/images/gallery/parque-sementeira/sementeira-dt3.jpg";
+import sementeira4 from "@/assets/images/gallery/parque-sementeira/sementeira-dt5.jpg";
+import sementeira5 from "@/assets/images/gallery/parque-sementeira/sementeira-dt6.jpg";
+
+// Imports das fotos de galeria para Memorial de Sergipe
+import memorial1 from "@/assets/images/gallery/memorial-de-sergipe/memorial-dt.png";
+import memorial2 from "@/assets/images/gallery/memorial-de-sergipe/memorial-dt2.png";
+import memorial3 from "@/assets/images/gallery/memorial-de-sergipe/memorial-dt3.png";
+import memorial4 from "@/assets/images/gallery/memorial-de-sergipe/memorial-dt4.png";
+import memorial5 from "@/assets/images/gallery/memorial-de-sergipe/memorial-dt6.png";
 
 export interface Destination {
   id: string;
@@ -11,7 +70,7 @@ export interface Destination {
   fullDesc_en?: string;
   fullDesc_es?: string;
   category: string;
-  region: 'Aracaju' | 'Interior' | 'Litoral Norte' | 'Litoral Sul';
+  region: "Aracaju" | "Interior" | "Litoral Norte" | "Litoral Sul";
   bairro: string;
   address: string;
   distance: string;
@@ -22,6 +81,7 @@ export interface Destination {
   email: string;
   social: string;
   image: string;
+  coverImage?: string;
   gradient: string;
   iconBg: string;
   tip: string;
@@ -29,256 +89,312 @@ export interface Destination {
   tip_es?: string;
   lat: number;
   lon: number;
+  gallery?: string[];
 }
 
 export const destinations: Destination[] = [
   {
-    id: 'orla-atalaia',
-    icon: '🏖️',
-    name: 'Orla de Atalaia',
-    shortDesc: 'Praia urbana com calçadão modernizado',
-    shortDesc_en: 'Urban beach with modern boardwalk',
-    shortDesc_es: 'Playa urbana con paseo marítimo modernizado',
-    fullDesc: 'A Orla de Atalaia é o cartão-postal de Aracaju. Com seus 6km de calçadão modernizado, é um dos pontos mais vibrantes da cidade. Oferece ciclovia, quadras esportivas, parquinhos infantis, oceanário, e uma vista privilegiada do pôr do sol. Perfeito para caminhadas, exercícios e momentos em família.',
-    fullDesc_en: 'Orla de Atalaia is Aracaju\'s postcard. With its 6km of modernized boardwalk, it\'s one of the city\'s most vibrant spots. It offers bike paths, sports courts, playgrounds, an oceanarium, and a privileged view of the sunset. Perfect for walks, exercises and family moments.',
-    fullDesc_es: 'La Orla de Atalaia es la postal de Aracaju. Con sus 6km de paseo marítimo modernizado, es uno de los puntos más vibrantes de la ciudad. Ofrece ciclovía, canchas deportivas, parques infantiles, oceanario y una vista privilegiada del atardecer. Perfecto para caminatas, ejercicios y momentos en familia.',
-    category: 'PRAIA',
-    region: 'Aracaju',
-    bairro: 'Atalaia',
-    address: 'Av. Santos Dumont — Atalaia, Aracaju/SE',
-    distance: '2.3 km',
-    rating: '4.8',
-    reviews: '1.2k',
-    hours: 'Aberto 24 horas',
-    phone: '(79) 3179-1947',
-    email: 'turismo@aracaju.se.gov.br',
-    social: '@visitearacaju',
+    id: "orla-atalaia",
+    icon: "🏖️",
+    name: "Orla de Atalaia",
+    shortDesc: "Praia urbana com calçadão modernizado",
+    shortDesc_en: "Urban beach with modern boardwalk",
+    shortDesc_es: "Playa urbana con paseo marítimo modernizado",
+    fullDesc:
+      "A Orla de Atalaia é o cartão-postal de Aracaju. Com seus 6 km de calçadão modernizado, é um dos pontos mais vibrantes da cidade. Oferece ciclovia, quadras esportivas, parquinhos infantis, oceanário e uma vista privilegiada do pôr do sol. Perfeito para caminhadas, exercícios e momentos em família.",
+    fullDesc_en:
+      "Orla de Atalaia is Aracaju's postcard. With its 6 km of modernized boardwalk, it's one of the city's most vibrant spots. It offers bike paths, sports courts, playgrounds, an oceanarium, and a privileged view of the sunset. Perfect for walks, exercises and family moments.",
+    fullDesc_es:
+      "La Orla de Atalaia es la postal de Aracaju. Con sus 6 km de paseo marítimo modernizado, es uno de los puntos más vibrantes de la ciudad. Ofrece ciclovía, canchas deportivas, parques infantiles, oceanario y una vista privilegiada del atardecer. Perfecto para caminatas, ejercicios y momentos en familia.",
+    category: "PRAIA",
+    region: "Aracaju",
+    bairro: "Atalaia",
+    address: "Av. Santos Dumont — Atalaia, Aracaju/SE",
+    distance: "2.3 km",
+    rating: "4.8",
+    reviews: "1.2k",
+    hours: "Aberto 24 horas",
+    phone: "(79) 3179-1947",
+    email: "turismo@aracaju.se.gov.br",
+    social: "@visitearacaju",
     image: arcoOrlaImage,
-    gradient: 'from-[#458B8B] to-[#2A6B6B]',
-    iconBg: 'bg-[rgba(69,139,139,0.12)]',
-    tip: 'Vá ao final da tarde para ver o pôr do sol espetacular. Alugue uma bicicleta e explore toda a orla. Não perca o Oceanário de Aracaju!',
-    tip_en: 'Go in the late afternoon to see the spectacular sunset. Rent a bike and explore the entire boardwalk. Don\'t miss the Aracaju Oceanarium!',
-    tip_es: 'Ve al final de la tarde para ver el atardecer espectacular. Alquila una bicicleta y explora todo el paseo marítimo. ¡No te pierdas el Oceanario de Aracaju!',
+    gradient: "from-[#458B8B] to-[#2A6B6B]",
+    iconBg: "bg-[rgba(69,139,139,0.12)]",
+    tip: "Vá ao final da tarde para ver o pôr do sol espetacular. Alugue uma bicicleta e explore toda a orla. Não perca o Oceanário de Aracaju!",
+    tip_en:
+      "Go in the late afternoon to see the spectacular sunset. Rent a bike and explore the entire boardwalk. Don't miss the Aracaju Oceanarium!",
+    tip_es:
+      "Ve al final de la tarde para ver el atardecer espectacular. Alquila una bicicleta y explora todo el paseo marítimo. ¡No te pierdas el Oceanario de Aracaju!",
     lat: -10.9889,
     lon: -37.0483,
+    gallery: [orla1, orla2, orla3, orla4, orla5, orla6],
   },
   {
-    id: 'miauteria',
-    icon: '🐱',
-    name: 'Miauteria Cat Café',
-    shortDesc: 'Cafeteria pet friendly com adoção',
-    shortDesc_en: 'Pet friendly café with adoption',
-    shortDesc_es: 'Cafetería pet friendly con adopción',
-    fullDesc: 'A Miauteria é mais do que uma cafeteria: é um espaço de convivência com gatinhos resgatados disponíveis para adoção. Desfrute de cafés especiais, doces artesanais e a companhia de felinos carinhosos. Todo o valor arrecadado vai para ONGs de proteção animal.',
-    fullDesc_en: 'Miauteria is more than a café: it\'s a space to interact with rescued kittens available for adoption. Enjoy specialty coffees, artisanal sweets and the company of affectionate felines. All proceeds go to animal protection NGOs.',
-    fullDesc_es: 'Miauteria es más que una cafetería: es un espacio de convivencia con gatitos rescatados disponibles para adopción. Disfruta de cafés especiales, dulces artesanales y la compañía de felinos cariñosos. Todo lo recaudado va a ONGs de protección animal.',
-    category: 'PET FRIENDLY',
-    region: 'Aracaju',
-    bairro: 'Pereira Lobo',
-    address: 'Av. Dr. Edelzio Vieira de Melo, 1337 - Pereira Lobo, Aracaju - SE, 49052-240',
-    distance: '1.5 km',
-    rating: '4.9',
-    reviews: '389',
-    hours: 'Terça a domingo, 14h às 20h',
-    phone: '(79) 99876-5432',
-    email: 'contato@miauteria.com.br',
-    social: '@miauteriacafe',
-    image: 'https://f.i.uol.com.br/fotografia/2022/06/16/165540495662ab799c3502b_1655404956_5x2_md.jpg',
-    gradient: 'from-[#ED2100] to-[#000080]',
-    iconBg: 'bg-[rgba(0,0,128,0.10)]',
-    tip: 'Chegue cedo nos finais de semana! O espaço fica cheio e você terá mais tempo com os gatinhos. Não esqueça de perguntar sobre os pets disponíveis para adoção.',
-    tip_en: 'Arrive early on weekends! The space gets full and you\'ll have more time with the kittens. Don\'t forget to ask about pets available for adoption.',
-    tip_es: '¡Llega temprano los fines de semana! El espacio se llena y tendrás más tiempo con los gatitos. No olvides preguntar sobre las mascotas disponibles para adopción.',
+    id: "miauteria",
+    icon: "🐱",
+    name: "Miauteria Cat Café",
+    shortDesc: "Cafeteria pet friendly com adoção",
+    shortDesc_en: "Pet friendly café with adoption",
+    shortDesc_es: "Cafetería pet friendly con adopción",
+    fullDesc:
+      "A Miauteria é mais do que uma cafeteria: é um espaço de convivência com gatinhos resgatados disponíveis para adoção. Desfrute de cafés especiais, doces artesanais e a companhia de felinos carinhosos. Todo o valor arrecadado vai para ONGs de proteção animal.",
+    fullDesc_en:
+      "Miauteria is more than a café: it's a space to interact with rescued kittens available for adoption. Enjoy specialty coffees, artisanal sweets and the company of affectionate felines. All proceeds go to animal protection NGOs.",
+    fullDesc_es:
+      "Miauteria es más que una cafetería: es un espacio de convivencia con gatitos rescatados disponibles para adopción. Disfruta de cafés especiales, dulces artesanales y la compañía de felinos cariñosos. Todo lo recaudado va a ONGs de protección animal.",
+    category: "PET FRIENDLY",
+    region: "Aracaju",
+    bairro: "Pereira Lobo",
+    address:
+      "Av. Dr. Edelzio Vieira de Melo, 1337 - Pereira Lobo, Aracaju - SE, 49052-240",
+    distance: "1.5 km",
+    rating: "4.9",
+    reviews: "389",
+    hours: "Terça a domingo, 14h às 20h",
+    phone: "(79) 99876-5432",
+    email: "contato@miauteria.com.br",
+    social: "@miauteriacafe",
+    image:
+      "https://f.i.uol.com.br/fotografia/2022/06/16/165540495662ab799c3502b_1655404956_5x2_md.jpg",
+    gradient: "from-[#ED2100] to-[#000080]",
+    iconBg: "bg-[rgba(0,0,128,0.10)]",
+    tip: "Chegue cedo nos finais de semana! O espaço fica cheio e você terá mais tempo com os gatinhos. Não esqueça de perguntar sobre os pets disponíveis para adoção.",
+    tip_en:
+      "Arrive early on weekends! The space gets full and you'll have more time with the kittens. Don't forget to ask about pets available for adoption.",
+    tip_es:
+      "¡Llega temprano los fines de semana! El espacio se llena y tendrás más tempo con los gatitos. No olvides preguntar sobre las mascotas disponibles para adopción.",
     lat: -10.9232,
     lon: -37.0626,
+    gallery: [miauteria1, miauteria2, miauteria3, miauteria4, miauteria5],
   },
   {
-    id: 'museu-gente',
-    icon: '🏛️',
-    name: 'Museu da Gente Sergipana',
-    shortDesc: 'Cultura e história interativa',
-    shortDesc_en: 'Interactive culture and history',
-    shortDesc_es: 'Cultura e historia interactiva',
-    fullDesc: 'O Museu da Gente Sergipana é um espaço cultural que celebra a identidade e a diversidade do povo sergipano. Com exposições interativas e multimídia, o museu conta histórias, tradições e manifestações culturais de Sergipe de forma envolvente e educativa.',
-    fullDesc_en: 'Museu da Gente Sergipana is a cultural space that celebrates the identity and diversity of Sergipe\'s people. With interactive and multimedia exhibitions, the museum tells stories, traditions and cultural manifestations of Sergipe in an engaging and educational way.',
-    fullDesc_es: 'El Museu da Gente Sergipana es un espacio cultural que celebra la identidad y diversidad del pueblo sergipano. Con exposiciones interactivas y multimedia, el museo cuenta historias, tradiciones y manifestaciones culturales de Sergipe de forma envolvente y educativa.',
-    category: 'CULTURA',
-    region: 'Aracaju',
-    bairro: 'Centro',
-    address: 'Av. Ivo do Prado, 398 — Centro, Aracaju/SE',
-    distance: '1.8 km',
-    rating: '4.7',
-    reviews: '956',
-    hours: 'Terça a sexta, 9h às 18h | Sábado e domingo, 10h às 17h',
-    phone: '(79) 3211-7560',
-    email: 'contato@museudagente.se.gov.br',
-    social: '@museudagentesergipana',
-    image: 'https://conteudo.solutudo.com.br/wp-content/uploads/2019/10/museu-da-gente-sergipana.jpg',
-    gradient: 'from-[#0E0E11] to-[#2C2C2C]',
-    iconBg: 'bg-[rgba(69,139,139,0.12)]',
-    tip: 'Reserve pelo menos 2 horas para explorar todas as exposições interativas. A entrada é gratuita! Perfeito para ir com a família.',
-    tip_en: 'Reserve at least 2 hours to explore all interactive exhibitions. Admission is free! Perfect to go with family.',
-    tip_es: 'Reserva al menos 2 horas para explorar todas las exposiciones interactivas. ¡La entrada es gratuita! Perfecto para ir con la familia.',
+    id: "museu-gente",
+    icon: "🏛️",
+    name: "Museu da Gente Sergipana",
+    shortDesc: "Cultura e história interativa",
+    shortDesc_en: "Interactive culture and history",
+    shortDesc_es: "Cultura e historia interactiva",
+    fullDesc:
+      "O Museu da Gente Sergipana é um espaço cultural que celebra a identidade e a diversidade do povo sergipano. Com exposições interativas e multimídia, o museu conta histórias, tradições e manifestações culturais de Sergipe de forma envolvente e educativa.",
+    fullDesc_en:
+      "Museu da Gente Sergipana is a cultural space that celebrates the identity and diversity of Sergipe's people. With interactive and multimedia exhibitions, the museum tells stories, traditions and cultural manifestations of Sergipe in an engaging and educational way.",
+    fullDesc_es:
+      "El Museu da Gente Sergipana es un espacio cultural que celebra la identidad y diversidad del pueblo sergipano. Con exposiciones interactivas y multimedia, el museo cuenta historias, tradiciones y manifestaciones culturales de Sergipe de forma envolvente y educativa.",
+    category: "CULTURA",
+    region: "Aracaju",
+    bairro: "Centro",
+    address: "Av. Ivo do Prado, 398 — Centro, Aracaju/SE",
+    distance: "1.8 km",
+    rating: "4.7",
+    reviews: "956",
+    hours: "Terça a sexta, 9h às 18h | Sábado e domingo, 10h às 17h",
+    phone: "(79) 3211-7560",
+    email: "contato@museudagente.se.gov.br",
+    social: "@museudagentesergipana",
+    image:
+      "https://conteudo.solutudo.com.br/wp-content/uploads/2019/10/museu-da-gente-sergipana.jpg",
+    gradient: "from-[#0E0E11] to-[#2C2C2C]",
+    iconBg: "bg-[rgba(69,139,139,0.12)]",
+    tip: "Reserve pelo menos 2 horas para explorar todas as exposições interativas. A entrada é gratuita! Perfeito para ir com a família.",
+    tip_en:
+      "Reserve at least 2 hours to explore all interactive exhibitions. Admission is free! Perfect to go with family.",
+    tip_es:
+      "Reserva al menos 2 horas para explorar todas las exposiciones interactivas. ¡La entrada es gratuita! Perfecto para ir con la familia.",
     lat: -10.9175,
     lon: -37.0476,
+    gallery: [museu1, museu2, museu3, museu4, museu5],
   },
   {
-    id: 'canion-xingo',
-    icon: '🌊',
-    name: 'Cânion do Xingó',
-    shortDesc: 'Paisagem deslumbrante no Rio São Francisco',
-    shortDesc_en: 'Stunning landscape on São Francisco River',
-    shortDesc_es: 'Paisaje deslumbrante en el Río São Francisco',
-    fullDesc: 'O Cânion do Xingó é uma das maravilhas naturais de Sergipe. Com paredões de até 170 metros de altura, o passeio de catamarã pelo Rio São Francisco oferece vistas espetaculares, águas cristalinas e contato direto com a natureza. Uma experiência inesquecível!',
-    fullDesc_en: 'Xingó Canyon is one of Sergipe\'s natural wonders. With walls up to 170 meters high, the catamaran tour along the São Francisco River offers spectacular views, crystal-clear waters and direct contact with nature. An unforgettable experience!',
-    fullDesc_es: 'El Cañón del Xingó es una de las maravillas naturales de Sergipe. Con paredes de hasta 170 metros de altura, el paseo en catamarán por el Río São Francisco ofrece vistas espectaculares, aguas cristalinas y contacto directo con la naturaleza. ¡Una experiencia inolvidable!',
-    category: 'NATUREZA',
-    region: 'Interior',
-    bairro: 'Canindé de São Francisco',
-    address: 'Rodovia SE-206 — Canindé de São Francisco/SE',
-    distance: '213 km',
-    rating: '4.9',
-    reviews: '2.1k',
-    hours: 'Diariamente, 8h às 16h',
-    phone: '(79) 3874-1144',
-    email: 'xingo@turismo.se.gov.br',
-    social: '@caniaoxingo',
-    image: 'https://www.penaestrada.blog.br/wp-content/uploads/2013/06/canions-do-xingo-11.jpg.webp',
-    gradient: 'from-[#2A6B6B] to-[#458B8B]',
-    iconBg: 'bg-[rgba(69,139,139,0.12)]',
-    tip: 'Chegue cedo para pegar o primeiro passeio de catamarã. Leve protetor solar, chapéu e água. O passeio dura cerca de 3 horas.',
-    tip_en: 'Arrive early to catch the first catamaran tour. Bring sunscreen, hat and water. The tour lasts about 3 hours.',
-    tip_es: 'Llega temprano para tomar el primer paseo en catamarán. Lleva protector solar, sombrero y agua. El paseo dura cerca de 3 horas.',
+    id: "canion-xingo",
+    icon: "🌊",
+    name: "Cânions de Xingó",
+    shortDesc: "Paisagem deslumbrante no Rio São Francisco",
+    shortDesc_en: "Stunning landscape on São Francisco River",
+    shortDesc_es: "Paisaje deslumbrante en el Río São Francisco",
+    fullDesc:
+      "Os Cânions de Xingó são uma das maravilhas naturais de Sergipe. Com paredões de até 170 metros de altura, o passeio de catamarã pelo Rio São Francisco oferece vistas espetaculares, águas cristalinas e contato direto com a natureza. Uma experiência inesquecível!",
+    fullDesc_en:
+      "Xingó Canyon is one of Sergipe's natural wonders. With walls up to 170 meters high, the catamaran tour along the São Francisco River offers spectacular views, crystal-clear waters and direct contact with nature. An unforgettable experience!",
+    fullDesc_es:
+      "El Cañón del Xingó es una de las maravillas naturales de Sergipe. Con paredes de hasta 170 metros de altura, el paseo en catamarán por el Río São Francisco ofrece vistas espectaculares, aguas cristalinas y contacto directo con la naturaleza. ¡Una experiencia inolvidable!",
+    category: "NATUREZA",
+    region: "Interior",
+    bairro: "Canindé de São Francisco",
+    address: "Rodovia SE-206 — Canindé de São Francisco/SE",
+    distance: "213 km",
+    rating: "4.9",
+    reviews: "2.1k",
+    hours: "Diariamente, 8h às 16h",
+    phone: "(79) 3874-1144",
+    email: "xingo@turismo.se.gov.br",
+    social: "@caniaoxingo",
+    image:
+      "https://www.penaestrada.blog.br/wp-content/uploads/2013/06/canions-do-xingo-11.jpg.webp",
+    gradient: "from-[#2A6B6B] to-[#458B8B]",
+    iconBg: "bg-[rgba(69,139,139,0.12)]",
+    tip: "Chegue cedo para pegar o primeiro passeio de catamarã. Leve protetor solar, chapéu e água. O passeio dura cerca de 3 horas.",
+    tip_en:
+      "Arrive early to catch the first catamaran tour. Bring sunscreen, hat and water. The tour lasts about 3 hours.",
+    tip_es:
+      "Llega temprano para tomar el primer paseo en catamarán. Lleva protector solar, sombrero y agua. El paseo dura cerca de 3 horas.",
     lat: -9.6585,
     lon: -37.7778,
+    gallery: [canion1, canion2, canion3, canion4, canion5],
   },
   {
-    id: 'mercado-thales',
-    icon: '🍽️',
-    name: 'Mercado Thales Ferraz',
-    shortDesc: 'Gastronomia típica sergipana',
-    shortDesc_en: 'Typical Sergipe cuisine',
-    shortDesc_es: 'Gastronomía típica sergipana',
-    fullDesc: 'O Mercado Municipal Thales Ferraz é o coração gastronômico de Aracaju. Aqui você encontra o melhor da culinária sergipana: caranguejo, tapioca, acarajé, e muito mais. Um verdadeiro festival de sabores e aromas que celebra a cultura alimentar do estado.',
-    fullDesc_en: 'Thales Ferraz Municipal Market is Aracaju\'s gastronomic heart. Here you\'ll find the best of Sergipe cuisine: crab, tapioca, acarajé, and much more. A true festival of flavors and aromas that celebrates the state\'s food culture.',
-    fullDesc_es: 'El Mercado Municipal Thales Ferraz es el corazón gastronómico de Aracaju. Aquí encontrarás lo mejor de la cocina sergipana: cangrejo, tapioca, acarajé y mucho más. Un verdadero festival de sabores y aromas que celebra la cultura alimentaria del estado.',
-    category: 'GASTRONOMIA',
-    region: 'Aracaju',
-    bairro: 'Centro',
-    address: 'Av. Dantas Bião, 150 — Centro, Aracaju/SE',
-    distance: '2.1 km',
-    rating: '4.6',
-    reviews: '743',
-    hours: 'Segunda a sábado, 6h às 18h',
-    phone: '(79) 3214-8822',
-    email: 'mercadothales@aracaju.se.gov.br',
-    social: '@mercadothalesferraz',
-    image: 'https://imgmd.net/images/v1/guia/1702859/mercado-thales-ferraz.jpg',
-    gradient: 'from-[#000080] to-[#ED2100]',
-    iconBg: 'bg-[rgba(0,0,128,0.10)]',
-    tip: 'Vá com fome! Experimente o caranguejo no box do Seu José e a tapioca de coco. Chegue antes das 11h para evitar filas.',
-    tip_en: 'Go hungry! Try the crab at Seu José\'s box and the coconut tapioca. Arrive before 11am to avoid lines.',
-    tip_es: '¡Ve con hambre! Prueba el cangrejo en el box de Seu José y la tapioca de coco. Llega antes de las 11h para evitar filas.',
+    id: "mercado-thales",
+    icon: "🍽️",
+    name: "Mercado Thales Ferraz",
+    shortDesc: "Gastronomia típica sergipana",
+    shortDesc_en: "Typical Sergipe cuisine",
+    shortDesc_es: "Gastronomía típica sergipana",
+    fullDesc:
+      "O Mercado Municipal Thales Ferraz é o coração gastronômico de Aracaju. Aqui você encontra o melhor da culinária sergipana: caranguejo, tapioca, acarajé e muito mais. Um verdadeiro festival de sabores e aromas que celebra a cultura alimentar do estado.",
+    fullDesc_en:
+      "Thales Ferraz Municipal Market is Aracaju's gastronomic heart. Here you'll find the best of Sergipe cuisine: crab, tapioca, acarajé, and much more. A true festival of flavors and aromas that celebrates the state's food culture.",
+    fullDesc_es:
+      "El Mercado Municipal Thales Ferraz es el corazón gastronómico de Aracaju. Aquí encontrarás lo mejor de la cocina sergipana: cangrejo, tapioca, acarajé y mucho más. Un verdadero festival de sabores y aromas que celebra la cultura alimentaria del estado.",
+    category: "GASTRONOMIA",
+    region: "Aracaju",
+    bairro: "Centro",
+    address: "Av. Ivo do Prado, 534 — Centro, Aracaju/SE",
+    distance: "2.1 km",
+    rating: "4.6",
+    reviews: "743",
+    hours: "Segunda a sábado, 6h às 18h",
+    phone: "(79) 3214-8822",
+    email: "mercadothales@aracaju.se.gov.br",
+    social: "@mercadothalesferraz",
+    image: "https://imgmd.net/images/v1/guia/1702859/mercado-thales-ferraz.jpg",
+    gradient: "from-[#000080] to-[#ED2100]",
+    iconBg: "bg-[rgba(0,0,128,0.10)]",
+    tip: "Vá com fome! Experimente o caranguejo no box do Seu José e a tapioca de coco. Chegue antes das 11h para evitar filas.",
+    tip_en:
+      "Go hungry! Try the crab at Seu José's box and the coconut tapioca. Arrive before 11am to avoid lines.",
+    tip_es:
+      "¡Ve con hambre! Prueba el cangrejo en el box de Seu José y la tapioca de coco. Llega antes de las 11h para evitar filas.",
     lat: -10.9069,
     lon: -37.0485,
+    gallery: [mercado1, mercado2, mercado3, mercado4, mercado5],
   },
   {
-    id: 'centro-historico',
-    icon: '🎭',
-    name: 'Centro Histórico de São Cristóvão',
-    shortDesc: 'Patrimônio da Humanidade UNESCO',
-    shortDesc_en: 'UNESCO World Heritage Site',
-    shortDesc_es: 'Patrimonio de la Humanidad UNESCO',
-    fullDesc: 'São Cristóvão é a quarta cidade mais antiga do Brasil e foi reconhecida pela UNESCO como Patrimônio Cultural da Humanidade. Suas ruas de paralelepípedos, casarões coloniais e igrejas barrocas contam séculos de história. Um verdadeiro museu a céu aberto.',
-    fullDesc_en: 'São Cristóvão is Brazil\'s fourth oldest city and was recognized by UNESCO as a Cultural Heritage of Humanity. Its cobblestone streets, colonial mansions and baroque churches tell centuries of history. A true open-air museum.',
-    fullDesc_es: 'São Cristóvão es la cuarta ciudad más antigua de Brasil y fue reconocida por la UNESCO como Patrimonio Cultural de la Humanidad. Sus calles de adoquines, caserones coloniales e iglesias barrocas cuentan siglos de historia. Un verdadero museo al aire libre.',
-    category: 'HISTÓRIA',
-    region: 'Interior',
-    bairro: 'Centro Histórico',
-    address: 'Praça São Francisco — São Cristóvão/SE',
-    distance: '28 km',
-    rating: '4.8',
-    reviews: '1.4k',
-    hours: 'Aberto 24 horas (monumentos têm horários próprios)',
-    phone: '(79) 3261-7329',
-    email: 'turismo@saocristovao.se.gov.br',
-    social: '@saocristovaooficial',
-    image: 'https://gazetadocerrado.com.br/wp-content/uploads/2023/08/Igreja-Nossa-Senhora-da-Vitoria-Sao-Cristovao-Aerea-Foto-Marco-A-Jacob.jpg',
-    gradient: 'from-[#1A3A3A] to-[#458B8B]',
-    iconBg: 'bg-[rgba(69,139,139,0.12)]',
-    tip: 'Faça o passeio guiado gratuito que sai da Praça São Francisco. Use calçados confortáveis para caminhar nas ruas de pedra.',
-    tip_en: 'Take the free guided tour that starts from São Francisco Square. Wear comfortable shoes to walk on cobblestone streets.',
-    tip_es: 'Haz el recorrido guiado gratuito que sale de la Plaza São Francisco. Usa calzado cómodo para caminar por las calles de piedra.',
+    id: "centro-historico",
+    icon: "🎭",
+    name: "Centro Histórico de São Cristóvão",
+    shortDesc: "Patrimônio da Humanidade UNESCO",
+    shortDesc_en: "UNESCO World Heritage Site",
+    shortDesc_es: "Patrimonio de la Humanidad UNESCO",
+    fullDesc:
+      "São Cristóvão é a quarta cidade mais antiga do Brasil e foi reconhecida pela UNESCO como Patrimônio Cultural da Humanidade. Suas ruas de paralelepípedos, casarões coloniais e igrejas barrocas contam séculos de história. Um verdadeiro museu a céu aberto.",
+    fullDesc_en:
+      "São Cristóvão is Brazil's fourth oldest city and was recognized by UNESCO as a Cultural Heritage of Humanity. Its cobblestone streets, colonial mansions and baroque churches tell centuries of history. A true open-air museum.",
+    fullDesc_es:
+      "São Cristóvão es la cuarta ciudad más antigua de Brasil y fue reconocida por la UNESCO como Patrimonio Cultural de la Humanidad. Sus calles de adoquines, caserones coloniales e iglesias barrocas cuentan siglos de historia. Un verdadero museo al aire libre.",
+    category: "HISTÓRIA",
+    region: "Interior",
+    bairro: "Centro Histórico",
+    address: "Praça São Francisco — São Cristóvão/SE",
+    distance: "28 km",
+    rating: "4.8",
+    reviews: "1.4k",
+    hours: "Aberto 24 horas (monumentos têm horários próprios)",
+    phone: "(79) 3261-7329",
+    email: "turismo@saocristovao.se.gov.br",
+    social: "@saocristovaooficial",
+    image:
+      "https://gazetadocerrado.com.br/wp-content/uploads/2023/08/Igreja-Nossa-Senhora-da-Vitoria-Sao-Cristovao-Aerea-Foto-Marco-A-Jacob.jpg",
+    gradient: "from-[#1A3A3A] to-[#458B8B]",
+    iconBg: "bg-[rgba(69,139,139,0.12)]",
+    tip: "Faça o passeio guiado gratuito que sai da Praça São Francisco. Use calçados confortáveis para caminhar nas ruas de pedra.",
+    tip_en:
+      "Take the free guided tour that starts from São Francisco Square. Wear comfortable shoes to walk on cobblestone streets.",
+    tip_es:
+      "Haz el recorrido guiado gratuito que sale de la Plaza São Francisco. Usa calzado cómodo para caminar por las calles de piedra.",
     lat: -11.0137,
     lon: -37.2054,
+    gallery: [
+      centroHistorico1,
+      centroHistorico2,
+      centroHistorico3,
+      centroHistorico4,
+      centroHistorico5,
+    ],
   },
   {
-    id: 'parque-sementeira',
-    icon: '🌳',
-    name: 'Parque da Sementeira',
-    shortDesc: 'Maior área verde urbana de Aracaju',
-    shortDesc_en: 'Largest urban green area in Aracaju',
-    shortDesc_es: 'Mayor área verde urbana de Aracaju',
-    fullDesc: 'O Parque da Sementeira é o pulmão verde de Aracaju. Com 280 mil m² de área preservada, oferece trilhas ecológicas, lagos, playground, e espaços para piquenique. É o lugar perfeito para relaxar, praticar esportes e estar em contato com a natureza sem sair da cidade.',
-    fullDesc_en: 'Sementeira Park is Aracaju\'s green lung. With 280 thousand m² of preserved area, it offers ecological trails, lakes, playground, and picnic spaces. It\'s the perfect place to relax, practice sports and be in contact with nature without leaving the city.',
-    fullDesc_es: 'El Parque da Sementeira es el pulmón verde de Aracaju. Con 280 mil m² de área preservada, ofrece senderos ecológicos, lagos, parque infantil y espacios para picnic. Es el lugar perfecto para relajarse, practicar deportes y estar en contacto con la naturaleza sin salir de la ciudad.',
-    category: 'NATUREZA',
-    region: 'Aracaju',
-    bairro: 'Sementeira',
-    address: 'Av. Augusto Franco — Sementeira, Aracaju/SE',
-    distance: '3.7 km',
-    rating: '4.5',
-    reviews: '621',
-    hours: 'Diariamente, 5h às 21h',
-    phone: '(79) 3179-1880',
-    email: 'parques@aracaju.se.gov.br',
-    social: '@parquedasementeira',
-    image: 'https://www.aracaju.se.gov.br/userfiles/noticia_imagens/201003/41077/especial_bairro_13_de_julho_foto_jorge__henrique_090709_62.jpg',
-    gradient: 'from-[#2A6B6B] to-[#458B8B]',
-    iconBg: 'bg-[rgba(69,139,139,0.12)]',
-    tip: 'Vá ao nascer do sol para ver os pássaros e aproveitar a temperatura mais fresca. Leve água e repelente. Perfeito para caminhadas matinais.',
-    tip_en: 'Go at sunrise to see the birds and enjoy the cooler temperature. Bring water and repellent. Perfect for morning walks.',
-    tip_es: 'Ve al amanecer para ver los pájaros y disfrutar de la temperatura más fresca. Lleva agua y repelente. Perfecto para caminatas matutinas.',
+    id: "parque-sementeira",
+    icon: "🌳",
+    name: "Parque da Sementeira",
+    shortDesc: "Maior área verde urbana de Aracaju",
+    shortDesc_en: "Largest urban green area in Aracaju",
+    shortDesc_es: "Mayor área verde urbana de Aracaju",
+    fullDesc:
+      "O Parque da Sementeira é o pulmão verde de Aracaju. Com 280 mil m² de área preservada, oferece trilhas ecológicas, lagos, playground e espaços para piquenique. É o lugar perfeito para relaxar, praticar esportes e estar em contato com a natureza sem sair da cidade.",
+    fullDesc_en:
+      "Sementeira Park is Aracaju's green lung. With 280 thousand m² of preserved area, it offers ecological trails, lakes, playground, and picnic spaces. It's the perfect place to relax, practice sports and be in contact with nature without leaving the city.",
+    fullDesc_es:
+      "El Parque da Sementeira es el pulmón verde de Aracaju. Con 280 mil m² de área preservada, ofrece senderos ecológicos, lagos, parque infantil y espacios para picnic. Es el lugar perfecto para relajarse, practicar deportes y estar en contacto con la naturaleza sin salir de la ciudad.",
+    category: "NATUREZA",
+    region: "Aracaju",
+    bairro: "Sementeira",
+    address: "Av. Augusto Franco — Sementeira, Aracaju/SE",
+    distance: "3.7 km",
+    rating: "4.5",
+    reviews: "621",
+    hours: "Diariamente, 5h às 21h",
+    phone: "(79) 3179-1880",
+    email: "parques@aracaju.se.gov.br",
+    social: "@parquedasementeira",
+    image:
+      "https://www.aracaju.se.gov.br/userfiles/noticia_imagens/201003/41077/especial_bairro_13_de_julho_foto_jorge__henrique_090709_62.jpg",
+    gradient: "from-[#2A6B6B] to-[#458B8B]",
+    iconBg: "bg-[rgba(69,139,139,0.12)]",
+    tip: "Vá ao nascer do sol para ver os pássaros e aproveitar a temperatura mais fresca. Leve água e repelente. Perfeito para caminhadas matinais.",
+    tip_en:
+      "Go at sunrise to see the birds and enjoy the cooler temperature. Bring water and repellent. Perfect for morning walks.",
+    tip_es:
+      "Ve al amanecer para ver los pájaros y disfrutar de la temperatura más fresca. Lleva agua y repelente. Perfecto para caminatas matutinas.",
     lat: -10.9443,
     lon: -37.0533,
+    gallery: [sementeira1, sementeira2, sementeira3, sementeira4, sementeira5],
   },
   {
-    id: 'centro-turismo',
-    icon: '🎭',
-    name: 'Centro de Turismo',
-    shortDesc: 'Artesanato e cultura local',
-    shortDesc_en: 'Crafts and local culture',
-    shortDesc_es: 'Artesanía y cultura local',
-    fullDesc: 'O Centro de Turismo de Aracaju é o local ideal para conhecer e comprar o melhor do artesanato sergipano. Instalado em um belo casarão histórico, oferece peças em renda, cerâmica, bordados, além de produtos típicos. Um mergulho na cultura e nas tradições locais.',
-    fullDesc_en: 'Aracaju Tourism Center is the ideal place to discover and buy the best of Sergipe crafts. Housed in a beautiful historic mansion, it offers lace pieces, ceramics, embroidery, and typical products. A dive into local culture and traditions.',
-    fullDesc_es: 'El Centro de Turismo de Aracaju es el lugar ideal para conocer y comprar lo mejor de la artesanía sergipana. Instalado en una hermosa casona histórica, ofrece piezas en encaje, cerámica, bordados, además de productos típicos. Una inmersión en la cultura y tradiciones locales.',
-    category: 'CULTURA',
-    region: 'Aracaju',
-    bairro: 'Centro',
-    address: 'Rua Amâncio Cardoso, 62 — Centro, Aracaju/SE',
-    distance: '1.2 km',
-    rating: '4.4',
-    reviews: '487',
-    hours: 'Segunda a sábado, 9h às 18h',
-    phone: '(79) 3214-7744',
-    email: 'centroturismo@aracaju.se.gov.br',
-    social: '@centroturismoaju',
-    image: 'https://turismosergipe.com.br/wp-content/uploads/2024/01/MATERIA-%E2%80%93-Artesanato-cultura-e-historia-convergem-no-Centro-de-Turismo-em-Aracaju-1-e1705587592126.jpg',
-    gradient: 'from-[#000080] to-[#ED2100]',
-    iconBg: 'bg-[rgba(0,0,128,0.10)]',
-    tip: 'Pechinche com os artesãos! É comum conseguir descontos nas compras. Leve dinheiro em espécie, alguns boxes não aceitam cartão.',
-    tip_en: 'Bargain with the artisans! It\'s common to get discounts on purchases. Bring cash, some boxes don\'t accept cards.',
-    tip_es: '¡Regatéa con los artesanos! Es común conseguir descuentos en las compras. Lleva dinero en efectivo, algunos boxes no aceptan tarjeta.',
-    lat: -10.9126,
-    lon: -37.0510,
+  id: 'memorial-sergipe',
+  icon: '🏛️',
+  name: 'Memorial de Sergipe Prof. Jouberto Uchôa',
+  shortDesc: 'Memória, história e cultura sergipana',
+  shortDesc_en: 'Memory, history and Sergipe culture',
+  shortDesc_es: 'Memoria, historia y cultura sergipana',
+  fullDesc: 'O Memorial de Sergipe Prof. Jouberto Uchôa é um espaço museológico dedicado à preservação da memória e do patrimônio histórico-cultural de Sergipe. Reinaugurado em outubro de 2023, abriga mais de 30 mil peças, incluindo fósseis, documentos, fotos históricas e coleções de artistas renomados como Rosa Faria e Véio, distribuídas em salas temáticas imersivas.',
+  fullDesc_en: 'The Memorial de Sergipe Prof. Jouberto Uchôa is a museological space dedicated to preserving the memory and historical-cultural heritage of Sergipe. Reopened in October 2023, it holds over 30,000 items including fossils, documents, historical photos and collections from renowned artists, spread across immersive themed rooms.',
+  fullDesc_es: 'El Memorial de Sergipe Prof. Jouberto Uchôa es un espacio museológico dedicado a la preservación de la memoria y el patrimonio histórico-cultural de Sergipe. Reinaugurado en octubre de 2023, alberga más de 30.000 piezas, incluyendo fósiles, documentos, fotos históricas y colecciones de artistas reconocidos, distribuidas en salas temáticas inmersivas.',
+  category: 'CULTURA',
+  region: 'Aracaju',
+  bairro: 'Coroa do Meio',
+  address: 'Av. Santos Dumont, 100 – Praça de Eventos da Orla, Aracaju/SE',
+  distance: '3.5 km',
+  rating: '4.7',
+  reviews: '320',
+  hours: 'Terça a sábado, 10h às 16h',
+  phone: '(79) 98108-1866',
+  email: 'memorialdesergipegt@gmail.com',
+  social: '@memorialdesergipe',
+  image: memorialPrincipal,
+  gradient: 'from-[#1a0033] to-[#6B21A8]',
+  iconBg: 'bg-[rgba(107,33,168,0.10)]',
+  tip: 'Reserve o ingresso antecipadamente pelo site. Estudantes de escola pública têm entrada gratuita. A visita guiada enriquece muito a experiência!',
+  tip_en: 'Book your ticket in advance on the website. Public school students get free entry. The guided tour greatly enriches the experience!',
+  tip_es: '¡Reserva tu entrada con anticipación en el sitio web. Los estudiantes de escuela pública tienen entrada gratuita. ¡La visita guiada enriquece mucho la experiencia!',
+  lat: -10.9752,
+  lon: -37.0378,
+  gallery: [memorial1, memorial2, memorial3, memorial4, memorial5],
   },
 ];
 
 export function getDestinationById(id: string): Destination | undefined {
-  return destinations.find(d => d.id === id);
+  return destinations.find((d) => d.id === id);
 }
 
 export function getDestinationsByRegion(region: string): Destination[] {
-  if (region === 'Todos') return destinations;
-  return destinations.filter(d => d.region === region);
+  if (region === "Todos") return destinations;
+  return destinations.filter((d) => d.region === region);
 }

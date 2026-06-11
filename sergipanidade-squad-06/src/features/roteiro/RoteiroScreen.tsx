@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useToast } from "@/context/AppContext";
 import { translations } from "@/constants/translations";
 import { ParadaGerada, WizardData, RoteiroItem } from "@/types";
 import { gerarRoteiroComIAComFallback } from "@/services/itinerary.service";
@@ -8,9 +9,16 @@ import { FundoVisual } from "@/features/roteiro/components/FundoVisual";
 import { RoteiroAssistente } from "@/features/roteiro/components/RoteiroAssistente";
 import { RoteiroCronograma } from "@/features/roteiro/components/RoteiroCronograma";
 
+const obterDataLocalHoje = (): string => {
+  const d = new Date();
+  const ano = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+};
+
 interface RoteiroScreenProps {
   onNavigate: (tela: string, idDestino?: string) => void;
-  onToast: (mensagem: string) => void;
   roteiro: RoteiroItem[];
   onAddToRoteiro: (idDestino: string, nota?: string) => void;
   onRemoveFromRoteiro: (idDestino: string) => void;
@@ -25,7 +33,6 @@ interface RoteiroScreenProps {
  */
 export function RoteiroScreen({
   onNavigate,
-  onToast,
   roteiro,
   onAddToRoteiro,
   onRemoveFromRoteiro,
@@ -33,6 +40,7 @@ export function RoteiroScreen({
   onOpenGPS,
   language,
 }: RoteiroScreenProps) {
+  const { toast: onToast } = useToast();
   const t = translations[language];
 
   // Definição dos estados possíveis de tela
@@ -46,17 +54,46 @@ export function RoteiroScreen({
   const [dadosWizard, setDadosWizard] = useState<WizardData>({
     who: "",
     days: 3,
-    startDate: new Date().toISOString().slice(0, 10),
+    startDate: obterDataLocalHoje(),
     interests: [],
     budget: "",
     stopsPerDay: 3, // Tarefa 7: valor padrão recomendado
   });
   
   const [paradasGeradas, setParadasGeradas] = useState<ParadaGerada[]>([]);
+  const [isAI, setIsAI] = useState(false);
   const [diasAbertos, setDiasAbertos] = useState<string[]>(["day-1"]);
   const [geracaoConcluida, setGeracaoConcluida] = useState(false);
   const refMontado = useRef(true);
   const controllerRef = useRef<AbortController | null>(null);
+
+  // Carrega do cache de sessão ao montar para persistir o estado visual correto de IA / Offline
+  useEffect(() => {
+    if (roteiro.length > 0) {
+      try {
+        const prefixoCache = "sergipanidade_roteiro_";
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          if (key && key.startsWith(prefixoCache)) {
+            const cacheHit = sessionStorage.getItem(key);
+            if (cacheHit) {
+              const parsed = JSON.parse(cacheHit);
+              if (parsed && typeof parsed === "object") {
+                if (Array.isArray(parsed)) {
+                  setParadasGeradas(parsed);
+                  setIsAI(true);
+                } else if (Array.isArray(parsed.paradas)) {
+                  setParadasGeradas(parsed.paradas);
+                  setIsAI(!!parsed.isAI);
+                }
+                break;
+              }
+            }
+          }
+        }
+      } catch {}
+    }
+  }, [roteiro.length]);
 
   // Sincroniza a tela caso o roteiro seja alterado externamente ou esvaziado
   useEffect(() => {
@@ -99,7 +136,7 @@ export function RoteiroScreen({
     controllerRef.current = new AbortController();
     
     try {
-      const { paradas } = await gerarRoteiroComIAComFallback(
+      const { paradas, isAI: respostaVindaDeIA } = await gerarRoteiroComIAComFallback(
         dadosWizard,
         language,
         controllerRef.current.signal
@@ -118,6 +155,7 @@ export function RoteiroScreen({
       if (!refMontado.current) return;
 
       setParadasGeradas(paradas);
+      setIsAI(respostaVindaDeIA);
       
       const novoRoteiro = paradas.map((p) => ({
         destinationId: p.destinationId,
@@ -209,6 +247,7 @@ export function RoteiroScreen({
       roteiro={roteiro}
       wizardData={dadosWizard}
       generatedParadas={paradasGeradas}
+      isAI={isAI}
       onNavigate={onNavigate}
       onToast={onToast}
       onRemoveFromRoteiro={onRemoveFromRoteiro}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useToast } from "@/context/AppContext";
 import type { KeyboardEvent } from "react";
 import {
   ArrowRight,
@@ -60,7 +61,6 @@ interface HotelMock {
 
 interface HomeScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
-  onToast: (message: string) => void;
   language: "pt" | "en" | "es";
   onChangeLanguage: (lang: "pt" | "en" | "es") => void;
   userProfile: UserProfile;
@@ -86,10 +86,10 @@ function getLikes(id: string) {
 
 export function HomeScreen({
   onNavigate,
-  onToast,
   language,
   onChangeLanguage,
 }: HomeScreenProps) {
+  const { toast: onToast } = useToast();
   const [showLanguageMenu, setShowLanguageMenu] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [experienciaIndex, setExperienciaIndex] = useState<number>(0);
@@ -166,7 +166,7 @@ export function HomeScreen({
   );
 
   function langPillLabel() {
-    if (language === "pt") return "Português";
+    if (language === "pt") return "Sergipanês pt-BR";
     if (language === "en") return "English";
     return "Español";
   }
@@ -229,19 +229,23 @@ export function HomeScreen({
       >
         <>
 
-          <div className="absolute top-5 right-5 sm:right-8 z-20" ref={langMenuRef}>
+          <div 
+            className="absolute right-5 sm:right-8 z-20" 
+            style={{ top: 'calc(var(--navbar-height, 76px) + 16px)' }}
+            ref={langMenuRef}
+          >
             <button
               type="button"
               onClick={() => setShowLanguageMenu((prev) => !prev)}
               aria-expanded={showLanguageMenu}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md
-                         border border-white/20 rounded-full text-white text-[13px] font-medium
-                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-11"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-md
+                         border border-white/20 rounded-full text-white text-[12px] font-medium
+                         cursor-pointer hover:bg-white/20 transition-all duration-150 min-h-[36px]"
             >
-              <MapPin size={16} strokeWidth={2.5} style={{ color: "#0D7377" }} />
+              <MapPin size={13} strokeWidth={2.5} style={{ color: "#0D7377" }} />
               <span>{langPillLabel()}</span>
               <ChevronDown
-                size={14}
+                size={12}
                 className={`opacity-60 transition-transform ${
                   showLanguageMenu ? "rotate-180" : ""
                 }`}
@@ -250,14 +254,14 @@ export function HomeScreen({
 
             {showLanguageMenu && (
               <div
-                className="absolute top-full right-0 mt-2 bg-white rounded-sm
+                className="absolute top-full right-0 mt-1.5 bg-white rounded-sm
                            shadow-(--sombra-md) border border-(--cinza-med)
-                           overflow-hidden min-w-42.5 z-20"
+                           overflow-hidden min-w-36 z-20"
               >
                 {[
                   {
                     lang: "pt" as const,
-                    label: "Português",
+                    label: "Sergipanês pt-BR",
                     accent: "text-[var(--primary)] bg-[var(--laranja-leve)]",
                   },
                   {
@@ -279,7 +283,7 @@ export function HomeScreen({
                       onChangeLanguage(lang);
                       setShowLanguageMenu(false);
                     }}
-                    className={`w-full flex items-center justify-between px-4 py-3 text-left text-[13px]
+                    className={`w-full flex items-center justify-between px-3 py-2 text-left text-[12px]
                                 font-medium transition-colors border-none cursor-pointer
                                 ${
                                   language === lang
@@ -450,39 +454,26 @@ export function HomeScreen({
                 hours={dest.hours}
                 image={dest.image}
                 likes={getLikes(dest.id)}
+                address={dest.address}
                 onNavigate={onNavigate}
-                onToast={onToast}
                 curtirLabel={t.curtir}
                 compartilharLabel={t.compartilhar}
                 salvarLabel={t.salvar}
                 curtidoToast={t.curtido}
-                compartilhadoToast={t.compartilhado}
+                compartilhadoToast={
+                  language === 'en' ? 'Location copied!'
+                  : language === 'es' ? '¡Ubicación copiada!'
+                  : 'Localização copiada!'
+                }
               />
             ))}
           </div>
         )}
 
         {vamosCurtirItems.length > 0 && (
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-8">
             <div
-              className="h-px flex-1"
-              style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
-            />
-
-            <span className="text-[12px] text-(--cinza-txt) whitespace-nowrap">
-              {filteredDestinations.length > 3
-                ? `${t.viewAll?.replace("→", "").trim()} ${
-                    filteredDestinations.length - 3
-                  } ${
-                    filteredDestinations.length - 3 === 1 ? t.result : t.results
-                  }`
-                : `${filteredDestinations.length} ${
-                    filteredDestinations.length === 1 ? t.result : t.results
-                  }`}
-            </span>
-
-            <div
-              className="h-px flex-1"
+              className="h-px w-full"
               style={{ backgroundColor: "rgba(24,24,27,0.08)" }}
             />
           </div>
@@ -526,7 +517,7 @@ export function HomeScreen({
 
           <button
             type="button"
-            onClick={() => onToast("Abrindo todas as hospedagens...")}
+            onClick={() => {}}
             className="self-start sm:self-auto shrink-0 font-bold
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
@@ -544,7 +535,6 @@ export function HomeScreen({
               verOpcoesLabel={t.verOpcoes}
               apartirDeLabel={t.apartirDe}
               porNoiteLabel={t.porNoite}
-              onToast={onToast}
             />
           ))}
         </div>

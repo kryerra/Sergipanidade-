@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useToast } from "@/context/AppContext";
 import {
   MapPin,
   Clock,
@@ -14,6 +15,7 @@ import {
   Camera,
   Home,
   X,
+  Share2,
 } from "lucide-react";
 import { getDestinationById } from "@/constants/destinations";
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
@@ -36,6 +38,9 @@ const GALLERY_URLS = [
   //foto peixes (substituir, n achei onde a ft esta)
   "https://images.unsplash.com/photo-1566151442928-b58e10e2b62e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
 ];
+
+
+
 
 /* ─────────── Seed reviews for demo ─────────── */
 interface ExtendedReview {
@@ -81,6 +86,241 @@ const SEED_REVIEWS: ExtendedReview[] = [
     partnerResponse: null,
   },
 ];
+
+const SPECIFIC_REVIEWS: Record<string, ExtendedReview[]> = {
+  "orla-atalaia": [
+    {
+      id: "orla-1",
+      userName: "João Carlos Silva",
+      initials: "JC",
+      rating: 5,
+      comment: "Lugar incrível! O calçadão é perfeito para caminhar no fim da tarde. Fui com meus filhos e eles adoraram o parquinho dos lagos. Muito seguro.",
+      date: "2026-04-20",
+      partnerResponse: null
+    },
+    {
+      id: "orla-2",
+      userName: "Ana Beatriz Ferreira",
+      initials: "AF",
+      rating: 4,
+      comment: "A praia é linda e a infraestrutura de quiosques é excelente. Só achei um pouco difícil achar vaga de estacionamento nos finais de semana de sol.",
+      date: "2026-04-12",
+      partnerResponse: null
+    },
+    {
+      id: "orla-3",
+      userName: "Roberto Menezes",
+      initials: "RM",
+      rating: 5,
+      comment: "O pôr do sol na Passarela do Caranguejo é simplesmente imperdível. Comida típica maravilhosa, música ao vivo e clima muito acolhedor.",
+      date: "2026-03-28",
+      partnerResponse: null
+    }
+  ],
+  "miauteria": [
+    {
+      id: "miauteria-1",
+      userName: "Carolina Costa",
+      initials: "CC",
+      rating: 5,
+      comment: "Lugar dos sonhos! Os gatinhos são super dóceis, brincalhões e muito bem cuidados. O café expresso e o bolo de cenoura com chocolate são simplesmente maravilhosos.",
+      date: "2026-05-10",
+      partnerResponse: "Ah, muito obrigado pelo carinho com nossos gatinhos, Carolina! O bolo de cenoura é feito com muito amor. Volte logo! 🐾"
+    },
+    {
+      id: "miauteria-2",
+      userName: "Gabriel Santos",
+      initials: "GS",
+      rating: 5,
+      comment: "Excelente iniciativa de apoio às ONGs de resgate. Fui com minha namorada e adoramos o ambiente. É extremamente limpo, silencioso e muito aconchegante.",
+      date: "2026-04-28",
+      partnerResponse: null
+    },
+    {
+      id: "miauteria-3",
+      userName: "Juliana Rocha",
+      initials: "JR",
+      rating: 4,
+      comment: "Ambiente muito calmo e relaxante. Recomendo agendar antes para conseguir entrar na sala de convivência dos gatinhos. Uma experiência de puro amor!",
+      date: "2026-04-15",
+      partnerResponse: null
+    }
+  ],
+  "museu-gente": [
+    {
+      id: "museu-1",
+      userName: "Matheus Oliveira",
+      initials: "MO",
+      rating: 5,
+      comment: "Sem dúvidas o melhor museu interativo do Nordeste! As cabines de sotaque e o carrossel folclórico são geniais. E o melhor de tudo: a entrada é totalmente gratuita!",
+      date: "2026-05-02",
+      partnerResponse: "Ficamos honrados com sua avaliação! Nossa missão é justamente valorizar a identidade sergipana de forma inovadora e acessível a todos."
+    },
+    {
+      id: "museu-2",
+      userName: "Fernanda Lima",
+      initials: "FL",
+      rating: 5,
+      comment: "Uma imersão fantástica e divertida na cultura de Sergipe. As instalações tecnológicas são super modernas e prendem a atenção de crianças e adultos de forma única.",
+      date: "2026-04-18",
+      partnerResponse: null
+    },
+    {
+      id: "museu-3",
+      userName: "Ricardo Gomes",
+      initials: "RG",
+      rating: 5,
+      comment: "Riquíssimo em detalhes e história. O atendimento dos guias locais é espetacular, explicando cada manifestação folclórica com muito orgulho e carisma.",
+      date: "2026-03-30",
+      partnerResponse: null
+    }
+  ],
+  "canion-xingo": [
+    {
+      id: "canion-1",
+      userName: "Lucas Almeida",
+      initials: "LA",
+      rating: 5,
+      comment: "Uma verdadeira maravilha da natureza! A navegação de catamarã pelo Velho Chico é fascinante e a parada para banho no Paraíso Talhado é revigorante.",
+      date: "2026-05-05",
+      partnerResponse: "Navegar pelo Velho Chico é uma experiência mágica mesmo, Lucas! Agradecemos a visita e o registro do seu momento incrível."
+    },
+    {
+      id: "canion-2",
+      userName: "Patrícia Souza",
+      initials: "PS",
+      rating: 5,
+      comment: "Visual sensacional! Os paredões de rocha avermelhada são imponentes. Dica de ouro: compre o passeio de canoa por dentro das fendas estreitas, vale muito a pena.",
+      date: "2026-04-22",
+      partnerResponse: null
+    },
+    {
+      id: "canion-3",
+      userName: "Carlos Santos",
+      initials: "CS",
+      rating: 5,
+      comment: "Uma experiência inesquecível em Sergipe. A infraestrutura do passeio é excelente, com segurança exemplar, música ambiente e bom serviço de bordo no catamarã.",
+      date: "2026-04-02",
+      partnerResponse: null
+    }
+  ],
+  "mercado-thales": [
+    {
+      id: "mercado-1",
+      userName: "Sofia Guimarães",
+      initials: "SG",
+      rating: 5,
+      comment: "Perfeito para comprar castanhas de caju frescas, queijos coalho regionais e artesanato de palha ou renda. Os preços são ótimos e a cultura ferve aqui.",
+      date: "2026-05-08",
+      partnerResponse: "O Mercado Thales Ferraz é o coração pulsante do nosso comércio cultural! Obrigado pela visita e por valorizar nossos produtores locais."
+    },
+    {
+      id: "mercado-2",
+      userName: "Thiago Santos",
+      initials: "TS",
+      rating: 4,
+      comment: "Muita variedade de temperos regionais e artesanatos típicos. Recomendo muito subir ao andar superior para almoçar uma carne de sol com pirão de leite.",
+      date: "2026-04-20",
+      partnerResponse: null
+    },
+    {
+      id: "mercado-3",
+      userName: "Mariana Dias",
+      initials: "MD",
+      rating: 5,
+      comment: "Uma explosão autêntica de cores, aromas e sabores da terra sergipana. Os comerciantes locais são extremamente atenciosos e o espaço é cheio de vida.",
+      date: "2026-03-15",
+      partnerResponse: null
+    }
+  ],
+  "centro-historico": [
+    {
+      id: "centro-1",
+      userName: "Eduardo Rocha",
+      initials: "ER",
+      rating: 5,
+      comment: "Arquitetura colonial belíssima e cheia de história. O Palácio Olímpio Campos é espetacular e a visita guiada é uma verdadeira aula sobre o estado.",
+      date: "2026-05-12",
+      partnerResponse: "Preservar nossa história e abrir as portas da memória política de Sergipe é o nosso maior objetivo. Obrigado pela visita, Eduardo!"
+    },
+    {
+      id: "centro-2",
+      userName: "Beatriz Mota",
+      initials: "BM",
+      rating: 4,
+      comment: "Lugar muito bonito, com praças amplas. A Catedral Metropolitana é linda por dentro e por fora. Recomendo fazer a caminhada histórica durante o dia.",
+      date: "2026-04-25",
+      partnerResponse: null
+    },
+    {
+      id: "centro-3",
+      userName: "André Luiz",
+      initials: "AL",
+      rating: 5,
+      comment: "Uma verdadeira viagem no tempo em Aracaju. Os casarios coloridos do século XIX são ótimos pontos para fotografar e há ótimos cafés no entorno.",
+      date: "2026-04-05",
+      partnerResponse: null
+    }
+  ],
+  "parque-sementeira": [
+    {
+      id: "sementeira-1",
+      userName: "Amanda Reis",
+      initials: "AR",
+      rating: 5,
+      comment: "O pulmão verde de Aracaju! Perfeito para fazer piqueniques em família, andar de bicicleta sob as sombras das árvores ou simplesmente relaxar no fim de tarde.",
+      date: "2026-05-06",
+      partnerResponse: "Cuidar da Sementeira para oferecer esse refúgio de paz aos aracajuanos é nosso prazer. Ficamos felizes que aproveitou, Amanda!"
+    },
+    {
+      id: "sementeira-2",
+      userName: "Pedro Viana",
+      initials: "PV",
+      rating: 5,
+      comment: "Muito bem cuidado, limpo e com segurança presente. Ótimo espaço para caminhadas e corridas matinais e para as crianças brincarem nos parquinhos de madeira.",
+      date: "2026-04-27",
+      partnerResponse: null
+    },
+    {
+      id: "sementeira-3",
+      userName: "Letícia Neves",
+      initials: "LN",
+      rating: 4,
+      comment: "Um refúgio delicioso de paz e verde no meio da cidade. Os lagos artificiais com patos e gansos são lindos e dão um charme super especial ao parque.",
+      date: "2026-04-10",
+      partnerResponse: null
+    }
+  ],
+  "memorial-sergipe": [
+    {
+      id: "memorial-1",
+      userName: "Camila Vieira",
+      initials: "CV",
+      rating: 5,
+      comment: "Acervo riquíssimo sobre a história do cangaço, com destaque para os pertences originais de Lampião e Maria Bonita. Uma excelente aula de história local.",
+      date: "2026-05-09",
+      partnerResponse: "O cangaço é parte fundamental da nossa memória sertaneja. Agradecemos por compartilhar sua experiência no Memorial de Sergipe!"
+    },
+    {
+      id: "memorial-2",
+      userName: "Marcelo Dantas",
+      initials: "MD",
+      rating: 5,
+      comment: "Muito educativo e indispensável para quem quer entender a história política, econômica e artística do povo sergipano. Equipe de recepção muito atenciosa.",
+      date: "2026-04-20",
+      partnerResponse: null
+    },
+    {
+      id: "memorial-3",
+      userName: "Vanessa Souza",
+      initials: "VS",
+      rating: 5,
+      comment: "Um verdadeiro tesouro histórico em Aracaju. A galeria de arte sacra e os documentos antigos são fascinantes. Vale muito a pena conhecer.",
+      date: "2026-04-01",
+      partnerResponse: null
+    }
+  ]
+};
 
 /* ─────────── Extra description paragraphs per category ─────────── */
 type Lang = "pt" | "en" | "es";
@@ -164,13 +404,128 @@ EXTRA_DESC["PET FRIENDLY"] = {
     "Além de ser pet friendly, o local mantém parcerias com ONGs de proteção animal e incentiva a adoção responsável. Uma iniciativa que combina entretenimento com impacto social positivo na comunidade.",
   ],
   en: [
-    "The space was specially created to provide well-being for both animals and their owners. The entire structure ensures safety, comfort and fun in an environment that embraces the animal cause.",
-    "In addition to being pet friendly, the venue maintains partnerships with animal protection NGOs and encourages responsible adoption. An initiative combining entertainment with positive social impact.",
+    "The space was specially created to provide well-being for both animals and their owners. The entire structure is designed to ensure safety, comfort and fun in an environment that embraces the animal cause.",
+    "In addition to being pet friendly, the venue maintains partnerships with animal protection NGOs and encourages responsible adoption. An initiative that combines entertainment with positive social impact.",
   ],
   es: [
     "El espacio fue especialmente creado para proporcionar bienestar tanto para los animales como para sus tutores. Toda la estructura está pensada para garantizar seguridad, confort y diversión.",
     "Además de ser pet friendly, el local mantiene alianzas con ONGs de protección animal y fomenta la adopción responsable.",
   ],
+};
+
+const SPECIFIC_DESC: Record<string, Record<Lang, string[]>> = {
+  "orla-atalaia": {
+    pt: [
+      "A infraestrutura inclui ciclovias, quadras poliesportivas, lagos artificiais com pedalinhos, parquinhos infantis de alta qualidade e o famoso Oceanário de Aracaju. A iluminação moderna à noite convida a caminhadas seguras e agradáveis.",
+      "Há dezenas de quiosques e restaurantes servindo pratos regionais icônicos como o caranguejo cozido e doces locais. É o principal ponto de encontro de turistas e sergipanos que buscam lazer ao ar livre e gastronomia à beira-mar."
+    ],
+    en: [
+      "The infrastructure includes bike lanes, sports courts, artificial lakes with paddleboats, high-quality playgrounds, and the famous Aracaju Oceanarium. Modern lighting at night makes it perfect for safe and pleasant walks.",
+      "Dozens of kiosks and restaurants serve iconic regional dishes like boiled crab and local sweets. It is the main meeting point for tourists and locals seeking outdoor leisure and scenic dining."
+    ],
+    es: [
+      "La infraestructura incluye ciclovías, canchas deportivas, lagos artificiales con botes a pedal, parques infantiles de alta calidad y el famoso Oceanario de Aracaju. La iluminación moderna por la noche invita a paseos seguros y agradables.",
+      "Decenas de quioscos y restaurantes sirven platos regionales icónicos como el cangrejo cocido y dulces locales. Es el principal punto de encuentro para turistas y lugareños."
+    ]
+  },
+  "miauteria": {
+    pt: [
+      "O espaço possui salas especialmente adaptadas com pontes suspensas, arranhadores e brinquedos aéreos, garantindo a diversão e a segurança dos gatinhos. É possível interagir diretamente com eles em sessões agendadas.",
+      "No menu, destacam-se os cafés expressos especiais, os bolos artesanais, salgados com opções veganas e bebidas geladas exclusivas. Todo o lucro das visitas contribui para ONGs parceiras que cuidam de animais resgatados."
+    ],
+    en: [
+      "The space features rooms specially adapted with suspension bridges, scratching posts, and aerial toys, ensuring the kittens' fun and safety. You can interact directly with them in scheduled sessions.",
+      "The menu highlights special espresso coffees, artisanal cakes, savory items with vegan options, and exclusive cold drinks. All proceeds from visits go to partner NGOs that care for rescued animals."
+    ],
+    es: [
+      "El espacio cuenta con salas especialmente adaptadas con puentes colgantes, rascadores y juguetes aéreos, garantizando la diversión y seguridad de los gatitos. Es posible interactuar con ellos en sesiones programadas.",
+      "En el menú destacan cafés expresos especiales, tartas artesanales y bebidas frías exclusivas. Todo el beneficio de las visitas contribuye a ONGs asociadas."
+    ]
+  },
+  "museu-gente": {
+    pt: [
+      "O acervo é totalmente tecnológico e interativo, permitindo que o visitante experimente a culinária virtualmente, ouça os sotaques do estado na cabine de fala e assista a apresentações folclóricas digitais em tamanho real.",
+      "Instalado no prédio histórico do antigo Ateneu Pedro II, o museu é referência nacional em museografia moderna e é totalmente gratuito, sendo uma das atrações mais recomendadas de Sergipe."
+    ],
+    en: [
+      "The collection is fully technological and interactive, allowing visitors to virtually experience local cuisine, hear regional accents in a speech booth, and watch life-size digital folk performances.",
+      "Housed in the historic building of the former Ateneu Pedro II, the museum is a national reference in modern museography and is completely free, making it one of Sergipe's most recommended attractions."
+    ],
+    es: [
+      "La colección es totalmente tecnológica e interactiva, lo que permite a los visitantes experimentar la cocina virtualmente, escuchar los acentos regionales en cabinas de voz y ver espectáculos folclóricos digitales.",
+      "Ubicado en el edificio histórico del antiguo Ateneu Pedro II, el museo es un referente nacional en museografía moderna y es completamente gratuito."
+    ]
+  },
+  "canion-xingo": {
+    pt: [
+      "O passeio clássico de catamarã ou escuna navega pelas águas calmas e verde-esmeralda do Rio São Francisco, cercado por paredões rochosos de tons terrosos esculpidos pelo tempo ao longo de milhares de anos.",
+      "No local conhecido como o 'Paraíso Talhado', os visitantes podem fazer passeios de canoa em fendas estreitas e nadar em áreas de banho cercadas e seguras, no coração da caatinga."
+    ],
+    en: [
+      "The classic catamaran or schooner tour navigates the calm, emerald-green waters of the São Francisco River, surrounded by earth-toned rock walls carved by time over thousands of years.",
+      "At the spot known as 'Paraíso Talhado', visitors can take canoe rides through narrow rock crevices and swim in safe, enclosed swimming areas in the heart of the semiarid landscape."
+    ],
+    es: [
+      "El clásico recorrido en catamarán o goleta navega por las tranquilas aguas verde esmeralda del río São Francisco, rodeado de paredes de roca esculpidas por el tiempo.",
+      "En el lugar conocido como 'Paraíso Talhado', los visitantes pueden dar paseos en canoa por estrechas grietas y nadar en zonas de baño cerradas y seguras."
+    ]
+  },
+  "mercado-thales": {
+    pt: [
+      "O espaço abriga centenas de boxes que vendem castanhas, queijo coalho, manteiga de garrafa, doces caseiros, além de artesanatos feitos de argila, palha, renda e madeira legítima sergipana.",
+      "Interligado aos mercados Antônio Franco e Maria Virgínia, forma um complexo cultural vibrante onde é possível ouvir repentistas e provar a autêntica culinária no andar superior."
+    ],
+    en: [
+      "The space houses hundreds of stalls selling cashews, coalho cheese, bottled butter, homemade sweets, as well as crafts made of clay, straw, lace, and authentic Sergipe wood.",
+      "Connected to the Antônio Franco and Maria Virgínia markets, it forms a vibrant cultural complex where you can hear folk singers and taste authentic local food on the upper floor."
+    ],
+    es: [
+      "El espacio alberga cientos de puestos que venden castañas de cajú, queso coalho, mantequilla de botella, dulces caseros y artesanías hechas de barro, paja y encaje.",
+      "Conectado a los mercados Antônio Franco y Maria Virgínia, forma un complejo cultural vibrante donde se puede escuchar a los cantores populares."
+    ]
+  },
+  "centro-historico": {
+    pt: [
+      "Destaque para a belíssima Catedral Metropolitana, a Praça Olímpio Campos e o Palácio Olímpio Campos, que guarda relíquias da época imperial do estado e belos afrescos restaurados.",
+      "A caminhada pelas ruas de paralelepípedos revela casarios coloridos do século XIX que hoje abrigam centros culturais, cafeterias charmosas e lojas de tecidos tradicionais."
+    ],
+    en: [
+      "Highlights include the beautiful Metropolitan Cathedral, Olímpio Campos Square, and the Olímpio Campos Palace, which preserves relics from the state's imperial era and beautiful restored frescoes.",
+      "Walking along the cobblestone streets reveals colorful 19th-century houses that now host cultural centers, charming cafés, and traditional fabric stores."
+    ],
+    es: [
+      "Destacan la bellísima Catedral Metropolitana, la Plaza Olímpio Campos y el Palacio Olímpio Campos, que guarda reliquias de la época imperial y hermosos frescos restaurados.",
+      "El paseo por las calles empedradas revela casas de colores del siglo XIX que hoy albergan centros culturais y cafeterías con encanto."
+    ]
+  },
+  "parque-sementeira": {
+    pt: [
+      "Possui lagos com patos e gansos, quiosques para picnic, pista de corrida pavimentada, parquinhos de madeira para crianças e amplas áreas de gramado sob a sombra de eucaliptos gigantes.",
+      "É um refúgio ecológico no meio da cidade onde famílias se reúnem para andar de bicicleta, praticar ioga, soltar pipa e realizar ensaios fotográficos ao ar livre com luz natural."
+    ],
+    en: [
+      "It features lakes with ducks and geese, picnic kiosks, a paved running track, wooden playgrounds for kids, and wide grassy areas under the shade of giant eucalyptus trees.",
+      "It is an ecological refuge in the middle of the city where families gather to ride bikes, practice yoga, fly kites, and hold outdoor photo shoots in natural light."
+    ],
+    es: [
+      "Cuenta con lagos con patos y gansos, quioscos para pícnic, pista para correr pavimentada, parques infantiles de madera y amplias zonas de césped bajo la sombra de eucaliptos gigantes.",
+      "Es un refugio ecológico en medio de la ciudad donde las familias se reúnen para andar en bicicleta, practicar yoga y pasar el día al aire libre."
+    ]
+  },
+  "memorial-sergipe": {
+    pt: [
+      "A coleção exibe arte sacra preciosa, utensílios de engenhos coloniais, documentos raros sobre o cangaço (incluindo pertences de Lampião e Maria Bonita) e a história política do estado.",
+      "Gerido pela Universidade Tiradentes, o museu desempenha papel crucial na preservação da memória local e serve de campo de pesquisa para estudantes e historiadores de todo o país."
+    ],
+    en: [
+      "The collection displays precious sacred art, colonial sugar mill utensils, rare documents on the cangaço history (including belongings of Lampião and Maria Bonita), and political history.",
+      "Managed by Tiradentes University, the museum plays a crucial role in preserving local memory and serves as a research ground for students and historians from across the country."
+    ],
+    es: [
+      "La colección exhibe valioso arte sacro, utensilios de ingenios azucareros coloniales, documentos raros sobre la historia del cangaço y la historia política del estado.",
+      "Gestionado por la Universidad Tiradentes, el museo desempeña un papel crucial en la preservación de la memoria local y la investigación histórica."
+    ]
+  }
 };
 
 /* ─────────── Schedule helpers ─────────── */
@@ -253,7 +608,6 @@ interface Review {
 interface DetalheScreenProps {
   destinationId?: string;
   onNavigate: (screen: string) => void;
-  onToast: (message: string) => void;
   onOpenGPS: (destinationId?: string) => void;
   onAddToRoteiro: (destinationId: string, note?: string) => void;
   isInRoteiro: boolean;
@@ -289,7 +643,6 @@ function StarRow({ rating, size = 16 }: { rating: number; size?: number }) {
 export function DetalheScreen({
   destinationId,
   onNavigate,
-  onToast,
   onOpenGPS,
   onAddToRoteiro,
   isInRoteiro,
@@ -298,6 +651,7 @@ export function DetalheScreen({
   onAddReview,
   userProfile,
 }: DetalheScreenProps) {
+  const { toast: onToast } = useToast();
   const t = translations[language];
   const destination = destinationId ? getDestinationById(destinationId) : null;
 
@@ -309,7 +663,7 @@ export function DetalheScreen({
   /* ── Not found ── */
   if (!destination) {
     return (
-      <div className="bg-[var(--branco)] pt-[62px] min-h-screen flex items-center justify-center">
+      <div className="bg-[var(--branco)] min-h-screen flex items-center justify-center" style={{ paddingTop: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))' }}>
         <div className="text-center px-4">
           <div className="flex justify-center text-[var(--cinza-txt)] mb-4">
             <MapPin size={48} />
@@ -330,9 +684,11 @@ export function DetalheScreen({
   const lang = language as Lang;
   const openNow = isOpenNow(destination.hours);
   const schedule = parseSchedule(destination.hours, lang, t.closed);
-  const galleryPhotos = [destination.image, ...GALLERY_URLS.slice(0, 5)];
+  const galleryPhotos = destination.gallery && destination.gallery.length > 0
+    ? destination.gallery.filter((url) => url !== destination.image)
+    : GALLERY_URLS.filter((url) => url !== destination.image);
 
-  const extraDesc = EXTRA_DESC[destination.category];
+  const extraDesc = SPECIFIC_DESC[destination.id] || EXTRA_DESC[destination.category];
   const p2 = extraDesc?.[lang]?.[0] ?? "";
   const p3 = extraDesc?.[lang]?.[1] ?? "";
 
@@ -351,7 +707,8 @@ export function DetalheScreen({
     date: r.date,
     partnerResponse: null,
   }));
-  const allReviews = [...SEED_REVIEWS, ...userReviewsMapped];
+  const seedReviews = SPECIFIC_REVIEWS[destination.id] || SEED_REVIEWS;
+  const allReviews = [...seedReviews, ...userReviewsMapped];
 
   /* rating distribution */
   const dist = [5, 4, 3, 2, 1].map((star) => {
@@ -395,10 +752,10 @@ export function DetalheScreen({
 
   /* ── JSX ── */
   return (
-    <div className="bg-[var(--branco)] min-h-screen">
+    <div className="bg-[var(--branco)] min-h-screen" style={{ paddingTop: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))' }}>
 
       {/* ══════════════════ HERO ══════════════════ */}
-      <div className="relative w-full overflow-hidden mt-[62px]" style={{ height: "400px" }}>
+      <div className="relative w-full overflow-hidden mt-0" style={{ height: "400px" }}>
         <ImageWithFallback
           src={destination.image}
           alt={destination.name}
@@ -525,11 +882,32 @@ export function DetalheScreen({
                 {isInRoteiro ? t.alreadyInItinerary : t.addToItinerary}
               </button>
               <button
-                onClick={() => onToast("🔗 Link de reserva copiado!")}
-                className="flex items-center gap-2 px-5 py-3 border-2 border-[var(--cinza-med)] text-[var(--preto)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors min-h-[44px] bg-white"
+                onClick={async () => {
+                  const locationText = `${destination.name} — ${destination.address}`;
+                  try {
+                    if (navigator.share) {
+                      await navigator.share({
+                        title: destination.name,
+                        text: locationText,
+                        url: `https://maps.google.com/?q=${encodeURIComponent(destination.address)}`,
+                      });
+                    } else {
+                      await navigator.clipboard.writeText(locationText);
+                      onToast(`📍 Localização copiada: ${destination.name}`);
+                    }
+                  } catch {
+                    try {
+                      await navigator.clipboard.writeText(locationText);
+                      onToast(`📍 Localização copiada: ${destination.name}`);
+                    } catch {
+                      onToast('⚠️ Não foi possível copiar a localização.');
+                    }
+                  }
+                }}
+                className="flex items-center gap-2 px-5 py-3 bg-white border border-[var(--cinza-med)] text-[var(--preto)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors min-h-[44px]"
               >
-                <Link2 size={16} />
-                {t.reserveBtn}
+                <Share2 size={16} />
+                Compartilhar
               </button>
             </div>
 
@@ -547,7 +925,7 @@ export function DetalheScreen({
                 <h3 className="font-['Fjalla_One'] text-xl text-[var(--preto)]">{t.photoGallery}</h3>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {galleryPhotos.map((url, i) => (
+                {galleryPhotos.slice(0, 6).map((url, i) => (
                   <div
                     key={i}
                     className="relative overflow-hidden rounded-[var(--radius-sm)] cursor-pointer group"
@@ -559,11 +937,7 @@ export function DetalheScreen({
                       alt={`${destination.name} ${i + 1}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    {i === 5 && (
-                      <div className="absolute inset-0 bg-black/58 flex items-center justify-center">
-                        <span className="text-white font-bold text-base">+12 {t.morePhotos}</span>
-                      </div>
-                    )}
+                    {/* No overlay */}
                   </div>
                 ))}
               </div>

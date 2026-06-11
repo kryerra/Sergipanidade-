@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
+import { useToast } from "@/context/AppContext";
 import loginBg1 from '@/assets/images/lambesujo.jpg';
 import loginBgTeste from '@/assets/images/login_teste.png';
 import loginBg3 from '@/assets/images/samba-de-coco-laranjeiras.jpg';
@@ -29,7 +30,6 @@ const LOGIN_LOGO_STYLE = {
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
-  onToast: (message: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
   onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   onLogin: (profile: UserProfile) => void;
@@ -42,7 +42,8 @@ interface SavedAccount {
   createdAt: string;
 }
 
-export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, onLogin }: LoginScreenProps): JSX.Element {
+export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }: LoginScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language];
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRecoverModal, setShowRecoverModal] = useState(false);
@@ -278,7 +279,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             <line x1="2" y1="12" x2="22" y2="12" />
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
-          <span>{language === 'pt' ? 'PT' : language === 'en' ? 'EN' : language === 'es' ? 'ES' : 'SP'}</span>
+          <span>{language === 'pt' ? 'Sergipanês pt-BR' : language === 'sp' ? 'Sergipanês pt-BR' : language === 'en' ? 'EN' : 'ES'}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="6 9 12 15 18 9" />
           </svg>
@@ -300,7 +301,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   : 'bg-white text-[#555] hover:bg-[#F7F6F3]'
                 }`}
             >
-              <span>{t.languages.portuguese}</span>
+              <span>Sergipanês pt-BR</span>
               {language === 'pt' && <span className="ml-auto text-[#0D7377]">✓</span>}
             </button>
             <button
@@ -330,20 +331,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             >
               <span>{t.languages.spanish}</span>
               {language === 'es' && <span className="ml-auto text-[#0D7377]">✓</span>}
-            </button>
-            <button
-              onClick={() => {
-                onChangeLanguage('sp');
-                setShowLanguageMenu(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium
-                          transition-all border-none cursor-pointer ${language === 'sp'
-                  ? 'bg-[#0D7377]/10 text-[#0D7377]'
-                  : 'bg-white text-[#555] hover:bg-[#F7F6F3]'
-                }`}
-            >
-              <span>{t.languages.sergipanes}</span>
-              {language === 'sp' && <span className="ml-auto text-[#0D7377]">✓</span>}
             </button>
           </div>
         )}

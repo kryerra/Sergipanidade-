@@ -17,12 +17,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import defaultProfilePhoto from "../../assets/images/miauteriapf.jpeg";
-import partnerBackground from "../../assets/images/miaufundo2.jpeg";
+import partnerBackground from "../../assets/images/miauteria_nova.jpg";
 import { translations } from "@/constants/translations";
+import { useToast } from "@/context/AppContext";
 
 /* ─────────── Tipos ─────────── */
 interface ParceiroScreenProps {
-  onToast: (message: string) => void;
   language: "pt" | "en" | "es";
 }
 
@@ -162,7 +162,8 @@ function EvolutionChart({
 }
 
 /* ─────────── Componente ─────────── */
-export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.Element {
+export function ParceiroScreen({ language }: ParceiroScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language];
 
   /* Modal state */
@@ -253,30 +254,33 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
      JSX
   ═══════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--cinza-leve)', paddingTop: 'var(--navbar-height)' }}>
 
       {/* ══════ HEADER BRANCO COM IMAGEM DE FUNDO ══════ */}
       <div
         className="relative overflow-hidden"
-        style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #E5E7EB' }}
+        style={{
+          background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
+          borderBottom: '1px solid #E5E7EB',
+        }}
       >
         <img
           src={partnerBackground}
           alt="Portal background"
-          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-80"
-          style={{ zIndex: 0 }}
+          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-40"
+          style={{ zIndex: 0, objectPosition: 'center center' }}
         />
-        <div className="absolute inset-0 bg-white/70" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-20 relative z-10">
+        <div className="absolute inset-0 bg-black/15" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-36 pb-10 relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <div>
               <h1
                 className="font-bold tracking-tight leading-tight"
-                style={{ fontSize: "36px", color: '#1E293B', fontFamily: "'Fjalla One', sans-serif" }}
+                style={{ fontSize: "36px", color: '#FFFFFF', fontFamily: "'Fjalla One', sans-serif" }}
               >
                 {t.partnerPortal}
               </h1>
-              <p className="text-sm mt-0.5" style={{ color: '#64748B' }}>{t.manageEstablishment}</p>
+              <p className="text-sm mt-0.5 font-medium" style={{ color: '#FFFFFF' }}>{t.manageEstablishment}</p>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useToast } from "@/context/AppContext";
 import {
   Search, MapPin, ArrowRight, ArrowLeft,
   Instagram, Globe, Mail, X, Palette,
@@ -72,11 +73,11 @@ const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
 
 // ─── COMPONENT ───────────────────────────────────────────────
 interface CulturaScreenProps {
-  onToast: (msg: string) => void;
   language?: 'pt' | 'en' | 'es' | 'sp';
 }
 
-export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
+export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
 
@@ -113,26 +114,26 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
         className="min-h-screen"
         style={{
           backgroundColor: 'var(--branco)',
-          paddingTop: 'calc(56px + env(safe-area-inset-top))',
-          paddingBottom: 'calc(72px + env(safe-area-inset-bottom))',
+          paddingTop: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))',
+          paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        {/* Back */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-6 pb-2">
-          <button
-            onClick={(): void => setSelectedArtist(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
-            style={{ color: '#0D7377', fontSize: '14px' }}
-          >
-            <ArrowLeft size={18} />
-            Voltar para Sergipanidade
-          </button>
-        </div>
-
         {/* Cover */}
         <div className="relative h-80 sm:h-100 overflow-hidden">
-          <ImageWithFallback src={selectedArtist.coverPhoto} alt="Capa" className="w-full h-full object-cover" />
+          <ImageWithFallback src={selectedArtist.coverPhoto} alt="Capa" className="w-full h-full object-cover object-[center_30%]" />
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+          
+          {/* Back button */}
+          <div className="absolute top-5 left-4 sm:left-8 z-10">
+            <button
+              onClick={(): void => setSelectedArtist(null)}
+              className="flex items-center gap-2 bg-black/40 hover:bg-black/60 text-white border-none rounded-full px-4.5 py-2 cursor-pointer transition-colors min-h-[40px] shadow-md"
+              style={{ fontSize: '14px' }}
+            >
+              <ArrowLeft size={18} />
+              Voltar para Sergipanidade
+            </button>
+          </div>
         </div>
 
         {/* Header info */}
@@ -219,7 +220,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
                 <a
                   key={label}
                   href={href}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>): void => { e.preventDefault(); onToast(`🔗 Abrindo ${label}`); }}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>): void => { e.preventDefault(); }}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all min-h-11"
                   style={{ borderColor: '#D9D9D9', color: '#0D7377', fontSize: '13px' }}
                 >
@@ -299,26 +300,26 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
         className="min-h-screen"
         style={{
           backgroundColor: 'var(--branco)',
-          paddingTop: 'calc(56px + env(safe-area-inset-top))',
-          paddingBottom: 'calc(72px + env(safe-area-inset-bottom))',
+          paddingTop: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))',
+          paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        {/* Back */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-8 pt-6 pb-2">
-          <button
-            onClick={(): void => setSelectedStory(null)}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer min-h-11 hover:opacity-70 transition-opacity"
-            style={{ color: '#0D7377', fontSize: '14px' }}
-          >
-            <ArrowLeft size={18} />
-            Voltar às histórias
-          </button>
-        </div>
-
         {/* Hero */}
         <div className="relative h-75 sm:h-105 overflow-hidden">
-          <ImageWithFallback src={selectedStory.img} alt={selectedStory.title} className="w-full h-full object-cover" />
+          <ImageWithFallback src={selectedStory.img} alt={selectedStory.title} className="w-full h-full object-cover object-[center_30%]" />
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+          
+          {/* Back button */}
+          <div className="absolute top-5 left-4 sm:left-8 z-10">
+            <button
+              onClick={(): void => setSelectedStory(null)}
+              className="flex items-center gap-2 bg-black/40 hover:bg-black/60 text-white border-none rounded-full px-4.5 py-2 cursor-pointer transition-colors min-h-[40px] shadow-md"
+              style={{ fontSize: '14px' }}
+            >
+              <ArrowLeft size={18} />
+              Voltar às histórias
+            </button>
+          </div>
           <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 pb-10 max-w-3xl mx-auto">
             <span
               className="inline-block px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 text-white"
@@ -438,8 +439,8 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
       className="min-h-screen"
       style={{
         backgroundColor: 'var(--branco)',
-        paddingTop: 'calc(0px + env(safe-area-inset-top))',
-        paddingBottom: 'calc(72px + env(safe-area-inset-bottom))',
+        paddingTop: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))',
+        paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
       }}
     >
       {/* ── HEADER ESTÁTICO ── */}
@@ -492,9 +493,9 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
       {/* ── STICKY TABS ── */}
       <div
         ref={tabsRef}
-        className="z-80 bg-white overflow-x-auto"
+        className="sticky z-80 bg-white overflow-x-auto"
         style={{
-          top: 'calc(56px + env(safe-area-inset-top))',
+          top: 'calc(var(--navbar-height) + env(safe-area-inset-top, 0px))',
           borderBottom: '1px solid #D9D9D9',
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
         }}

@@ -5,6 +5,7 @@
 import { Clock, MapPin, Utensils, Star } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
 import { StarRating } from "@/components/ui/StarRating";
+import { useToast } from "@/context/AppContext";
 
 interface RestauranteCardProps {
   id: string;
@@ -21,7 +22,6 @@ interface RestauranteCardProps {
   verCardapioLabel: string;
   horarioAbertoLabel: string;
   reservarMesaLabel: string;
-  onToast: (msg: string) => void;
 }
 
 export function RestauranteCard({
@@ -38,8 +38,8 @@ export function RestauranteCard({
   verCardapioLabel,
   horarioAbertoLabel,
   reservarMesaLabel,
-  onToast,
 }: RestauranteCardProps) {
+  const { toast: onToast } = useToast();
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden flex flex-col

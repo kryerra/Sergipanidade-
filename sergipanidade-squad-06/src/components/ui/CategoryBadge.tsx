@@ -64,6 +64,7 @@ export function CategoryBadge({
         border:          `1px solid ${isHighlight ? 'rgba(13,115,119,0.25)' : '#D9D9D9'}`,
         borderRadius:    999,
         fontSize,
+        fontFamily:      "'Inter', 'Roboto', 'Urbanist', sans-serif",
         fontWeight:      600,
         letterSpacing:   '0.06em',
         textTransform:   'uppercase',
