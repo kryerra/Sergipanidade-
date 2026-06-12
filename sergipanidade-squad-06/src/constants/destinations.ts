@@ -95,7 +95,7 @@ export interface Destination {
 export const destinations: Destination[] = [
   {
     id: "orla-atalaia",
-    icon: "🏖️",
+    icon: "",
     name: "Orla de Atalaia",
     shortDesc: "Praia urbana com calçadão modernizado",
     shortDesc_en: "Urban beach with modern boardwalk",
@@ -131,7 +131,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "miauteria",
-    icon: "🐱",
+    icon: "",
     name: "Miauteria Cat Café",
     shortDesc: "Cafeteria pet friendly com adoção",
     shortDesc_en: "Pet friendly café with adoption",
@@ -169,7 +169,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "museu-gente",
-    icon: "🏛️",
+    icon: "",
     name: "Museu da Gente Sergipana",
     shortDesc: "Cultura e história interativa",
     shortDesc_en: "Interactive culture and history",
@@ -206,7 +206,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "canion-xingo",
-    icon: "🌊",
+    icon: "",
     name: "Cânions de Xingó",
     shortDesc: "Paisagem deslumbrante no Rio São Francisco",
     shortDesc_en: "Stunning landscape on São Francisco River",
@@ -243,7 +243,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "mercado-thales",
-    icon: "🍽️",
+    icon: "",
     name: "Mercado Thales Ferraz",
     shortDesc: "Gastronomia típica sergipana",
     shortDesc_en: "Typical Sergipe cuisine",
@@ -279,7 +279,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "centro-historico",
-    icon: "🎭",
+    icon: "",
     name: "Centro Histórico de São Cristóvão",
     shortDesc: "Patrimônio da Humanidade UNESCO",
     shortDesc_en: "UNESCO World Heritage Site",
@@ -322,7 +322,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "parque-sementeira",
-    icon: "🌳",
+    icon: "",
     name: "Parque da Sementeira",
     shortDesc: "Maior área verde urbana de Aracaju",
     shortDesc_en: "Largest urban green area in Aracaju",
@@ -359,7 +359,7 @@ export const destinations: Destination[] = [
   },
   {
   id: 'memorial-sergipe',
-  icon: '🏛️',
+  icon: '',
   name: 'Memorial de Sergipe Prof. Jouberto Uchôa',
   shortDesc: 'Memória, história e cultura sergipana',
   shortDesc_en: 'Memory, history and Sergipe culture',

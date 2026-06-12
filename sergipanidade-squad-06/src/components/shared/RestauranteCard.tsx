@@ -103,7 +103,7 @@ export function RestauranteCard({
       <div className="p-4 flex flex-col flex-1">
         {/* Nome */}
         <h3
-          className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-1"
+          className="font-semibold font-display text-[var(--preto)] tracking-tight leading-tight mb-1"
           style={{ fontSize: '17px' }}
         >
           {name}

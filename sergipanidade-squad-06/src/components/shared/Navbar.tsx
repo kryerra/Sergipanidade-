@@ -2,27 +2,14 @@ import { UserAvatar } from './UserAvatar';
 import { translations } from '../../constants/translations';
 import logoNav from '@/assets/images/logo-nav.png';
 
-const NAVBAR_DESKTOP_LOGO_SCALE = 1.9; // Ajuste este valor para alterar a escala do logo da navbar no desktop
-const NAVBAR_MOBILE_LOGO_SCALE = 1.0; // Ajuste este valor para alterar a escala do logo da navbar no mobile
-
-// Configuração de posicionamento e escala do logo da Navbar (logo-nav.png)
+// Configuração do logo da Navbar (logo-nav.png)
 const DESKTOP_LOGO_STYLE = {
-  position: 'relative' as const,
-  top: '-2px',      // Ajuste vertical (ex: '-5px' para subir, '5px' para descer)
-  left: '-31px',     // Ajuste horizontal (ex: '-10px' para esquerda, '10px' para direita)
-  transformOrigin: 'left center', // Origem da transformação
-  transform: `scale(${NAVBAR_DESKTOP_LOGO_SCALE})`,
-  height: '42px',  // Altura do logo
+  height: '48px',  // Altura do logo limitada a 48px
   objectFit: 'contain' as const,
 };
 
 const MOBILE_LOGO_STYLE = {
-  position: 'relative' as const,
-  top: '0px',      // Ajuste vertical
-  left: '0px',     // Ajuste horizontal
-  transformOrigin: 'left center', // Origem da transformação no mobile
-  transform: `scale(${NAVBAR_MOBILE_LOGO_SCALE})`,
-  height: '32px',  // Altura do logo
+  height: '32px',  // Altura do logo no mobile
   objectFit: 'contain' as const,
 };
 import {
@@ -74,7 +61,7 @@ export function Navbar({
   const bottomNavItems: NavItem[] = [
     { label: 'Home', screen: 'home', icon: Home },
     { label: t?.destinations || 'Destinos', screen: 'guia', icon: MapIcon },
-    { label: 'Cultura', screen: 'cultura', icon: Landmark },
+    { label: t?.culture || 'Cultura', screen: 'cultura', icon: Landmark },
   ];
 
   if (userProfile.userType === 'turista') {
@@ -95,7 +82,7 @@ export function Navbar({
   const desktopNavItems: NavItem[] = [
     { label: 'Home', screen: 'home' },
     { label: t?.destinations || 'Destinos', screen: 'guia' },
-    { label: 'Cultura', screen: 'cultura' },
+    { label: t?.culture || 'Cultura', screen: 'cultura' },
   ];
 
   if (userProfile.userType === 'turista') {
@@ -124,13 +111,13 @@ export function Navbar({
         }}
       >
         {/* Desktop Header */}
-        <div className="hidden md:flex items-center justify-between px-6 h-[76px] w-full mx-auto overflow-visible">
+        <div className="hidden md:flex items-center justify-between px-6 h-[72px] w-full mx-auto overflow-visible">
           <div className="flex items-center min-w-0">
             <button
               onClick={() => onNavigate('home')}
-              className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[56px] overflow-visible"
+              className="flex items-center justify-center p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity min-h-[48px] overflow-visible"
             >
-              <div className="flex items-center justify-center h-[56px] w-auto overflow-visible">
+              <div className="flex items-center justify-center h-[48px] w-auto overflow-visible">
                 <img
                   src={logoNav}
                   alt="Logo Navbar"

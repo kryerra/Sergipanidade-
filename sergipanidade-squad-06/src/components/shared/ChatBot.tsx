@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { translations } from "@/constants/translations";
+import serginhoImg from '@/assets/images/serginho.png';
 
 interface ChatBotProps {
   isVisible: boolean;
@@ -48,7 +49,7 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
       setMessages((prev) => [
         ...prev,
         {
-          text: 'Chave da API não configurada. Verifique o arquivo .env.',
+          text: t.chatBotApiKeyMissing,
           isBot: true,
         },
       ]);
@@ -113,7 +114,7 @@ Regras obrigatórias:
       setMessages((prev) => [
         ...prev,
         {
-          text: 'Desculpe, não consegui conectar ao serviço de IA no momento.',
+          text: t.chatBotConnectionError,
           isBot: true,
         },
       ]);
@@ -138,7 +139,7 @@ Regras obrigatórias:
         {isOpen ? (
           <X size={22} color="#FFFFFF" strokeWidth={2.5} />
         ) : (
-          <MessageCircle size={22} color="#FFFFFF" strokeWidth={2} fill="rgba(255,255,255,0.15)" />
+          <img src={serginhoImg} alt="Serginho" className="w-[38px] h-[38px] object-contain" />
         )}
 
         {/* Pulse indicator when closed */}
@@ -165,12 +166,12 @@ Regras obrigatórias:
           >
             {/* Avatar com ícone de chat */}
             <div
-              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0 overflow-hidden"
             >
-              <MessageCircle size={18} color="#FFFFFF" strokeWidth={2} />
+              <img src={serginhoImg} alt="Serginho" className="w-[28px] h-[28px] object-contain" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-['Fjalla_One'] text-[15px] tracking-wide text-white truncate">
+              <div className="font-semibold font-display text-[15px] tracking-tight text-white truncate">
                 {t.chatBotName}
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">

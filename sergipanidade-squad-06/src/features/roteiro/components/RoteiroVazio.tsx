@@ -4,8 +4,9 @@
  * Estilo clássico original restaurado com leves melhorias de hierarquia visual.
  */
 
-import { MapPin, Bot, Sparkles, Compass } from "lucide-react";
+import { MapPin, Sparkles, Compass } from "lucide-react";
 import { translations } from "@/constants/translations";
+import serginhoImg from "@/assets/images/serginho.png";
 
 interface RoteiroVazioProps {
   onCreateWithAI: () => void;
@@ -27,7 +28,7 @@ export function RoteiroVazio({
         <MapPin size={26} className="text-[var(--primary)]" />
       </div>
 
-      <h1 className="font-['Fjalla_One'] text-2xl sm:text-3xl text-[var(--preto)] mb-2 leading-tight tracking-wide uppercase">
+      <h1 className="font-semibold font-display tracking-tight text-2xl sm:text-3xl text-[var(--preto)] mb-2 leading-tight uppercase">
         {t.emptyItinerary}
       </h1>
       <p className="text-[var(--cinza-txt)] text-xs sm:text-sm mb-8 max-w-xs leading-relaxed font-medium">
@@ -43,10 +44,10 @@ export function RoteiroVazio({
         />
 
         <div className="flex items-center gap-3.5 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--primary)] to-teal-400 flex items-center justify-center shrink-0 shadow-md">
-            <Bot size={20} className="text-white" />
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--primary)] to-teal-400 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+            <img src={serginhoImg} alt="Serginho" className="w-[28px] h-[28px] object-contain animate-pulse" />
           </div>
-          <p className="font-['Fjalla_One'] text-white text-lg tracking-wider leading-tight">
+          <p className="font-semibold font-display text-white text-lg tracking-tight leading-tight">
             {t.aiItineraryTitle}
           </p>
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/context/AppContext";
+import { translations, TranslationKeys } from "@/constants/translations";
 import {
   Search, MapPin, ArrowRight, ArrowLeft,
   Instagram, Globe, Mail, X, Palette,
@@ -68,23 +69,156 @@ const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
 
 // ─── LANGUAGE ICONS MAP ───────────────────────────────────────
 
+// Helper to translate artist disciplines
+const getLinguagemTraduzida = (linguagem: string, t: TranslationKeys): string => {
+  const norm = linguagem.trim();
+  switch (norm) {
+    case 'Música': return t.linguagemMusica || linguagem;
+    case 'Literatura e Filosofia': return t.linguagemLiteraturaFilosofia || linguagem;
+    case 'Dança': return t.linguagemDanca || linguagem;
+    case 'Escultura': return t.linguagemEscultura || linguagem;
+    case 'Artesanato': return t.linguagemArtesanato || linguagem;
+    case 'Cultura Popular': return t.linguagemCulturaPopular || linguagem;
+    default: return linguagem;
+  }
+};
 
+// Helper to translate story categories
+const getStoryCategoryTraduzida = (category: string, t: TranslationKeys): string => {
+  const norm = category.toUpperCase().trim();
+  switch (norm) {
+    case 'FOLCLORE': return t.categoryFolclore || category;
+    case 'TRADIÇÃO': return t.categoryTradicao || category;
+    case 'PERSONALIDADE': return t.categoryPersonalidade || category;
+    case 'GASTRONOMIA': return t.categoryGastronomia || category;
+    case 'PATRIMÔNIO IMATERIAL': return t.categoryPatrimonioImaterial || category;
+    default: return category;
+  }
+};
 
+// Helper to translate date strings containing Portuguese months
+const getDateTraduzida = (dateStr: string, language: string): string => {
+  if (!dateStr) return '';
+  const cleanLang = language === 'sp' ? 'pt' : language;
+  if (cleanLang === 'pt') return dateStr;
+
+  const ptMonths = [
+    { pt: ['janeiro', 'jan'], en: 'January', es: 'enero' },
+    { pt: ['fevereiro', 'fev'], en: 'February', es: 'febrero' },
+    { pt: ['março', 'mar'], en: 'March', es: 'marzo' },
+    { pt: ['abril', 'abr'], en: 'April', es: 'abril' },
+    { pt: ['maio', 'mai'], en: 'May', es: 'mayo' },
+    { pt: ['junho', 'jun'], en: 'June', es: 'junio' },
+    { pt: ['julho', 'jul'], en: 'July', es: 'julio' },
+    { pt: ['agosto', 'ago'], en: 'August', es: 'agosto' },
+    { pt: ['setembro', 'set'], en: 'September', es: 'septiembre' },
+    { pt: ['outubro', 'out'], en: 'October', es: 'octubre' },
+    { pt: ['novembro', 'nov'], en: 'November', es: 'noviembre' },
+    { pt: ['dezembro', 'dez'], en: 'December', es: 'diciembre' }
+  ];
+
+  const lower = dateStr.toLowerCase();
+  for (const item of ptMonths) {
+    for (const ptForm of item.pt) {
+      if (lower.includes(ptForm)) {
+        const replacement = cleanLang === 'en' ? item.en : item.es;
+        const regex = new RegExp(ptForm, 'i');
+        let targetRepl = replacement;
+        if (ptForm.length === 3) {
+          targetRepl = replacement.slice(0, 3);
+          if (cleanLang === 'en') {
+            targetRepl = targetRepl.charAt(0).toUpperCase() + targetRepl.slice(1);
+          } else {
+            targetRepl = targetRepl.toLowerCase();
+          }
+        } else {
+          if (cleanLang === 'en') {
+            targetRepl = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+          } else {
+            targetRepl = replacement.toLowerCase();
+          }
+        }
+        return dateStr.replace(regex, targetRepl);
+      }
+    }
+  }
+
+  return dateStr;
+};
 
 // ─── COMPONENT ───────────────────────────────────────────────
 interface CulturaScreenProps {
   language?: 'pt' | 'en' | 'es' | 'sp';
 }
 
-export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
+export function CulturaScreen({ language = 'pt' }: CulturaScreenProps): JSX.Element {
+  const cleanLanguage = language === 'sp' ? 'pt' : language;
+  const t = translations[cleanLanguage];
   const { toast: onToast } = useToast();
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
-
   const [eventsView, setEventsView] = useState<'lista' | 'calendario'>('lista');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+
+  const translatedArtists = ARTISTS.map((artist: Artist): Artist => {
+    const data = (t as any).artistsData?.[artist.id];
+    if (!data) return artist;
+    return {
+      ...artist,
+      bio: data.bio || artist.bio,
+      bioFull: data.bioFull || artist.bioFull,
+      awards: data.awards || artist.awards,
+      years: data.years || artist.years,
+      works: artist.works.map((work, idx) => {
+        const wData = data.works?.[idx];
+        if (!wData) return work;
+        return {
+          ...work,
+          title: wData.title || work.title,
+          desc: wData.desc || work.desc,
+          tecnica: wData.tecnica || work.tecnica,
+        };
+      }),
+    };
+  });
+
+  const translatedStories = STORIES.map((story: Story): Story => {
+    const data = (t as any).storiesData?.[story.id];
+    if (!data) return story;
+    return {
+      ...story,
+      title: data.title || story.title,
+      intro: data.intro || story.intro,
+      imgCaption: data.imgCaption || story.imgCaption,
+      body: data.body || story.body,
+    };
+  });
+
+  const translatedEvents = EVENTS.map((event: CulturaEvent): CulturaEvent => {
+    const data = (t as any).eventsData?.[event.id];
+    const monthKey = `month${event.month.charAt(0).toUpperCase()}${event.month.slice(1).toLowerCase()}`;
+    const translatedMonth = (t as any)[monthKey] || event.month;
+    if (!data) return { ...event, month: translatedMonth };
+    return {
+      ...event,
+      name: data.name || event.name,
+      type: data.type || event.type,
+      local: data.local || event.local,
+      city: data.city || event.city,
+      desc: data.desc || event.desc,
+      month: translatedMonth,
+    };
+  });
+
+  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
+
+  const selectedArtist = translatedArtists.find((a): boolean => a.id === selectedArtistId) || null;
+  const selectedStory = translatedStories.find((s): boolean => s.id === selectedStoryId) || null;
+
+  const setSelectedArtist = (artist: Artist | null): void => setSelectedArtistId(artist ? artist.id : null);
+  const setSelectedStory = (story: Story | null): void => setSelectedStoryId(story ? story.id : null);
+
   const [selectedArtwork, setSelectedArtwork] = useState<Artist['works'][0] | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -92,23 +226,23 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedArtist, selectedStory]);
 
-  const filteredArtists = ARTISTS.filter((a: Artist): boolean => {
+  const filteredArtists = translatedArtists.filter((a: Artist): boolean => {
     const matchSearch = !searchTerm || a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.city.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredEvents = EVENTS.filter((e: CulturaEvent): boolean => {
+  const filteredEvents = translatedEvents.filter((e: CulturaEvent): boolean => {
     const matchSearch = !searchTerm || e.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredStories = STORIES.filter((s: Story): boolean =>
+  const filteredStories = translatedStories.filter((s: Story): boolean =>
     !searchTerm || s.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // ── Artist Detail ──────────────────────────────────────────
   if (selectedArtist) {
-    const related = ARTISTS.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
+    const related = translatedArtists.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
     return (
       <div
         className="min-h-screen"
@@ -131,7 +265,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
               style={{ fontSize: '14px' }}
             >
               <ArrowLeft size={18} />
-              Voltar para Sergipanidade
+              {t.backToSergipanidade}
             </button>
           </div>
         </div>
@@ -144,7 +278,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
             </div>
             <div className="pb-1">
               <div className="flex flex-wrap items-center gap-2 mb-6">
-                <h1 className="font-['Fjalla_One'] text-[#0D7377] drop-shadow-lg" style={{ fontSize: '28px' }}>
+                <h1 className="font-semibold font-display tracking-tight text-[#0D7377] drop-shadow-lg" style={{ fontSize: '28px' }}>
                   {selectedArtist.name}
                 </h1>
               </div>
@@ -153,7 +287,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                   className="px-3 py-1 rounded-full text-white font-bold uppercase tracking-wider"
                   style={{ backgroundColor: '#0D7377', fontSize: '11px' }}
                 >
-                  {selectedArtist.linguagem.toUpperCase()}
+                  {getLinguagemTraduzida(selectedArtist.linguagem, t).toUpperCase()}
                 </span>
               </div>
             </div>
@@ -177,11 +311,11 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
           </div>
 
           {/* Works */}
-          <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '22px' }}>
-            Obras em destaque
+          <h2 className="font-semibold font-display tracking-tight mb-1" style={{ color: '#1A1A1A', fontSize: '22px' }}>
+            {t.featuredWorks}
           </h2>
           <p className="mb-5" style={{ color: '#8A8A8A', fontSize: '14px' }}>
-            Clique em uma obra para ver em destaque
+            {t.clickToEnlarge}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
             {selectedArtist.works.map((work: Artist['works'][0], i: number): JSX.Element => (
@@ -209,12 +343,12 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
           {/* Social links */}
           <div className="bg-white rounded-[14px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.06)] mb-8">
             <h3 className="font-semibold mb-4" style={{ color: '#1A1A1A', fontSize: '16px' }}>
-              Onde encontrar
+              {t.whereToFind}
             </h3>
             <div className="flex flex-wrap gap-3">
               {[
                 { icon: Instagram, label: selectedArtist.instagram, href: '#' },
-                { icon: Globe, label: 'Site pessoal', href: '#' },
+                { icon: Globe, label: t.personalWebsite, href: '#' },
                 { icon: Mail, label: 'E-mail', href: '#' },
               ].map(({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }): JSX.Element => (
                 <a
@@ -232,8 +366,8 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
           </div>
 
           {/* Related artists */}
-          <h2 className="font-['Fjalla_One'] mb-5" style={{ color: '#1A1A1A', fontSize: '22px' }}>
-            Outros artistas que você pode gostar
+          <h2 className="font-semibold font-display tracking-tight mb-5" style={{ color: '#1A1A1A', fontSize: '22px' }}>
+            {t.otherArtistsTitle}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-8">
             {related.map((a: Artist): JSX.Element => (
@@ -249,7 +383,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                 </div>
                 <div className="p-4">
                   <p className="font-semibold" style={{ color: '#1A1A1A', fontSize: '14px' }}>{a.name}</p>
-                  <p style={{ color: '#8A8A8A', fontSize: '12px' }}>{a.linguagem} · {a.city}</p>
+                  <p style={{ color: '#8A8A8A', fontSize: '12px' }}>{getLinguagemTraduzida(a.linguagem, t)} · {a.city}</p>
                 </div>
               </button>
             ))}
@@ -274,7 +408,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                 </button>
               </div>
               <div className="p-6 overflow-y-auto">
-                <h3 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '22px' }}>
+                <h3 className="font-semibold font-display tracking-tight mb-1" style={{ color: '#1A1A1A', fontSize: '22px' }}>
                   {selectedArtwork.title}
                 </h3>
                 <p className="mb-3" style={{ color: '#0D7377', fontSize: '13px', fontWeight: 600 }}>
@@ -293,7 +427,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
 
   // ── Story Detail ───────────────────────────────────────────
   if (selectedStory) {
-    const related = STORIES.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
+    const related = translatedStories.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
     const catColor = '#0D7377';
     return (
       <div
@@ -317,7 +451,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
               style={{ fontSize: '14px' }}
             >
               <ArrowLeft size={18} />
-              Voltar às histórias
+              {t.backToStories}
             </button>
           </div>
           <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 pb-10 max-w-3xl mx-auto">
@@ -325,10 +459,10 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
               className="inline-block px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-4 text-white"
               style={{ backgroundColor: catColor, fontSize: '11px' }}
             >
-              {selectedStory.category}
+              {getStoryCategoryTraduzida(selectedStory.category, t).toUpperCase()}
             </span>
             <h1
-              className="font-['Fjalla_One'] text-white leading-tight mb-2"
+              className="font-semibold font-display text-white leading-tight mb-2"
               style={{ fontSize: 'clamp(22px, 4vw, 36px)' }}
             >
               {selectedStory.title}
@@ -339,7 +473,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
         {/* Meta */}
         <div className="max-w-3xl mx-auto px-4 sm:px-8 py-5 border-b" style={{ borderColor: '#D9D9D9' }}>
           <p style={{ color: '#8A8A8A', fontSize: '13px' }}>
-            Por <strong style={{ color: '#1A1A1A' }}>{selectedStory.author}</strong> · {selectedStory.date}
+            {t.byAuthor} <strong style={{ color: '#1A1A1A' }}>{selectedStory.author}</strong> · {getDateTraduzida(selectedStory.date, language)}
           </p>
         </div>
 
@@ -377,8 +511,8 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
         {/* More stories */}
         <div className="bg-(--cinza-leve) py-12 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto">
-            <h2 className="font-['Fjalla_One'] mb-6" style={{ color: '#1A1A1A', fontSize: '24px' }}>
-              Explore mais histórias
+            <h2 className="font-semibold font-display tracking-tight mb-6" style={{ color: '#1A1A1A', fontSize: '24px' }}>
+              {t.exploreMoreStories}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {related.map((s: Story): JSX.Element => (
@@ -394,7 +528,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                   </div>
                   <div className="p-4">
                     <span className="text-[#0D7377] font-bold uppercase tracking-wider block mb-1.5" style={{ fontSize: '10px' }}>
-                      {s.category}
+                      {getStoryCategoryTraduzida(s.category, t).toUpperCase()}
                     </span>
                     <p className="font-semibold leading-tight" style={{ color: '#1A1A1A', fontSize: '14px' }}>
                       {s.title}
@@ -429,9 +563,9 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
 
   // ── Main Screen ────────────────────────────────────────────
   const TABS: { id: CulturaTab; label: string; Icon: LucideIcon }[] = [
-    { id: 'artistas', label: 'Sergipanidade', Icon: Palette },
-    { id: 'historias', label: 'Histórias', Icon: BookOpen },
-    { id: 'eventos', label: 'Eventos', Icon: Tent },
+    { id: 'artistas', label: t.tabSergipanidade, Icon: Palette },
+    { id: 'historias', label: t.tabStories, Icon: BookOpen },
+    { id: 'eventos', label: t.tabEvents, Icon: Tent },
   ];
 
   return (
@@ -477,7 +611,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
             className="text-white mb-4 leading-tight font-bold"
             style={{ fontSize: 'clamp(32px, 6vw, 52px)', maxWidth: '700px' }}
           >
-            A alma de Sergipe em forma de arte e história
+            {t.culturaTitle}
           </h1>
 
           {/* Subtítulo */}
@@ -485,7 +619,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
             className="mb-10 mx-auto leading-relaxed"
             style={{ color: 'rgba(255,255,255,0.75)', fontSize: '17px', maxWidth: '600px' }}
           >
-            Conheça os artistas, as histórias e os eventos que fazem Sergipe único
+            {t.culturaSubtitle}
           </p>
         </div>
       </div>
@@ -513,9 +647,9 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
               >
                 <CategoryPin Icon={Icon} isActive={isActive} />
                 <span style={{
-                  fontFamily: "'Fjalla One', sans-serif",
+                  fontFamily: "var(--font-display)",
                   fontSize: '14px',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: '0.02em'
                 }}>
                   {label}
@@ -543,7 +677,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
             {filteredArtists.length === 0 ? (
               <div className="text-center py-20" style={{ color: '#8A8A8A' }}>
                 <Shapes size={40} className="mx-auto mb-3 opacity-30" />
-                <p style={{ fontSize: '16px' }}>Nenhum artista encontrado</p>
+                <p style={{ fontSize: '16px' }}>{t.noArtistsFound}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -565,7 +699,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                         className="absolute top-3 left-3 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider"
                         style={{ backgroundColor: '#EEEDE9', color: '#1A1A1A', fontSize: '10px' }}
                       >
-                        {artist.linguagem.toUpperCase()}
+                        {getLinguagemTraduzida(artist.linguagem, t).toUpperCase()}
                       </div>
                     </div>
 
@@ -589,7 +723,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                         className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-colors hover:gap-2.5"
                         style={{ color: '#0D7377', fontSize: '13px' }}
                       >
-                        Ver perfil completo
+                        {t.viewFullProfile}
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -604,11 +738,11 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
         {activeTab === 'historias' && (
           <div>
             <div className="mb-8">
-              <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
-                Raízes Sergipanas
+              <h2 className="font-semibold font-display tracking-tight mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
+                {t.rootsSergipanas}
               </h2>
               <p style={{ color: '#4A4A4A', fontSize: '15px' }}>
-                Lendas, tradições e personagens que moldaram a identidade de Sergipe
+                {t.rootsSubtitle}
               </p>
             </div>
 
@@ -637,10 +771,10 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                         className="inline-block mb-3 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit"
                         style={{ backgroundColor: 'rgba(13,115,119,0.10)', color: '#0D7377', fontSize: '11px' }}
                       >
-                        {story.category}
+                        {getStoryCategoryTraduzida(story.category, t).toUpperCase()}
                       </span>
                       <h3
-                        className="font-['Fjalla_One'] mb-3 leading-tight"
+                        className="font-semibold font-display tracking-tight mb-3 leading-tight"
                         style={{ color: '#1A1A1A', fontSize: '22px' }}
                       >
                         {story.title}
@@ -652,14 +786,14 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                         {story.intro}
                       </p>
                       <p className="mb-5" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                        Por <strong style={{ color: '#1A1A1A' }}>{story.author}</strong> · {story.date}
+                        {t.byAuthor} <strong style={{ color: '#1A1A1A' }}>{story.author}</strong> · {getDateTraduzida(story.date, language)}
                       </p>
                       <button
                         onClick={(): void => setSelectedStory(story)}
                         className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer font-semibold min-h-9 transition-all hover:gap-2.5 w-fit"
                         style={{ color: '#0D7377', fontSize: '14px' }}
                       >
-                        Ler história completa
+                        {t.readFullStory}
                         <ArrowRight size={15} />
                       </button>
                     </div>
@@ -675,11 +809,11 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
               <div>
-                <h2 className="font-['Fjalla_One'] mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
-                  Agenda Cultural
+                <h2 className="font-semibold font-display tracking-tight mb-1" style={{ color: '#1A1A1A', fontSize: '28px' }}>
+                  {t.culturalAgenda}
                 </h2>
                 <p style={{ color: '#4A4A4A', fontSize: '15px' }}>
-                  Festivais, exposições, shows e celebrações em Sergipe
+                  {t.culturalAgendaSubtitle}
                 </p>
               </div>
               {/* View toggle */}
@@ -695,7 +829,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                       fontSize: '13px',
                     }}
                   >
-                    {v === 'lista' ? '☰ Lista' : '🗓 Calendário'}
+                    {v === 'lista' ? t.viewList : t.viewCalendar}
                   </button>
                 ))}
               </div>
@@ -708,7 +842,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                 {filteredEvents.length === 0 ? (
                   <div className="col-span-2 text-center py-20" style={{ color: '#8A8A8A' }}>
                     <Ticket size={40} className="mx-auto mb-3 opacity-30" />
-                    <p style={{ fontSize: '16px' }}>Nenhum evento encontrado com esses filtros</p>
+                    <p style={{ fontSize: '16px' }}>{t.noEventsFound}</p>
                   </div>
                 ) : filteredEvents.map((event: CulturaEvent): JSX.Element => (
                   <div
@@ -731,7 +865,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                           className="absolute top-3 right-3 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider"
                           style={{ backgroundColor: '#E6F4F4', color: '#0D7377', fontSize: '10px' }}
                         >
-                          GRATUITO
+                          {t.freeBadge}
                         </div>
                       )}
                     </div>
@@ -739,7 +873,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                     <div className="p-5">
                       {/* Date */}
                       <div className="flex items-baseline gap-1.5 mb-3">
-                        <span className="font-['Fjalla_One']" style={{ color: '#0D7377', fontSize: '28px', lineHeight: 1 }}>
+                        <span className="font-semibold font-display" style={{ color: '#0D7377', fontSize: '28px', lineHeight: 1 }}>
                           {event.day}
                         </span>
                         <span className="font-bold uppercase" style={{ color: '#0D7377', fontSize: '14px' }}>
@@ -767,8 +901,8 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
               /* Calendário view — simplified */
               <div className="bg-white rounded-[14px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
                 <div className="text-center mb-6">
-                  <h3 className="font-['Fjalla_One']" style={{ color: '#1A1A1A', fontSize: '22px' }}>
-                    Junho / Julho 2025
+                  <h3 className="font-semibold font-display tracking-tight" style={{ color: '#1A1A1A', fontSize: '22px' }}>
+                    {language === 'en' ? 'June / July 2025' : language === 'es' ? 'Junio / Julio 2025' : 'Junho / Julho 2025'}
                   </h3>
                 </div>
                 <div className="space-y-3">
@@ -782,7 +916,7 @@ export function CulturaScreen({}: CulturaScreenProps): JSX.Element {
                         className="shrink-0 w-14 h-14 rounded-[10px] flex flex-col items-center justify-center"
                         style={{ backgroundColor: '#F5EDE6' }}
                       >
-                        <span className="font-['Fjalla_One']" style={{ color: '#0D7377', fontSize: '20px', lineHeight: 1 }}>
+                        <span className="font-semibold font-display" style={{ color: '#0D7377', fontSize: '20px', lineHeight: 1 }}>
                           {event.day}
                         </span>
                         <span className="font-bold uppercase" style={{ color: '#0D7377', fontSize: '10px' }}>

@@ -58,8 +58,8 @@ function isParadaValida(p: unknown): p is ParadaGerada {
  * Gera uma chave de cache estável para o sessionStorage,
  * baseada nos dados do wizard e no idioma selecionado.
  */
-function gerarChaveCache(
-  dados: { who: string; days: number; startDate: string; interests: string[]; budget: string },
+export function gerarChaveCache(
+  dados: { who: string; days: number; startDate: string; interests: string[]; budget: string; stopsPerDay?: number },
   idioma: string,
 ): string {
   const payload = JSON.stringify({ ...dados, idioma });

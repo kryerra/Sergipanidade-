@@ -371,7 +371,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
           {!showLoginForm ? (
             <>
               {/* Tela de Opções */}
-              <h2 className="font-['Fjalla_One'] text-[36px] text-(--preto) mb-3 tracking-wide text-center">
+              <h2 className="font-semibold font-display text-[36px] text-(--preto) mb-3 tracking-tight text-center">
                 {t.welcomeBack}
               </h2>
               <p className="text-sm text-[#777] mb-10 text-center leading-relaxed">
@@ -417,27 +417,27 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
 
               {/* Termos e Política */}
               <p className="text-sm text-black text-center mt-8 leading-relaxed px-4">
-                Ao continuar, você aceita os{' '}
+                {t.byContinuingYouAccept}{' '}
                 <button
                   onClick={() => { setDocsTab('termos'); setIsDocsOpen(true); }}
                   className="text-[#0D7377] hover:underline bg-transparent border-none p-0 cursor-pointer font-sm inline"
                 >
-                  Termos de Uso
+                  {t.termsOfUse}
                 </button>
-                {' '}e a{' '}
+                {' '}{t.and}{' '}
                 <button
                   onClick={() => { setDocsTab('privacidade'); setIsDocsOpen(true); }}
                   className="text-[#0D7377] hover:underline bg-transparent border-none p-0 cursor-pointer font-sm inline"
                 >
-                  Política de Privacidade
+                  {t.privacyPolicy}
                 </button>
-                {' '}do Sergipanidade.
+                {' '}{t.ofSergipanidade}
               </p>
             </>
           ) : (
             <>
               {/* Tela de Login */}
-              <h2 className="font-['Fjalla_One'] text-[32px] text-(--preto) mb-2 tracking-wide">
+              <h2 className="font-semibold font-display text-[32px] text-(--preto) mb-2 tracking-tight">
                 {t.welcomeBack}
               </h2>
               <p className="text-sm text-[#777] mb-8">{t.accessAccount}</p>
@@ -446,11 +446,11 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
                 {/* Campo Email/Telefone */}
                 <div>
                   <label className="block text-xs font-semibold uppercase text-[#555] mb-2 tracking-wide">
-                    E-mail ou Telefone
+                    {t.emailOrPhone}
                   </label>
                   <input
                     type="text"
-                    placeholder="seu@email.com"
+                    placeholder={t.emailPlaceholder}
                     value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     className="w-full px-4 py-3.5 border border-[#D0D0D0] rounded-lg
@@ -499,7 +499,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
                   onClick={handleBackToLoginOptions}
                   className="block text-center w-full text-sm font-medium text-[#0D7377] hover:underline mt-4"
                 >
-                  Voltar
+                  {t.back}
                 </button>
               </div>
             </>
@@ -510,7 +510,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
       {showRecoverModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 sm:p-10 max-w-md w-full mx-4 shadow-2xl">
-            <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-3 tracking-wide">
+            <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-3 tracking-tight">
               {t.recoverPassword}
             </h3>
             <p className="text-sm text-[#777] mb-8 leading-relaxed">
@@ -523,7 +523,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
               </label>
               <input
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={t.emailPlaceholder}
                 value={recoverEmail}
                 onChange={(e) => setRecoverEmail(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleRecoverPassword()}
@@ -562,7 +562,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
       {showRegisterModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-auto backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 sm:p-10 max-w-2xl w-full mx-4 my-8 shadow-2xl">
-            <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-3 tracking-wide">
+            <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-3 tracking-tight">
               {t.createNewAccount}
             </h3>
             <p className="text-sm text-[#777] mb-8 leading-relaxed">
@@ -647,7 +647,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
               </label>
               <input
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={t.emailPlaceholder}
                 value={registerData.email}
                 onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                 className="w-full px-4 py-3.5 border border-[#D0D0D0] rounded-lg
@@ -755,7 +755,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
           <div className="bg-white rounded-2xl p-12 max-w-md w-full mx-4 text-center shadow-2xl">
             <div className="mb-8">
               <img src={googleLogo} alt="Google logo" className="mx-auto mb-5 w-14 h-14 object-contain" />
-              <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-2 tracking-wide">
+              <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-2 tracking-tight">
                 {t.connectingGoogle}
               </h3>
               <p className="text-sm text-[#777]">

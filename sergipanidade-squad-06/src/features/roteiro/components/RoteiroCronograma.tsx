@@ -16,7 +16,6 @@ import {
   FileText,
   Image,
 } from "lucide-react";
-import html2canvas from "html2canvas";
 import { useMemo, useState, useEffect, useRef } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { getDestinationById } from "@/constants/destinations";
@@ -180,9 +179,7 @@ export function RoteiroCronograma({
   const rotuloAcompanhante = opcoesAcompanhante.find((o) => o.value === wizardData.who)?.label || "";
 
   const subtituloCabecalho = wizardData.who
-    ? `Aracaju · ${wizardData.days} ${
-        language === "pt" ? "dias" : language === "es" ? "días" : "days"
-      } · ${rotuloAcompanhante}`
+    ? `Aracaju · ${wizardData.days} ${t.daysLabel} · ${rotuloAcompanhante}`
     : `${roteiro.length} ${
         roteiro.length === 1 ? t.stopPlanned : t.stopsPlanned
       }`;
@@ -241,13 +238,7 @@ export function RoteiroCronograma({
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(texto);
-        onToast(
-          language === "pt"
-            ? "Roteiro copiado para compartilhar."
-            : language === "es"
-            ? "Itinerario copiado para compartir."
-            : "Itinerary copied to share."
-        );
+        onToast(t.itineraryCopied);
         return;
       }
 
@@ -257,123 +248,11 @@ export function RoteiroCronograma({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      onToast(
-        language === "pt"
-          ? "Arquivo do roteiro pronto para compartilhar."
-          : language === "es"
-          ? "Archivo del itinerario listo para compartir."
-          : "Itinerary file ready to share."
-      );
+      onToast(t.itineraryFileReady);
     } catch (err) {
       if ((err as Error)?.name === "AbortError") return;
-      onToast(
-        language === "pt"
-          ? "Nao foi possivel compartilhar o roteiro."
-          : language === "es"
-          ? "No fue posible compartir el itinerario."
-          : "Could not share the itinerary."
-      );
+      onToast(t.itineraryShareError);
     }
-  };
-
-  const compartilharComoImagem = async () => {
-    if (paginasDias.length === 0) return;
-
-    onToast(
-      language === "pt"
-        ? "🖼️ Gerando imagem..."
-        : language === "es"
-        ? "🖼️ Generando imagen..."
-        : "🖼️ Generating image..."
-    );
-
-    try {
-      const canvases: HTMLCanvasElement[] = [];
-
-      for (let pagIndex = 0; pagIndex < paginasDias.length; pagIndex++) {
-        const elemento = document.getElementById(`roteiro-captura-${pagIndex}`);
-        if (!elemento) continue;
-        const canvas = await html2canvas(elemento, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-        });
-        canvases.push(canvas);
-      }
-
-      if (canvases.length === 0) {
-        onToast(
-          language === "pt"
-            ? "Nao foi possivel gerar a imagem."
-            : language === "es"
-            ? "No fue posible generar la imagen."
-            : "Could not generate the image."
-        );
-        return;
-      }
-
-      // Tenta compartilhar como arquivos via Web Share API
-      const arquivos = await Promise.all(
-        canvases.map((canvas, i) =>
-          new Promise<File>((resolve, reject) => {
-            canvas.toBlob((blob) => {
-              if (!blob) return reject(new Error("Blob vazio"));
-              const nome = canvases.length === 1
-                ? "roteiro-aracaju.png"
-                : `roteiro-aracaju-parte${i + 1}.png`;
-              resolve(new File([blob], nome, { type: "image/png" }));
-            }, "image/png");
-          })
-        )
-      );
-
-      const podeCompartilharArquivos =
-        navigator.canShare && navigator.canShare({ files: arquivos });
-
-      if (navigator.share && podeCompartilharArquivos) {
-        try {
-          await navigator.share({
-            title: "Meu Roteiro — Sergipanidade",
-            files: arquivos,
-          });
-        } catch (err) {
-          if ((err as Error)?.name === "AbortError") return;
-          baixarImagens(canvases);
-        }
-      } else {
-        baixarImagens(canvases);
-      }
-
-      onToast(
-        language === "pt"
-          ? `✅ ${canvases.length > 1 ? `${canvases.length} imagens prontas!` : "Imagem do roteiro pronta!"}`
-          : language === "es"
-          ? `✅ ${canvases.length > 1 ? `¡${canvases.length} imágenes listas!` : "¡Imagen del itinerario lista!"}`
-          : `✅ ${canvases.length > 1 ? `${canvases.length} images ready!` : "Itinerary image ready!"}`
-      );
-    } catch {
-      onToast(
-        language === "pt"
-          ? "❌ Não foi possível gerar a imagem"
-          : "❌ Could not generate image"
-      );
-    }
-  };
-
-  const baixarImagens = (canvases: HTMLCanvasElement[]) => {
-    canvases.forEach((canvas, i) => {
-      setTimeout(() => {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = canvases.length === 1
-          ? "roteiro-aracaju.png"
-          : `roteiro-aracaju-parte${i + 1}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }, i * 300);
-    });
   };
 
   // exportarParaCalendario obsoleta removida em prol de exportarCalendarioICS
@@ -381,13 +260,7 @@ export function RoteiroCronograma({
   /* ── Estado de confirmação de remoção por parada ── */
   const exportarCalendarioICS = () => {
     if (paradasTimeline.length === 0) {
-      onToast(
-        language === "pt"
-          ? "Nao ha paradas para salvar no calendario."
-          : language === "es"
-          ? "No hay paradas para guardar en el calendario."
-          : "There are no stops to save to the calendar."
-      );
+      onToast(t.noStopsCalendar);
       return;
     }
 
@@ -508,18 +381,11 @@ export function RoteiroCronograma({
     document.body.removeChild(link);
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-    onToast(
-      language === "pt"
-        ? "Calendario .ics gerado. Abra o arquivo para importar seu roteiro."
-        : language === "es"
-        ? "Calendario .ics generado. Abra el archivo para importar su itinerario."
-        : "Calendar .ics generated. Open the file to import your itinerary."
-    );
+    onToast(t.calendarGenerated);
   };
 
   const [confirmando, setConfirmando] = useState<string | null>(null);
   const timerConfirmRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [abrirOpcoesCompartilhar, setAbrirOpcoesCompartilhar] = useState(false);
 
   const iniciarConfirmacao = (id: string) => {
     if (timerConfirmRef.current) clearTimeout(timerConfirmRef.current);
@@ -578,17 +444,17 @@ export function RoteiroCronograma({
                       border: "1px solid rgba(20,184,166,0.3)",
                     }}
                   >
-                    {language === "pt" ? "✨ Gerado por IA" : language === "es" ? "✨ Generado por IA" : "✨ Generated by AI"}
+                    {t.generatedByAI}
                   </span>
                 )}
               </div>
-              <h1 className="font-['Fjalla_One'] text-white text-2xl sm:text-3xl leading-tight mb-1">
+              <h1 className="font-semibold font-display tracking-tight text-white text-2xl sm:text-3xl leading-tight mb-1">
                 {subtituloCabecalho}
               </h1>
               {wizardData.who && (
                 <p className="text-white/50 text-xs">
                   {paradasTimeline.length}{" "}
-                  {language === "pt" ? "paradas planejadas" : language === "es" ? "paradas planeadas" : "planned stops"}
+                  {paradasTimeline.length === 1 ? t.stopPlanned : t.stopsPlanned}
                 </p>
               )}
             </div>
@@ -596,7 +462,7 @@ export function RoteiroCronograma({
             {/* Ações do cabeçalho */}
             <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 w-full sm:w-auto">
               {[
-                { icon: <Share2 size={14} />, label: t.timelineShareBtn, onClick: () => setAbrirOpcoesCompartilhar(true) },
+                { icon: <Share2 size={14} />, label: t.timelineShareBtn, onClick: compartilharRoteiro },
                 { icon: <Calendar size={14} />, label: t.timelineCalendarBtn, onClick: exportarCalendarioICS },
               ].map(({ icon, label, onClick }) => (
                 <button
@@ -694,8 +560,7 @@ export function RoteiroCronograma({
                               {capitalizar(dataDia)}
                             </p>
                             <p className="text-xs text-[var(--cinza-txt)]">
-                              {paradas.length}{" "}
-                              {language === "pt" ? "paradas" : language === "es" ? "paradas" : "stops"}
+                              {paradas.length} {t.stopsLabel}
                             </p>
                           </div>
                         </div>
@@ -882,7 +747,7 @@ export function RoteiroCronograma({
                                         style={{ animation: "confirmFadeIn 0.2s ease-out both" }}
                                       >
                                         <span className="text-[11px] font-semibold" style={{ color: "var(--vermelho, #EF4444)" }}>
-                                          {language === "pt" ? "Remover?" : language === "es" ? "¿Quitar?" : "Remove?"}
+                                          {t.removeQuestion}
                                         </span>
                                         <button
                                           onClick={() => confirmarRemocao(dest.id)}
@@ -893,7 +758,7 @@ export function RoteiroCronograma({
                                           }}
                                         >
                                           <Check size={11} />
-                                          {language === "pt" ? "Sim" : language === "es" ? "Sí" : "Yes"}
+                                          {t.yes}
                                         </button>
                                         <button
                                           onClick={cancelarConfirmacao}
@@ -905,7 +770,7 @@ export function RoteiroCronograma({
                                           }}
                                         >
                                           <X size={11} />
-                                          {language === "pt" ? "Não" : language === "es" ? "No" : "No"}
+                                          {t.no}
                                         </button>
                                       </div>
                                     ) : (
@@ -997,7 +862,7 @@ export function RoteiroCronograma({
               }}
             >
               <button
-                onClick={() => setAbrirOpcoesCompartilhar(true)}
+                onClick={compartilharRoteiro}
                 className="w-full min-h-[46px] flex items-center justify-center gap-2 rounded-[var(--radius-sm)] px-3 py-2.5 text-xs sm:text-sm font-bold transition-all hover:scale-[1.01]"
                 style={{
                   background: "linear-gradient(135deg, #0D7377, #14544A)",
@@ -1006,7 +871,7 @@ export function RoteiroCronograma({
                 }}
               >
                 <Share2 size={15} />
-                {language === "en" ? "Share itinerary" : language === "es" ? "Compartir itinerario" : "Compartilhar roteiro"}
+                {t.shareItinerary}
               </button>
             </div>
 
@@ -1051,7 +916,7 @@ export function RoteiroCronograma({
                   }}
                 >
                   <MapPin size={15} style={{ color: "var(--primary)" }} />
-                  <h3 className="font-['Fjalla_One'] text-base text-[var(--preto)]">
+                  <h3 className="font-semibold font-display tracking-tight text-base text-[var(--preto)]">
                     {t.timelineMapTitle}
                   </h3>
                   <span
@@ -1061,8 +926,7 @@ export function RoteiroCronograma({
                       color: "var(--primary)",
                     }}
                   >
-                    {paradasTimeline.length}{" "}
-                    {language === "pt" ? "paradas" : language === "es" ? "paradas" : "stops"}
+                    {paradasTimeline.length} {t.stopsLabel}
                   </span>
                 </div>
                 <div className="p-3 h-[300px] sm:h-[420px]">
@@ -1080,7 +944,7 @@ export function RoteiroCronograma({
                 }}
               >
                 <h4 className="font-bold text-sm text-[var(--preto)] mb-3">
-                  {language === "pt" ? "Legenda do Roteiro" : language === "es" ? "Leyenda del Itinerario" : "Route Legend"}
+                  {t.routeLegend}
                 </h4>
                 <div className="space-y-1.5">
                   {paradasTimeline.map((p, i) => (
@@ -1123,269 +987,6 @@ export function RoteiroCronograma({
           </div>
         </div>
       </div>
-
-      {/* ── Cards de captura para html2canvas — um por grupo de dias (isolado em wrapper de tamanho zero para evitar overflow no mobile) ── */}
-      <div style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", pointerEvents: "none", zIndex: -100, left: 0, top: 0 }}>
-        {paginasDias.map((grupoDias, pagIndex) => (
-          <div
-            key={`captura-pag-${pagIndex}`}
-            id={`roteiro-captura-${pagIndex}`}
-            style={{
-              position: "absolute",
-              left: "-9999px",
-              top: 0,
-              width: "400px",
-              background: "#ffffff",
-              fontFamily: "'Inter', sans-serif",
-              padding: "0",
-              overflow: "hidden",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-            }}
-          >
-            {/* Linha decorativa teal no topo */}
-            <div style={{ height: "6px", background: "#0D7377" }}></div>
-
-            {/* Cabeçalho do card de captura */}
-            <div
-              style={{
-                background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
-                padding: "24px 24px 20px",
-              }}
-            >
-              <p style={{ margin: 0 }}>
-                <span style={{
-                  fontFamily: "'Fjalla One', 'Inter', sans-serif",
-                  fontWeight: 900,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "#E9D8B4",
-                  fontSize: "22px",
-                  lineHeight: 1.1,
-                  display: "block"
-                }}>
-                  Sergipanidade
-                </span>
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px", margin: "6px 0 0", fontWeight: 500 }}>
-                Meu Roteiro em Aracaju
-                {paginasDias.length > 1 && (
-                  <span style={{
-                    marginLeft: "8px",
-                    background: "rgba(255,255,255,0.18)",
-                    borderRadius: "20px",
-                    padding: "1px 8px",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    letterSpacing: "0.04em",
-                  }}>
-                    Parte {pagIndex + 1}/{paginasDias.length}
-                  </span>
-                )}
-              </p>
-            </div>
-
-            {/* Lista de paradas agrupadas pelos dias desta página */}
-            <div style={{ padding: "20px 24px", background: "#fff" }}>
-              {grupoDias.map((dia) => {
-                const paradasDoDia = todasParadasDoDia(dia);
-                return (
-                  <div key={`captura-dia-${pagIndex}-${dia}`} style={{ marginBottom: "16px" }}>
-                    {/* Cabeçalho do dia */}
-                    <div
-                      style={{
-                        display: "inline-block",
-                        background: "#0D7377",
-                        color: "#fff",
-                        fontWeight: 800,
-                        fontSize: "12px",
-                        letterSpacing: "0.08em",
-                        padding: "6px 12px",
-                        borderRadius: "6px",
-                        marginBottom: "12px",
-                        textTransform: "uppercase",
-                        boxShadow: "0 2px 4px rgba(13,115,119,0.2)",
-                      }}
-                    >
-                      Dia {dia} — {capitalizar(formatarDataDia(dataInicio, dia - 1, language))}
-                    </div>
-                    {paradasDoDia.map((p, i) => (
-                      <div
-                        key={`captura-parada-${pagIndex}-${p.destinationId}-${i}`}
-                        style={{
-                          display: "flex",
-                          gap: "12px",
-                          alignItems: "flex-start",
-                          padding: "10px 12px",
-                          borderRadius: "8px",
-                          background: i % 2 === 0 ? "#f9fafb" : "#fff",
-                          border: "1px solid rgba(13,115,119,0.10)",
-                          marginBottom: "6px",
-                        }}
-                      >
-                        {/* Número — inline-block com line-height para centralização confiável no html2canvas */}
-                        <div
-                          style={{
-                            width: "26px",
-                            height: "26px",
-                            borderRadius: "50%",
-                            background: "linear-gradient(135deg, #0D7377, #14544A)",
-                            color: "#fff",
-                            display: "inline-block",
-                            textAlign: "center",
-                            lineHeight: "26px",
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {i + 1}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          {/* Nome do destino sem emojis */}
-                          <p style={{ margin: 0, fontWeight: 800, fontSize: "13px", color: "#111", lineHeight: 1.3 }}>
-                            {removerEmojis(p.destination.name)}
-                          </p>
-                          {/* Período com ícone SVG */}
-                          <p style={{ margin: "4px 0 0", fontSize: "11px", color: "#0D7377", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-                            {getPeriodIcon(p.periodo)}
-                            <span>{p.periodo} · {PERIODO_TIME[p.periodo] || "09:00"}</span>
-                          </p>
-                          {p.dica && (
-                            <p
-                              style={{
-                                margin: "4px 0 0",
-                                fontSize: "11px",
-                                color: "#555",
-                                lineHeight: 1.4,
-                                borderLeft: "2px solid #0D7377",
-                                paddingLeft: "6px",
-                              }}
-                            >
-                               {truncarTexto(p.dica)}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Rodapé */}
-            <div
-              style={{
-                padding: "12px 24px",
-                background: "linear-gradient(135deg, #0D2B2E, #0D7377)",
-                textAlign: "center",
-              }}
-            >
-              <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: "11px", fontWeight: 600, letterSpacing: "0.04em" }}>
-                sergipanidade.com.br
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ══════════════════ MODAL DE COMPARTILHAMENTO ══════════════════ */}
-      {abrirOpcoesCompartilhar && (
-        <div
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in"
-          onClick={() => setAbrirOpcoesCompartilhar(false)}
-        >
-          <div
-            className="bg-white rounded-[16px] p-6 w-full max-w-[380px] shadow-2xl relative animate-scale-up animate-duration-200"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: "#fff",
-              border: "1px solid var(--cinza-med)",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-            }}
-          >
-            {/* Botão fechar */}
-            <button
-              onClick={() => setAbrirOpcoesCompartilhar(false)}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--cinza-leve)] transition-colors text-[var(--cinza-txt)] cursor-pointer"
-            >
-              <X size={16} />
-            </button>
-
-            {/* Cabeçalho */}
-            <div className="flex items-center gap-2.5 mb-5 mt-1">
-              <div className="w-10 h-10 rounded-full bg-[rgba(13,115,119,0.1)] flex items-center justify-center">
-                <Share2 size={18} className="text-[var(--primary)]" />
-              </div>
-              <div>
-                <h3 className="font-['Fjalla_One'] text-lg text-[var(--preto)] leading-snug">
-                  {language === "pt" ? "Compartilhar Roteiro" : language === "es" ? "Compartir Itinerario" : "Share Itinerary"}
-                </h3>
-                <p className="text-xs text-[var(--cinza-txt)] mt-0.5">
-                  {language === "pt"
-                    ? "Selecione o formato de compartilhamento"
-                    : language === "es"
-                    ? "Seleccione el formato de compartir"
-                    : "Select the share format"}
-                </p>
-              </div>
-            </div>
-
-            {/* Opções */}
-            <div className="space-y-3">
-              {/* Opção 1: Texto */}
-              <button
-                onClick={() => {
-                  setAbrirOpcoesCompartilhar(false);
-                  compartilharRoteiro();
-                }}
-                className="w-full text-left p-4 rounded-xl border border-[var(--cinza-med)] hover:border-[var(--primary)] hover:bg-[rgba(13,115,119,0.02)] transition-all flex items-start gap-3.5 group min-h-[44px] cursor-pointer"
-              >
-                <div className="w-9 h-9 rounded-lg bg-[var(--cinza-leve)] flex items-center justify-center text-[var(--cinza-txt)] group-hover:bg-[rgba(13,115,119,0.1)] group-hover:text-[var(--primary)] transition-colors shrink-0">
-                  <FileText size={18} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-bold text-sm text-[var(--preto)] group-hover:text-[var(--primary)] transition-colors">
-                    {language === "pt" ? "Compartilhar como Texto" : language === "es" ? "Compartir como Texto" : "Share as Text"}
-                  </h4>
-                  <p className="text-xs text-[var(--cinza-txt)] mt-1 leading-relaxed">
-                    {language === "pt"
-                      ? "Lista organizada com nomes, dias e horários ideal para WhatsApp."
-                      : language === "es"
-                      ? "Lista organizada con nombres, días y horarios ideal para WhatsApp."
-                      : "Organized list with names, days, and times ideal for WhatsApp."}
-                  </p>
-                </div>
-              </button>
-
-              {/* Opção 2: Imagem */}
-              <button
-                onClick={() => {
-                  setAbrirOpcoesCompartilhar(false);
-                  compartilharComoImagem();
-                }}
-                className="w-full text-left p-4 rounded-xl border border-[var(--cinza-med)] hover:border-[var(--primary)] hover:bg-[rgba(13,115,119,0.02)] transition-all flex items-start gap-3.5 group min-h-[44px] cursor-pointer"
-              >
-                <div className="w-9 h-9 rounded-lg bg-[var(--cinza-leve)] flex items-center justify-center text-[var(--cinza-txt)] group-hover:bg-[rgba(13,115,119,0.1)] group-hover:text-[var(--primary)] transition-colors shrink-0">
-                  <Image size={18} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-bold text-sm text-[var(--preto)] group-hover:text-[var(--primary)] transition-colors">
-                    {language === "pt" ? "Compartilhar como Imagem" : language === "es" ? "Compartir como Imagen" : "Share as Image"}
-                  </h4>
-                  <p className="text-xs text-[var(--cinza-txt)] mt-1 leading-relaxed">
-                    {language === "pt"
-                      ? "Imagem premium estilizada para redes sociais ou galeria."
-                      : language === "es"
-                      ? "Imagen premium estilizada para redes sociales o galería."
-                      : "Premium styled image for social networks or gallery."}
-                  </p>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </FundoVisual>
   );
 }

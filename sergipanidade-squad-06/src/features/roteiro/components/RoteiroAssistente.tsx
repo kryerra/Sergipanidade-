@@ -1,4 +1,4 @@
-import { Bot } from "lucide-react";
+import serginhoImg from "@/assets/images/serginho.png";
 import { WizardData } from "@/types";
 import { FundoVisual } from "./FundoVisual";
 import { AssistenteProgresso } from "./AssistenteProgresso";
@@ -59,15 +59,15 @@ export function RoteiroAssistente({
         >
           {/* Cabeçalho */}
           <div className="flex items-center gap-3.5 mb-8">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[var(--primary)] to-teal-400 flex items-center justify-center shrink-0 shadow-lg shadow-[var(--primary)]/20">
-              <Bot size={22} className="text-white animate-pulse" />
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[var(--primary)] to-teal-400 flex items-center justify-center shrink-0 shadow-lg shadow-[var(--primary)]/20 overflow-hidden">
+              <img src={serginhoImg} alt="Serginho" className="w-[34px] h-[34px] object-contain animate-pulse" />
             </div>
             <div>
-              <h1 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] leading-tight tracking-wide">
+              <h1 className="font-semibold font-display text-2xl text-[var(--preto)] leading-tight tracking-tight">
                 {t.aiItineraryTitle}
               </h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className="inline-flex items-center bg-[var(--teal-leve)] text-[var(--primary)] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="inline-flex items-center bg-[var(--teal-leve)] text-[var(--primary)] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                   {t.wizardStep} {wizardStep + 1} / {TOTAL_STEPS}
                 </span>
               </div>

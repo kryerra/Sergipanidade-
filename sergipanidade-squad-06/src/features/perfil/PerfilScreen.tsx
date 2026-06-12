@@ -356,13 +356,13 @@ export function PerfilScreen({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap mb-1.5">
               <h1
-                className="font-['Fjalla_One'] text-white tracking-wide"
+                className="font-semibold font-display text-white tracking-tight"
                 style={{ fontSize: '28px', lineHeight: 1.1 }}
               >
                 {userProfile.name}
               </h1>
               <span
-                className="px-2.5 py-0.5 rounded-full text-white font-['Fjalla_One'] tracking-wider"
+                className="px-2.5 py-0.5 rounded-full text-white font-bold tracking-wider"
                 style={{ fontSize: '11px', backgroundColor: profileBadgeBg }}
               >
                 {profileBadge}
@@ -385,7 +385,7 @@ export function PerfilScreen({
             ].map((stat: { value: string; label: string }): JSX.Element => (
               <div key={stat.label} className="text-center">
                 <div
-                  className="font-['Fjalla_One'] text-white"
+                  className="font-semibold font-display text-white"
                   style={{ fontSize: '22px' }}
                 >
                   {stat.value}
@@ -435,7 +435,7 @@ export function PerfilScreen({
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
               <h2
-                className="font-['Fjalla_One'] text-(--preto) mb-5"
+                className="font-semibold font-display text-(--preto) mb-5"
                 style={{ fontSize: '20px' }}
               >
                 {t.profileData}
@@ -509,7 +509,7 @@ export function PerfilScreen({
               <button
                 onClick={handleSaveData}
                  className="min-h-12 px-8 rounded-sm bg-primary text-white
-                            border-none cursor-pointer font-['Fjalla_One'] tracking-wider
+                            border-none cursor-pointer font-bold tracking-wider
                             hover:bg-[#D04820] transition-colors"
                 style={{ fontSize: '14px' }}
               >
@@ -652,7 +652,7 @@ export function PerfilScreen({
         {activeTab === 'notificacoes' && (
           <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
             <h2
-              className="font-['Fjalla_One'] text-(--preto) mb-5"
+              className="font-semibold font-display text-(--preto) mb-5"
               style={{ fontSize: '20px' }}
             >
               {t.notifications}

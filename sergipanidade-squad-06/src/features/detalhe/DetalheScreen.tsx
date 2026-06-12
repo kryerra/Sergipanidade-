@@ -20,7 +20,7 @@ import {
 import { getDestinationById } from "@/constants/destinations";
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
-import { translations } from "@/constants/translations";
+import { translations, TranslationKeys } from "@/constants/translations";
 import type { UserProfile } from "@/types";
 
 /* ─────────── Gallery images orla de atalaia ─────────── */
@@ -528,6 +528,60 @@ const SPECIFIC_DESC: Record<string, Record<Lang, string[]>> = {
   }
 };
 
+// Helper to translate opening hours text
+const getHoursTraduzido = (hours: string, language: string): string => {
+  if (!hours) return '';
+  const cleanLang = language === 'sp' ? 'pt' : language;
+  if (cleanLang === 'pt') return hours;
+
+  let translated = hours;
+  if (cleanLang === 'en') {
+    translated = translated
+      .replace(/Aberto 24 horas/gi, "Open 24 hours")
+      .replace(/Terça a domingo/gi, "Tuesday to Sunday")
+      .replace(/Terça a sexta/gi, "Tuesday to Friday")
+      .replace(/Sábado e domingo/gi, "Saturday and Sunday")
+      .replace(/Diariamente/gi, "Daily")
+      .replace(/Segunda a sábado/gi, "Monday to Saturday")
+      .replace(/Terça a sábado/gi, "Tuesday to Saturday")
+      .replace(/monumentos têm horários próprios/gi, "monuments have their own hours")
+      .replace(/ às /gi, " to ")
+      .replace(/ e /gi, " and ");
+  } else if (cleanLang === 'es') {
+    translated = translated
+      .replace(/Aberto 24 horas/gi, "Abierto 24 horas")
+      .replace(/Terça a domingo/gi, "Martes a domingo")
+      .replace(/Terça a sexta/gi, "Martes a viernes")
+      .replace(/Sábado e domingo/gi, "Sábado y domingo")
+      .replace(/Diariamente/gi, "Diariamente")
+      .replace(/Segunda a sábado/gi, "Lunes a sábado")
+      .replace(/Terça a sábado/gi, "Martes a sábado")
+      .replace(/monumentos têm horários próprios/gi, "los monumentos tienen sus propios horarios")
+      .replace(/ às /gi, " a ")
+      .replace(/ e /gi, " y ");
+  }
+
+  return translated;
+};
+
+// Helper to translate region names
+const getRegionTraduzida = (region: string, language: string): string => {
+  if (!region) return '';
+  const cleanLang = language === 'sp' ? 'pt' : language;
+  if (cleanLang === 'pt') return region;
+  if (region === 'Aracaju') return 'Aracaju';
+  if (region === 'Interior') {
+    return cleanLang === 'en' ? 'Countryside' : 'Interior';
+  }
+  if (region === 'Litoral Norte') {
+    return cleanLang === 'en' ? 'North Coast' : 'Costa Norte';
+  }
+  if (region === 'Litoral Sul') {
+    return cleanLang === 'en' ? 'South Coast' : 'Costa Sur';
+  }
+  return region;
+};
+
 /* ─────────── Schedule helpers ─────────── */
 function parseSchedule(
   hours: string,
@@ -683,7 +737,10 @@ export function DetalheScreen({
   /* ── Derived data ── */
   const lang = language as Lang;
   const openNow = isOpenNow(destination.hours);
-  const schedule = parseSchedule(destination.hours, lang, t.closed);
+  const schedule = parseSchedule(destination.hours, lang, t.closed).map(row => ({
+    ...row,
+    time: getHoursTraduzido(row.time, language)
+  }));
   const galleryPhotos = destination.gallery && destination.gallery.length > 0
     ? destination.gallery.filter((url) => url !== destination.image)
     : GALLERY_URLS.filter((url) => url !== destination.image);
@@ -707,7 +764,16 @@ export function DetalheScreen({
     date: r.date,
     partnerResponse: null,
   }));
-  const seedReviews = SPECIFIC_REVIEWS[destination.id] || SEED_REVIEWS;
+  const rawSeedReviews = SPECIFIC_REVIEWS[destination.id] || SEED_REVIEWS;
+  const seedReviews = rawSeedReviews.map((r) => {
+    const data = (t as any).reviewsData?.[r.id];
+    if (!data) return r;
+    return {
+      ...r,
+      comment: data.comment || r.comment,
+      partnerResponse: data.partnerResponse || r.partnerResponse
+    };
+  });
   const allReviews = [...seedReviews, ...userReviewsMapped];
 
   /* rating distribution */
@@ -783,7 +849,7 @@ export function DetalheScreen({
               {t.breadcrumbDestinations}
             </button>
             <ChevronRight size={11} className="text-white/40 shrink-0" />
-            <span className="text-white/60">{destination.region}</span>
+            <span className="text-white/60">{getRegionTraduzida(destination.region, language)}</span>
             <ChevronRight size={11} className="text-white/40 shrink-0" />
             <span className="text-white font-medium truncate max-w-[140px] sm:max-w-none">
               {destination.name}
@@ -821,7 +887,7 @@ export function DetalheScreen({
 
             {/* Title */}
             <h1
-              className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-3"
+              className="font-semibold font-display tracking-tight text-[var(--preto)] leading-tight mb-3"
               style={{ fontSize: "40px" }}
             >
               {destination.name}
@@ -852,10 +918,10 @@ export function DetalheScreen({
                 {openNow ? (
                   <>
                     <span className="text-[var(--verde)] font-medium">{t.openNow}</span>
-                    <span className="text-[var(--cinza-txt)]">· {destination.hours}</span>
+                    <span className="text-[var(--cinza-txt)]">· {getHoursTraduzido(destination.hours, language)}</span>
                   </>
                 ) : (
-                  <span className="text-[var(--vermelho)] font-medium">{destination.hours}</span>
+                  <span className="text-[var(--vermelho)] font-medium">{getHoursTraduzido(destination.hours, language)}</span>
                 )}
               </div>
             </div>
@@ -893,21 +959,24 @@ export function DetalheScreen({
                       });
                     } else {
                       await navigator.clipboard.writeText(locationText);
-                      onToast(`📍 Localização copiada: ${destination.name}`);
+                      const copMsg = language === 'en' ? '📍 Location copied: ' : language === 'es' ? '📍 Ubicación copiada: ' : '📍 Localização copiada: ';
+                      onToast(`${copMsg}${destination.name}`);
                     }
                   } catch {
                     try {
                       await navigator.clipboard.writeText(locationText);
-                      onToast(`📍 Localização copiada: ${destination.name}`);
+                      const copMsg = language === 'en' ? '📍 Location copied: ' : language === 'es' ? '📍 Ubicación copiada: ' : '📍 Localização copiada: ';
+                      onToast(`${copMsg}${destination.name}`);
                     } catch {
-                      onToast('⚠️ Não foi possível copiar a localização.');
+                      const errMsg = language === 'en' ? '⚠️ Could not copy location.' : language === 'es' ? '⚠️ No se pudo copiar la ubicación.' : '⚠️ Não foi possível copiar a localização.';
+                      onToast(errMsg);
                     }
                   }
                 }}
                 className="flex items-center gap-2 px-5 py-3 bg-white border border-[var(--cinza-med)] text-[var(--preto)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors min-h-[44px]"
               >
                 <Share2 size={16} />
-                Compartilhar
+                {t.compartilhar}
               </button>
             </div>
 
@@ -922,7 +991,7 @@ export function DetalheScreen({
             <div className="mb-10">
               <div className="flex items-center gap-2 mb-4">
                 <Camera size={18} className="text-[var(--primary)]" />
-                <h3 className="font-['Fjalla_One'] text-xl text-[var(--preto)]">{t.photoGallery}</h3>
+                <h3 className="font-semibold font-display tracking-tight text-xl text-[var(--preto)]">{t.photoGallery}</h3>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {galleryPhotos.slice(0, 6).map((url, i) => (
@@ -945,7 +1014,7 @@ export function DetalheScreen({
 
             {/* Leave a Review */}
             <div className="border-t border-[var(--cinza-med)] pt-8">
-              <h3 className="font-['Fjalla_One'] text-xl text-[var(--preto)] mb-4">{t.leaveReview}</h3>
+              <h3 className="font-semibold font-display tracking-tight text-xl text-[var(--preto)] mb-4">{t.leaveReview}</h3>
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -993,7 +1062,7 @@ export function DetalheScreen({
 
               {/* Contact Info Card */}
               <div className="bg-white border border-[var(--cinza-med)] rounded-[12px] p-5 shadow-[var(--sombra-sm)]">
-                <h4 className="font-['Fjalla_One'] text-base text-[var(--preto)] mb-4">
+                <h4 className="font-semibold font-display tracking-tight text-base text-[var(--preto)] mb-4">
                   {t.contactInfo}
                 </h4>
                 <div className="space-y-3">
@@ -1042,7 +1111,7 @@ export function DetalheScreen({
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                   <div className="flex items-center gap-2">
                     <Clock size={16} className="text-[var(--primary)]" />
-                    <h4 className="font-['Fjalla_One'] text-base text-[var(--preto)]">
+                    <h4 className="font-semibold font-display tracking-tight text-base text-[var(--preto)]">
                       {t.openingHours}
                     </h4>
                   </div>
@@ -1091,7 +1160,7 @@ export function DetalheScreen({
               <div className="bg-white border border-[var(--cinza-med)] rounded-[12px] overflow-hidden shadow-[var(--sombra-sm)]">
                 <div className="flex items-center gap-2 px-5 py-4 border-b border-[var(--cinza-med)]">
                   <MapPin size={16} className="text-[var(--primary)]" />
-                  <h4 className="font-['Fjalla_One'] text-base text-[var(--preto)]">
+                  <h4 className="font-semibold font-display tracking-tight text-base text-[var(--preto)]">
                     {t.mapLocation}
                   </h4>
                 </div>
@@ -1124,7 +1193,7 @@ export function DetalheScreen({
       <section className="bg-[var(--cinza-leve)] py-14 mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
 
-          <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-8">
+          <h2 className="font-semibold font-display tracking-tight text-2xl text-[var(--preto)] mb-8">
             {t.reviewsSummary}
           </h2>
 
@@ -1133,7 +1202,7 @@ export function DetalheScreen({
             {/* Big rating */}
             <div className="flex flex-col items-center justify-center bg-white rounded-[var(--radius)] p-8 shadow-[var(--sombra-sm)] min-w-[170px]">
               <div
-                className="font-['Fjalla_One'] text-[var(--preto)] leading-none"
+                className="font-semibold font-display tracking-tight text-[var(--preto)] leading-none"
                 style={{ fontSize: "62px" }}
               >
                 {avgRating}
@@ -1190,7 +1259,7 @@ export function DetalheScreen({
           </div>
 
           {/* Individual reviews */}
-          <h3 className="font-['Fjalla_One'] text-xl text-[var(--preto)] mb-5">
+          <h3 className="font-semibold font-display tracking-tight text-xl text-[var(--preto)] mb-5">
             {t.userReviews}
           </h3>
           <div className="space-y-4">

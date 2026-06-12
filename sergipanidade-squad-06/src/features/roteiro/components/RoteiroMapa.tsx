@@ -257,7 +257,7 @@ function InnerRoteiroMapa({ stops }: RoteiroMapaProps) {
                 "line-cap": "round",
               }}
               paint={{
-                "line-color": "#f06030", // Laranja da identidade visual
+                "line-color": "#0D7377", // Verde do projeto
                 "line-width": 4,
                 "line-dasharray": [2, 2], // Linha tracejada para um look moderno
               }}

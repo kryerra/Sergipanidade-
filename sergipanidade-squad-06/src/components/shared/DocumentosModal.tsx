@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { X, Download, ShieldCheck, FileText } from 'lucide-react';
+import { useAppContext } from "@/context/AppContext";
+import { translations } from "@/constants/translations";
 import {
   Document,
   Page,
@@ -66,154 +68,126 @@ const pdfStyles = PDFStyleSheet.create({
   }
 });
 
-// PDF Document for Terms of Use
-const TermosPDF = () => (
+// PDF Document for Terms of Use — receives translated content
+const TermosPDF = ({ c }: { c: any }) => (
   <Document>
     <Page size="A4" style={pdfStyles.page}>
       <View style={pdfStyles.header}>
-        <Text style={pdfStyles.title}>TERMOS DE USO - SERGIPANIDADE</Text>
-        <Text style={pdfStyles.subtitle}>Última atualização: Junho de 2026 | Em Conformidade com a ANPD e LGPD</Text>
+        <Text style={pdfStyles.title}>{c.docTitle}</Text>
+        <Text style={pdfStyles.subtitle}>{c.docSubtitle}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>1. ACEITAÇÃO DOS TERMOS E PROPÓSITO</Text>
-        <Text style={pdfStyles.paragraph}>
-          Ao acessar e utilizar a plataforma Sergipanidade (aplicativo/site), o usuário declara estar ciente e concordar integralmente com as condições dispostas nestes Termos de Uso. Esta plataforma destina-se a promover a cultura, culinária e turismo no estado de Sergipe, agindo com transparência e respeito à privacidade dos usuários.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s1title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s1body}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>2. DESCRIÇÃO DO SERVIÇO E RECURSOS DE INTELIGÊNCIA ARTIFICIAL</Text>
-        <Text style={pdfStyles.paragraph}>
-          O Sergipanidade oferece um guia turístico digital inteligente e colaborativo focado no estado de Sergipe. Nossos serviços incluem:
-        </Text>
-        <Text style={pdfStyles.listItem}>• Recomendação de roteiros personalizados gerados por inteligência artificial (com base nas preferências do usuário);</Text>
-        <Text style={pdfStyles.listItem}>• Guia detalhado de pontos turísticos, eventos, praias, cultura e gastronomia;</Text>
-        <Text style={pdfStyles.listItem}>• Portal de parceiros para estabelecimentos gerenciarem seu perfil e interagirem com usuários;</Text>
-        <Text style={pdfStyles.listItem}>• Canal direto para solicitações relativas à proteção de dados e transparência.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s2title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s2intro}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li2}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li3}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li4}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>3. CADASTRO DE CONTAS E SEGURANÇA</Text>
-        <Text style={pdfStyles.paragraph}>
-          Para utilizar determinadas funcionalidades, como salvar roteiros e avaliações, é necessário criar uma conta. O usuário se compromete a fornecer informações verdadeiras e atualizadas. A segurança de sua senha é de sua exclusiva responsabilidade.
-        </Text>
-        <Text style={pdfStyles.paragraph}>
-          Classificações de contas disponíveis:
-        </Text>
-        <Text style={pdfStyles.listItem}>• Turista: Perfil para viajantes explorarem, salvarem favoritos e avaliarem locais.</Text>
-        <Text style={pdfStyles.listItem}>• Estabelecimento/Parceiro: Perfil para empresas gerenciarem fotos, informações e responderem avaliações.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s3title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s3body}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s3accountTypes}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s3li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s3li2}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>4. CONDUTA DO USUÁRIO E AVALIAÇÕES</Text>
-        <Text style={pdfStyles.paragraph}>
-          Ao publicar avaliações ou qualquer conteúdo na plataforma, você garante que as informações são baseadas em experiências reais e não contêm linguagem ofensiva, abusiva, caluniosa ou difamatória. Reservamo-nos o direito de remover qualquer conteúdo que viole estas diretrizes.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s4title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s4body}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>5. PROPRIEDADE INTELECTUAL</Text>
-        <Text style={pdfStyles.paragraph}>
-          Todo o design, código fonte, logotipos, textos, ilustrações e layouts da plataforma Sergipanidade são propriedade intelectual exclusiva da plataforma ou de seus licenciadores, protegidos pelas leis de direitos autorais nacionais e internacionais.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s5title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s5body}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>6. LIMITAÇÃO DE RESPONSABILIDADE</Text>
-        <Text style={pdfStyles.paragraph}>
-          A plataforma Sergipanidade não se responsabiliza por serviços prestados por terceiros parceiros (como hotéis e restaurantes) listados na plataforma, nem por imprecisões nos horários ou disponibilidade de destinos. O usuário assume o risco total do uso das informações coletadas.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s6title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s6body}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>7. FORO E LEGISLAÇÃO APLICÁVEL</Text>
-        <Text style={pdfStyles.paragraph}>
-          Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o Foro da Comarca de Aracaju, Estado de Sergipe, para dirimir quaisquer dúvidas ou litígios decorrentes do uso da plataforma.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s7title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s7body}</Text>
       </View>
 
-      <Text style={pdfStyles.footer} render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages} — Sergipanidade`} />
+      <Text style={pdfStyles.footer} render={({ pageNumber, totalPages }) =>
+        c.pdfFooter.replace('{page}', String(pageNumber)).replace('{total}', String(totalPages))
+      } />
     </Page>
   </Document>
 );
 
-// PDF Document for Privacy Policy
-const PrivacidadePDF = () => (
+// PDF Document for Privacy Policy — receives translated content
+const PrivacidadePDF = ({ c }: { c: any }) => (
   <Document>
     <Page size="A4" style={pdfStyles.page}>
       <View style={pdfStyles.header}>
-        <Text style={pdfStyles.title}>POLÍTICA DE PRIVACIDADE - SERGIPANIDADE</Text>
-        <Text style={pdfStyles.subtitle}>Última atualização: Junho de 2026 | Em Conformidade com a LGPD e Diretrizes da ANPD</Text>
+        <Text style={pdfStyles.title}>{c.docTitle}</Text>
+        <Text style={pdfStyles.subtitle}>{c.docSubtitle}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>1. INTRODUÇÃO E COMPROMISSO LGPD</Text>
-        <Text style={pdfStyles.paragraph}>
-          A plataforma Sergipanidade tem o compromisso de proteger a privacidade e a segurança dos dados pessoais de seus usuários. Esta Política descreve como coletamos, usamos, armazenamos e protegemos seus dados, em estrita conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018) e as orientações da Autoridade Nacional de Proteção de Dados (ANPD).
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s1title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s1body}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>2. BASES LEGAIS PARA TRATAMENTO DE DADOS (Art. 7º, LGPD)</Text>
-        <Text style={pdfStyles.paragraph}>
-          Tratamos seus dados sob as seguintes justificativas legais:
-        </Text>
-        <Text style={pdfStyles.listItem}>• Consentimento (Art. 7º, I): Para ativação de geolocalização e envio de comunicações de marketing.</Text>
-        <Text style={pdfStyles.listItem}>• Execução de Contrato (Art. 7º, V): Para gerenciar o cadastro do usuário, viabilizar o roteiro personalizado e fornecer os serviços principais.</Text>
-        <Text style={pdfStyles.listItem}>• Legítimo Interesse (Art. 7º, IX): Para melhoria de usabilidade e prevenção de fraudes.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s2title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s2intro}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li2}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s2li3}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>3. DADOS COLETADOS E FINALIDADES</Text>
-        <Text style={pdfStyles.paragraph}>
-          Coletamos informações necessárias para a prestação e melhoria dos nossos serviços turísticos:
-        </Text>
-        <Text style={pdfStyles.listItem}>• Dados de Cadastro: Nome completo, endereço de e-mail, telefone de contato e credenciais de login para autenticação segura.</Text>
-        <Text style={pdfStyles.listItem}>• Dados de Geolocalização: Se expressamente autorizado por você, coletamos dados de localização geográfica para sugerir pontos turísticos e serviços próximos a você através da funcionalidade GPS.</Text>
-        <Text style={pdfStyles.listItem}>• Dados de Uso: Preferências de viagem, destinos favoritados, avaliações enviadas e roteiros planejados.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s3title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s3intro}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s3li1label} {c.s3li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s3li2label} {c.s3li2}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s3li3label} {c.s3li3}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>4. COOKIES E TECNOLOGIAS DE RASTREAMENTO</Text>
-        <Text style={pdfStyles.paragraph}>
-          Utilizamos cookies para personalizar sua experiência. Você pode gerenciar suas preferências a qualquer momento:
-        </Text>
-        <Text style={pdfStyles.listItem}>• Cookies Obrigatórios: Essenciais para segurança e autenticação do login.</Text>
-        <Text style={pdfStyles.listItem}>• Cookies de Desempenho: Otimizam o cache e velocidade do site.</Text>
-        <Text style={pdfStyles.listItem}>• Cookies Analíticos: Permitem entender como os usuários navegam e melhorar os fluxos.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s4title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s4intro}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s4li1label} {c.s4li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s4li2label} {c.s4li2}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s4li3label} {c.s4li3}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>5. SEUS DIREITOS SOB A LGPD (Art. 18)</Text>
-        <Text style={pdfStyles.paragraph}>
-          Como titular dos dados pessoais, a LGPD lhe garante os seguintes direitos, que podem ser exercidos diretamente em sua Central de Privacidade (Perfil):
-        </Text>
-        <Text style={pdfStyles.listItem}>• Confirmação da existência de tratamento e Acesso aos dados;</Text>
-        <Text style={pdfStyles.listItem}>• Retificação: Corrigir dados incompletos ou inexatos;</Text>
-        <Text style={pdfStyles.listItem}>• Eliminação, bloqueio ou anonimização de dados desnecessários;</Text>
-        <Text style={pdfStyles.listItem}>• Portabilidade: Solicitar cópia dos seus dados de cadastro em formato estruturado;</Text>
-        <Text style={pdfStyles.listItem}>• Revogação do consentimento concedido e informação sobre compartilhamento.</Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s5title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s5intro}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s5li1}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s5li2label} {c.s5li2}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s5li3}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s5li4label} {c.s5li4}</Text>
+        <Text style={pdfStyles.listItem}>• {c.s5li5label} {c.s5li5}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>6. SEGURANÇA DA INFORMAÇÃO E RETENÇÃO DE DADOS</Text>
-        <Text style={pdfStyles.paragraph}>
-          Implementamos medidas técnicas e administrativas aptas a proteger seus dados contra acessos não autorizados, perdas ou qualquer forma de tratamento inadequado ou ilícito. Todos os dados trafegam criptografados utilizando certificados SSL/TLS.
-        </Text>
-        <Text style={pdfStyles.paragraph}>
-          Mantemos os seus dados cadastrais ativos apenas pelo período em que mantiver sua conta ativa na plataforma. Dados relativos a logins são mantidos por 6 meses conforme exigência do Marco Civil da Internet (Lei nº 12.965/14).
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s6title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s6body1}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s6body2}</Text>
       </View>
 
       <View style={pdfStyles.section}>
-        <Text style={pdfStyles.sectionTitle}>7. CONTATO E ENCARREGADO DE DADOS (DPO)</Text>
-        <Text style={pdfStyles.paragraph}>
-          Para qualquer esclarecimento sobre esta Política ou para exercer seus direitos, entre em contato com nosso Encarregado de Proteção de Dados (DPO) através do e-mail: dpo@sergipanidade.gov.br.
-        </Text>
+        <Text style={pdfStyles.sectionTitle}>{c.s7title}</Text>
+        <Text style={pdfStyles.paragraph}>{c.s7body} dpo@sergipanidade.gov.br</Text>
       </View>
 
-      <Text style={pdfStyles.footer} render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages} — Sergipanidade`} />
+      <Text style={pdfStyles.footer} render={({ pageNumber, totalPages }) =>
+        c.pdfFooter.replace('{page}', String(pageNumber)).replace('{total}', String(totalPages))
+      } />
     </Page>
   </Document>
 );
@@ -225,6 +199,12 @@ interface DocumentosModalProps {
 }
 
 export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: DocumentosModalProps) {
+  const { language } = useAppContext();
+  const cleanLanguage = language === 'sp' ? 'pt' : language;
+  const t = translations[cleanLanguage];
+  const lc = (t as any).legalContent;
+  const tc = lc.termos;
+  const pc = lc.privacidade;
   const [activeTab, setActiveTab] = useState<'termos' | 'privacidade'>(defaultTab);
 
   if (!isOpen) return null;
@@ -242,11 +222,11 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
               <ShieldCheck className="text-[#0D7377] w-6 h-6" />
             )}
             <div>
-              <h2 className="font-['Fjalla_One'] text-xl text-[#1E1E1E] uppercase tracking-wide">
-                Documentos Legais
+              <h2 className="font-semibold font-display text-xl text-[#1E1E1E] uppercase tracking-tight">
+                {t.legalDocuments}
               </h2>
               <p className="text-xs text-[#737373]">
-                Sergipanidade · Transparência & Segurança (ANPD/LGPD)
+                {t.legalSubtitle}
               </p>
             </div>
           </div>
@@ -267,7 +247,7 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
               activeTab === 'termos' ? 'text-[#0D7377]' : 'text-[#737373] hover:text-[#1E1E1E]'
             }`}
           >
-            Termos de Uso
+            {t.termsOfUse}
             {activeTab === 'termos' && (
               <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#0D7377] rounded-t-full" />
             )}
@@ -279,7 +259,7 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
               activeTab === 'privacidade' ? 'text-[#0D7377]' : 'text-[#737373] hover:text-[#1E1E1E]'
             }`}
           >
-            Política de Privacidade
+            {t.privacyPolicy}
             {activeTab === 'privacidade' && (
               <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#0D7377] rounded-t-full" />
             )}
@@ -291,140 +271,113 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
           {activeTab === 'termos' ? (
             <div className="space-y-6 text-[#1E1E1E] leading-relaxed text-sm">
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">1. Aceitação dos Termos e Propósito</h3>
-                <p>
-                  Ao acessar e utilizar a plataforma Sergipanidade (aplicativo/site), o usuário declara estar ciente e concordar integralmente com as condições dispostas nestes Termos de Uso. Esta plataforma destina-se a promover a cultura, culinária e turismo no estado de Sergipe, agindo com transparência e respeito à privacidade dos usuários.
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s1title}</h3>
+                <p>{tc.s1body}</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">2. Descrição do Serviço e Recursos de Inteligência Artificial</h3>
-                <p className="mb-2">
-                  O Sergipanidade oferece um guia turístico digital inteligente e colaborativo focado no estado de Sergipe. Nossos serviços incluem:
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s2title}</h3>
+                <p className="mb-2">{tc.s2intro}</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>Recomendação de roteiros personalizados gerados por inteligência artificial (com base nas preferências do usuário);</li>
-                  <li>Guia detalhado de pontos turísticos, eventos, praias, cultura e gastronomia;</li>
-                  <li>Portal de parceiros para estabelecimentos gerenciarem seu perfil e interagirem com usuários;</li>
-                  <li>Canal direto para solicitações relativas à proteção de dados e transparência.</li>
+                  <li>{tc.s2li1}</li>
+                  <li>{tc.s2li2}</li>
+                  <li>{tc.s2li3}</li>
+                  <li>{tc.s2li4}</li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">3. Cadastro de Contas e Segurança</h3>
-                <p className="mb-2">
-                  Para utilizar determinadas funcionalidades, como salvar roteiros e avaliações, é necessário criar uma conta. O usuário se compromete a fornecer informações verdadeiras e atualizadas. A segurança de sua senha é de sua exclusiva responsabilidade.
-                </p>
-                <p className="font-semibold text-xs text-[#737373]">
-                  Classificações de contas disponíveis:
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s3title}</h3>
+                <p className="mb-2">{tc.s3body}</p>
+                <p className="font-semibold text-xs text-[#737373]">{tc.s3accountTypes}</p>
                 <ul className="list-disc pl-5 space-y-1 mt-1 text-xs text-[#737373]">
-                  <li>Turista: Perfil para viajantes explorarem, salvarem favoritos e avaliarem locais.</li>
-                  <li>Estabelecimento/Parceiro: Perfil para empresas gerenciarem fotos, informações e responderem avaliações.</li>
+                  <li>{tc.s3li1}</li>
+                  <li>{tc.s3li2}</li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">4. Conduta do Usuário e Avaliações</h3>
-                <p>
-                  Ao publicar avaliações ou qualquer conteúdo na plataforma, você garante que as informações são baseadas em experiências reais e não contêm linguagem ofensiva, abusiva, caluniosa ou difamatória. Reservamo-nos o direito de remover qualquer conteúdo que viole estas diretrizes.
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s4title}</h3>
+                <p>{tc.s4body}</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">5. Propriedade Intelectual</h3>
-                <p>
-                  Todo o design, código fonte, logotipos, textos, ilustrações e layouts da plataforma Sergipanidade são propriedade intelectual exclusiva da plataforma ou de seus licenciadores, protegidos pelas leis de direitos autorais nacionais e internacionais.
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s5title}</h3>
+                <p>{tc.s5body}</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">6. Limitação de Responsabilidade</h3>
-                <p>
-                  A plataforma Sergipanidade não se responsabiliza por serviços prestados por terceiros parceiros (como hotéis e restaurantes) listados na plataforma, nem por imprecisões nos horários ou disponibilidade de destinos. O usuário assume o risco total do uso das informações coletadas.
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s6title}</h3>
+                <p>{tc.s6body}</p>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">7. Foro e Legislação Aplicável</h3>
-                <p>
-                  Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o Foro da Comarca de Aracaju, Estado de Sergipe, para dirimir quaisquer dúvidas ou litígios decorrentes do uso da plataforma.
-                </p>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{tc.s7title}</h3>
+                <p>{tc.s7body}</p>
               </div>
             </div>
           ) : (
             <div className="space-y-6 text-[#1E1E1E] leading-relaxed text-sm">
               <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">1. Introdução e Compromisso LGPD</h3>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s1title}</h3>
+                <p>{pc.s1body}</p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s2title}</h3>
+                <p className="mb-2">{pc.s2intro}</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>{pc.s2li1.split(':')[0]}:</strong>{pc.s2li1.includes(':') ? pc.s2li1.substring(pc.s2li1.indexOf(':') + 1) : ''}</li>
+                  <li><strong>{pc.s2li2.split(':')[0]}:</strong>{pc.s2li2.includes(':') ? pc.s2li2.substring(pc.s2li2.indexOf(':') + 1) : ''}</li>
+                  <li><strong>{pc.s2li3.split(':')[0]}:</strong>{pc.s2li3.includes(':') ? pc.s2li3.substring(pc.s2li3.indexOf(':') + 1) : ''}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s3title}</h3>
+                <p className="mb-2">{pc.s3intro}</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>{pc.s3li1label}</strong> {pc.s3li1}</li>
+                  <li><strong>{pc.s3li2label}</strong> {pc.s3li2}</li>
+                  <li><strong>{pc.s3li3label}</strong> {pc.s3li3}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s4title}</h3>
+                <p className="mb-2">{pc.s4intro}</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>{pc.s4li1label}</strong> {pc.s4li1}</li>
+                  <li><strong>{pc.s4li2label}</strong> {pc.s4li2}</li>
+                  <li><strong>{pc.s4li3label}</strong> {pc.s4li3}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s5title}</h3>
+                <p className="mb-2">{pc.s5intro}</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>{pc.s5li1}</li>
+                  <li><strong>{pc.s5li2label}</strong> {pc.s5li2}</li>
+                  <li>{pc.s5li3}</li>
+                  <li><strong>{pc.s5li4label}</strong> {pc.s5li4}</li>
+                  <li><strong>{pc.s5li5label}</strong> {pc.s5li5}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s6title}</h3>
+                <p className="mb-2">{pc.s6body1}</p>
+                <p>{pc.s6body2}</p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-[#0D7377] mb-2">{pc.s7title}</h3>
                 <p>
-                  A plataforma Sergipanidade tem o compromisso de proteger a privacidade e a segurança dos dados pessoais de seus usuários. Esta Política descreve como coletamos, usamos, armazenamos e protegemos seus dados, em estrita conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018) e as orientações da Autoridade Nacional de Proteção de Dados (ANPD).
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">2. Bases Legais para Tratamento de Dados (Art. 7º, LGPD)</h3>
-                <p className="mb-2">
-                  Tratamos seus dados sob as seguintes justificativas legais:
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>Consentimento (Art. 7º, I):</strong> Para ativação de geolocalização e envio de comunicações de marketing.</li>
-                  <li><strong>Execução de Contrato (Art. 7º, V):</strong> Para gerenciar o cadastro do usuário, viabilizar o roteiro personalizado e fornecer os serviços principais.</li>
-                  <li><strong>Legítimo Interesse (Art. 7º, IX):</strong> Para melhoria de usabilidade e prevenção de fraudes.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">3. Dados Coletados e Finalidades</h3>
-                <p className="mb-2">
-                  Coletamos informações necessárias para a prestação e melhoria dos nossos serviços turísticos:
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>Dados de Cadastro:</strong> Nome completo, endereço de e-mail, telefone de contato e credenciais de login para autenticação segura.</li>
-                  <li><strong>Dados de Geolocalização:</strong> Se expressamente autorizado por você, coletamos dados de localização geográfica para sugerir pontos turísticos e serviços próximos a você através da funcionalidade GPS.</li>
-                  <li><strong>Dados de Uso:</strong> Preferências de viagem, destinos favoritados, avaliações enviadas e roteiros planejados.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">4. Cookies e Tecnologias de Rastreamento</h3>
-                <p className="mb-2">
-                  Utilizamos cookies para personalizar sua experiência. Você pode gerenciar suas preferências a qualquer momento:
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>Cookies Obrigatórios:</strong> Essenciais para segurança e autenticação do login.</li>
-                  <li><strong>Cookies de Desempenho:</strong> Otimizam o cache e velocidade do site.</li>
-                  <li><strong>Cookies Analíticos:</strong> Permitem entender como os usuários navegam e melhorar os fluxos.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">5. Seus Direitos sob a LGPD (Art. 18)</h3>
-                <p className="mb-2">
-                  Como titular dos dados pessoais, a LGPD lhe garante os seguintes direitos, que podem ser exercidos diretamente em sua Central de Privacidade (Perfil):
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Confirmação da existência de tratamento e Acesso aos dados;</li>
-                  <li><strong>Retificação:</strong> Corrigir dados incompletos ou inexatos;</li>
-                  <li>Eliminação, bloqueio ou anonimização de dados desnecessários ou tratados em desconformidade;</li>
-                  <li><strong>Portabilidade:</strong> Solicitar cópia dos seus dados de cadastro em formato estruturado;</li>
-                  <li><strong>Revogação do consentimento:</strong> Solicitar a eliminação dos seus dados cadastrais ou cancelamento de comunicações, e informações sobre compartilhamento de dados.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">6. Segurança da Informação e Retenção de Dados</h3>
-                <p className="mb-2">
-                  Implementamos medidas técnicas e administrativas aptas a proteger seus dados contra acessos não autorizados, perdas ou qualquer forma de tratamento inadequado ou ilícito. Todos os dados trafegam criptografados utilizando certificados SSL/TLS.
-                </p>
-                <p>
-                  Mantemos os seus dados cadastrais ativos apenas pelo período em que mantiver sua conta ativa na plataforma. Dados relativos a logs de acesso (IP e data/hora) são mantidos obrigatoriamente por 6 meses conforme exigência do Marco Civil da Internet (Lei nº 12.965/14).
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-lg text-[#0D7377] mb-2">7. Contato e Encarregado de Dados (DPO)</h3>
-                <p>
-                  Para qualquer esclarecimento sobre esta Política ou para exercer seus direitos, entre em contato com nosso Encarregado de Proteção de Dados (DPO) através do e-mail: <a href="mailto:dpo@sergipanidade.gov.br" className="text-[#0D7377] hover:underline">dpo@sergipanidade.gov.br</a>.
+                  {pc.s7body}{' '}
+                  <a href="mailto:dpo@sergipanidade.gov.br" className="text-[#0D7377] hover:underline">
+                    dpo@sergipanidade.gov.br
+                  </a>.
                 </p>
               </div>
             </div>
@@ -434,33 +387,33 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
         {/* Footer with PDF Download options */}
         <div className="px-6 py-4 bg-[#F7F6F3] border-t border-[#D9D9D9] flex items-center justify-between shrink-0">
           <p className="text-xs text-[#737373]">
-            Sergipanidade · Transparência em Conformidade com a ANPD
+            {t.legalFooter}
           </p>
 
           <div className="flex gap-3">
             {activeTab === 'termos' ? (
               <PDFDownloadLink
-                document={<TermosPDF />}
-                fileName="sergipanidade-termos-de-uso.pdf"
+                document={<TermosPDF c={tc} />}
+                fileName={`sergipanidade-terms-${cleanLanguage}.pdf`}
                 className="flex items-center gap-2 px-4 py-2.5 bg-[#0D7377] hover:bg-[#0a5d61] text-white font-semibold text-xs rounded-lg shadow-md transition-all border-none cursor-pointer text-center no-underline"
               >
                 {({ loading }) => (
                   <>
                     <Download size={14} />
-                    <span>{loading ? 'Preparando PDF...' : 'Baixar Termos (PDF)'}</span>
+                    <span>{loading ? t.preparingPDF : t.downloadTerms}</span>
                   </>
                 )}
               </PDFDownloadLink>
             ) : (
               <PDFDownloadLink
-                document={<PrivacidadePDF />}
-                fileName="sergipanidade-politica-de-privacidade.pdf"
+                document={<PrivacidadePDF c={pc} />}
+                fileName={`sergipanidade-privacy-${cleanLanguage}.pdf`}
                 className="flex items-center gap-2 px-4 py-2.5 bg-[#0D7377] hover:bg-[#0a5d61] text-white font-semibold text-xs rounded-lg shadow-md transition-all border-none cursor-pointer text-center no-underline"
               >
                 {({ loading }) => (
                   <>
                     <Download size={14} />
-                    <span>{loading ? 'Preparando PDF...' : 'Baixar Política (PDF)'}</span>
+                    <span>{loading ? t.preparingPDF : t.downloadPrivacy}</span>
                   </>
                 )}
               </PDFDownloadLink>
@@ -470,7 +423,7 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
               onClick={onClose}
               className="px-4 py-2.5 bg-white text-[#1E1E1E] hover:bg-black/5 font-semibold text-xs rounded-lg border border-[#D9D9D9] transition-all cursor-pointer"
             >
-              Fechar
+              {t.close}
             </button>
           </div>
         </div>

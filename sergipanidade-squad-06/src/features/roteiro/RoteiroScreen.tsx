@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useToast } from "@/context/AppContext";
 import { translations } from "@/constants/translations";
 import { ParadaGerada, WizardData, RoteiroItem } from "@/types";
-import { gerarRoteiroComIAComFallback } from "@/services/itinerary.service";
+import { gerarRoteiroComIAComFallback, gerarChaveCache } from "@/services/itinerary.service";
 import { RoteiroVazio } from "@/features/roteiro/components/RoteiroVazio";
 import { RoteiroGerando } from "@/features/roteiro/components/RoteiroGerando";
 import { FundoVisual } from "@/features/roteiro/components/FundoVisual";
@@ -71,6 +71,26 @@ export function RoteiroScreen({
   useEffect(() => {
     if (roteiro.length > 0) {
       try {
+        const storedWizard = sessionStorage.getItem("sergipanidade_current_wizard_data");
+        if (storedWizard) {
+          const parsedWizard = JSON.parse(storedWizard) as WizardData;
+          setDadosWizard(parsedWizard);
+          
+          const chaveCache = gerarChaveCache(parsedWizard, language);
+          const cacheHit = sessionStorage.getItem(chaveCache);
+          if (cacheHit) {
+            const parsed = JSON.parse(cacheHit);
+            if (parsed && typeof parsed === "object") {
+              if (Array.isArray(parsed.paradas)) {
+                setParadasGeradas(parsed.paradas);
+                setIsAI(!!parsed.isAI);
+                return;
+              }
+            }
+          }
+        }
+
+        // Fallback: busca qualquer cache se o dadosWizard salvo não for encontrado
         const prefixoCache = "sergipanidade_roteiro_";
         for (let i = 0; i < sessionStorage.length; i++) {
           const key = sessionStorage.key(i);
@@ -93,7 +113,7 @@ export function RoteiroScreen({
         }
       } catch {}
     }
-  }, [roteiro.length]);
+  }, [roteiro.length, language]);
 
   // Sincroniza a tela caso o roteiro seja alterado externamente ou esvaziado
   useEffect(() => {
@@ -153,6 +173,11 @@ export function RoteiroScreen({
 
       // Evita atualizar estados se o usuário saiu da tela enquanto a requisição rodava
       if (!refMontado.current) return;
+
+      // Salva os dados do wizard no sessionStorage para persistência entre navegações
+      try {
+        sessionStorage.setItem("sergipanidade_current_wizard_data", JSON.stringify(dadosWizard));
+      } catch {}
 
       setParadasGeradas(paradas);
       setIsAI(respostaVindaDeIA);

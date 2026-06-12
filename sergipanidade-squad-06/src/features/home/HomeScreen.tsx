@@ -84,6 +84,42 @@ function getLikes(id: string) {
   return DEST_LIKES[id] ?? "12mil";
 }
 
+// Helper to translate opening hours text
+const getHoursTraduzido = (hours: string, language: string): string => {
+  if (!hours) return '';
+  const cleanLang = language === 'sp' ? 'pt' : language;
+  if (cleanLang === 'pt') return hours;
+
+  let translated = hours;
+  if (cleanLang === 'en') {
+    translated = translated
+      .replace(/Aberto 24 horas/gi, "Open 24 hours")
+      .replace(/Terça a domingo/gi, "Tuesday to Sunday")
+      .replace(/Terça a sexta/gi, "Tuesday to Friday")
+      .replace(/Sábado e domingo/gi, "Saturday and Sunday")
+      .replace(/Diariamente/gi, "Daily")
+      .replace(/Segunda a sábado/gi, "Monday to Saturday")
+      .replace(/Terça a sábado/gi, "Tuesday to Saturday")
+      .replace(/monumentos têm horários próprios/gi, "monuments have their own hours")
+      .replace(/ às /gi, " to ")
+      .replace(/ e /gi, " and ");
+  } else if (cleanLang === 'es') {
+    translated = translated
+      .replace(/Aberto 24 horas/gi, "Abierto 24 horas")
+      .replace(/Terça a domingo/gi, "Martes a domingo")
+      .replace(/Terça a sexta/gi, "Martes a viernes")
+      .replace(/Sábado e domingo/gi, "Sábado y domingo")
+      .replace(/Diariamente/gi, "Diariamente")
+      .replace(/Segunda a sábado/gi, "Lunes a sábado")
+      .replace(/Terça a sábado/gi, "Martes a sábado")
+      .replace(/monumentos têm horários próprios/gi, "los monumentos tienen sus propios horarios")
+      .replace(/ às /gi, " a ")
+      .replace(/ e /gi, " y ");
+  }
+
+  return translated;
+};
+
 export function HomeScreen({
   onNavigate,
   language,
@@ -118,18 +154,32 @@ export function HomeScreen({
       {
         id: "praias",
         image: EXPERIENCIAS_BG_2,
-        tagline: "PRAIAS E PAISAGENS",
+        tagline: t.slidePraiasTagline || "PRAIAS E PAISAGENS",
         desc:
+          t.slidePraiasDesc ||
           "Conheça cenários incríveis de Sergipe, com praias, brisa do mar e experiências perfeitas para curtir o dia.",
-        chips: ["Praias", "Passeios", "Natureza", "Família", "Fotos"],
+        chips: [
+          t.slidePraiasChipPraias || "Praias",
+          t.slidePraiasChipPasseios || "Passeios",
+          t.slidePraiasChipNatureza || "Natureza",
+          t.slidePraiasChipFamilia || "Família",
+          t.slidePraiasChipFotos || "Fotos",
+        ],
       },
       {
         id: "cultura",
         image: EXPERIENCIAS_BG_3,
-        tagline: "CULTURA SERGIPANA",
+        tagline: t.slideCulturaTagline || "CULTURA SERGIPANA",
         desc:
+          t.slideCulturaDesc ||
           "Explore histórias, sabores, mercados, tradições e lugares que mostram a identidade do povo sergipano.",
-        chips: ["Cultura", "História", "Gastronomia", "Roteiros", "Artesanato"],
+        chips: [
+          t.slideCulturaChipCultura || "Cultura",
+          t.slideCulturaChipHistoria || "História",
+          t.slideCulturaChipGastronomia || "Gastronomia",
+          t.slideCulturaChipRoteiros || "Roteiros",
+          t.slideCulturaChipArtesanato || "Artesanato",
+        ],
       },
     ],
     [t]
@@ -230,7 +280,7 @@ export function HomeScreen({
         <>
 
           <div 
-            className="absolute right-5 sm:right-8 z-20" 
+            className="absolute right-5 sm:right-8 z-30" 
             style={{ top: 'calc(var(--navbar-height, 76px) + 16px)' }}
             ref={langMenuRef}
           >
@@ -299,37 +349,36 @@ export function HomeScreen({
             )}
           </div>
 
-          <div className="flex flex-col items-center text-center w-full px-5 sm:px-10 py-16">
+          <div className="relative z-20 flex flex-col items-center justify-center text-center w-full px-5 sm:px-10 py-16 min-h-[560px] lg:min-h-[640px]">
             <h1
-              className="font-['Fjalla_One'] text-white tracking-wide mb-4 leading-tight"
+              className="font-semibold font-display text-white tracking-tight mb-4 leading-tight"
               style={{ fontSize: "clamp(32px, 5vw, 48px)" }}
             >
               {t.homeTitle}
             </h1>
 
             <p
-              className="text-white/70 mb-8 max-w-140 leading-relaxed"
+              className="text-white/90 mb-8 max-w-140 leading-relaxed [text-shadow:0_1px_8px_rgba(0,0,0,0.65)]"
               style={{ fontSize: "17px" }}
             >
               {t.homeSubtitle}
             </p>
 
-            <div className="flex gap-2 w-full max-w-150">
-              <div className="relative flex-1">
+            <div className="flex rounded-xl overflow-hidden shadow-lg border border-white/20 bg-white max-w-2xl mx-auto w-full">
+              <div className="relative flex-1 flex items-center">
                 <Search
                   size={16}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  className="absolute left-4 text-gray-400 pointer-events-none"
                 />
 
                 <input
                   type="text"
-                  placeholder={t.searchPlaceholder?.replace("🔍  ", "")}
+                  placeholder="Buscar praias, restaurantes, atrações em Sergipe..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full pl-10 pr-10 py-3.5 border-none rounded-[10px] text-[14px]
-                             bg-white outline-none text-(--preto)
-                             shadow-[0_4px_24px_rgba(0,0,0,0.18)] placeholder:text-gray-400"
+                  className="flex-1 pl-10 pr-10 py-4 text-gray-700 text-base outline-none bg-white placeholder:text-gray-400 border-none"
+                  aria-label="Buscar destinos em Sergipe"
                 />
 
                 {searchTerm && (
@@ -339,7 +388,7 @@ export function HomeScreen({
                       setSearchTerm("");
                       onToast(t.searchCleared);
                     }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center
+                    className="absolute right-3 w-6 h-6 flex items-center
                                justify-center bg-gray-100 text-gray-500 border-none rounded-full
                                cursor-pointer hover:bg-gray-200 transition-colors"
                   >
@@ -351,13 +400,7 @@ export function HomeScreen({
               <button
                 type="button"
                 onClick={handleSearch}
-                className="px-6 py-3.5 text-white border-none rounded-[10px]
-                           font-['Fjalla_One'] text-[14px] tracking-widest uppercase cursor-pointer
-                           transition-all whitespace-nowrap min-h-11"
-                style={{
-                  backgroundColor: "var(--primary)",
-                  boxShadow: "0 4px 20px rgba(13,115,119,0.22)",
-                }}
+                className="bg-teal-600 hover:bg-teal-700 text-white px-7 py-4 font-semibold text-sm tracking-wide transition-colors border-none cursor-pointer whitespace-nowrap"
               >
                 {t.searchButton}
               </button>
@@ -367,30 +410,19 @@ export function HomeScreen({
       </HeroSlideshow>
 
       <section
-        className="px-5 sm:px-8"
+        className="px-5 sm:px-8 py-16 lg:py-20"
         style={{
           backgroundColor: "var(--branco)",
-          paddingTop: "48px",
-          paddingBottom: "64px",
         }}
       >
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-widest uppercase"
-              style={{
-                fontSize: "11px",
-                backgroundColor: "rgba(13,115,119,0.10)",
-                color: "var(--azul)",
-                border: "1px solid rgba(13,115,119,0.22)",
-              }}
-            >
+            <div className="inline-block text-xs font-semibold tracking-widest uppercase text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full mb-3">
               {t.vamosCurtirTag}
             </div>
 
             <h2
-              className="font-['Fjalla_One'] text-(--preto) tracking-wide leading-tight mb-2"
+              className="font-semibold font-display text-(--preto) tracking-tight leading-tight mb-2"
               style={{ fontSize: "clamp(22px, 4vw, 30px)" }}
             >
               {t.vamosCurtirTitle}
@@ -408,6 +440,7 @@ export function HomeScreen({
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
             style={{ color: "var(--primary)" }}
+            aria-label={`${t.viewAll} - ${t.vamosCurtirTitle}`}
           >
             {t.viewAll}
           </button>
@@ -420,7 +453,7 @@ export function HomeScreen({
             </div>
 
             <h3
-              className="font-['Fjalla_One'] text-(--preto) mb-2"
+              className="font-semibold font-display tracking-tight text-(--preto) mb-2"
               style={{ fontSize: "24px" }}
             >
               {t.noResults?.title}
@@ -437,7 +470,7 @@ export function HomeScreen({
                 onToast(t.noResults?.cleared);
               }}
               className="px-6 py-3 text-white border-none rounded-[10px]
-                         font-['Fjalla_One'] text-[13px] tracking-wider uppercase cursor-pointer
+                          font-bold text-[13px] tracking-wider uppercase cursor-pointer
                          hover:opacity-90 transition-all min-h-11"
               style={{ backgroundColor: "var(--primary)" }}
             >
@@ -451,7 +484,7 @@ export function HomeScreen({
                 key={dest.id}
                 id={dest.id}
                 name={dest.name}
-                hours={dest.hours}
+                hours={getHoursTraduzido(dest.hours, language)}
                 image={dest.image}
                 likes={getLikes(dest.id)}
                 address={dest.address}
@@ -481,30 +514,19 @@ export function HomeScreen({
       </section>
 
       <section
-        className="px-5 sm:px-8"
+        className="px-5 sm:px-8 py-16 lg:py-20"
         style={{
           backgroundColor: "#FFFFFF",
-          paddingTop: "48px",
-          paddingBottom: "64px",
         }}
       >
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-widest uppercase"
-              style={{
-                fontSize: "11px",
-                backgroundColor: "rgba(13,115,119,0.10)",
-                color: "var(--azul)",
-                border: "1px solid rgba(13,115,119,0.22)",
-              }}
-            >
+            <div className="inline-block text-xs font-semibold tracking-widest uppercase text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full mb-3">
               {t.arreiMalasTag}
             </div>
 
             <h2
-              className="font-['Fjalla_One'] text-(--preto) tracking-wide leading-tight mb-2"
+              className="font-semibold font-display text-(--preto) tracking-tight leading-tight mb-2"
               style={{ fontSize: "clamp(22px, 4vw, 30px)" }}
             >
               {t.arreiMalasTitle}
@@ -522,6 +544,7 @@ export function HomeScreen({
                        bg-none border-none cursor-pointer hover:underline transition-all
                        text-[14px] min-h-11 flex items-center gap-1"
             style={{ color: "var(--azul)" }}
+            aria-label={`${t.viewAll} - ${t.arreiMalasTitle}`}
           >
             {t.viewAll}
           </button>
@@ -541,36 +564,25 @@ export function HomeScreen({
       </section>
 
       <section
-        className="px-5 sm:px-8"
+        className="px-5 sm:px-8 py-16 lg:py-20"
         style={{
           backgroundColor: "#1A1A1A",
-          paddingTop: "48px",
-          paddingBottom: "64px",
         }}
       >
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3
-                         font-bold tracking-widest uppercase"
-              style={{
-                fontSize: "11px",
-                backgroundColor: "rgba(255,255,255,0.07)",
-                color: "var(--primary)",
-                border: "1px solid rgba(36, 28, 100, 0.28)",
-              }}
-            >
+            <div className="inline-block text-xs font-semibold tracking-widest uppercase text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full mb-3">
               {t.experiencias360Tag}
             </div>
 
             <h2
-              className="font-['Fjalla_One'] text-white tracking-wide leading-tight mb-2"
+              className="font-semibold font-display text-white tracking-tight leading-tight mb-2"
               style={{ fontSize: "clamp(22px, 4vw, 30px)" }}
             >
               {t.experiencias360Title}
             </h2>
 
-            <p className="text-white/50" style={{ fontSize: "15px" }}>
+            <p className="text-gray-300" style={{ fontSize: "15px" }}>
               {t.experiencias360Subtitle}
             </p>
           </div>
@@ -620,16 +632,16 @@ export function HomeScreen({
             <ChevronRight size={22} />
           </button>
 
-          <div className="relative z-10 flex flex-col justify-center h-full px-8 py-10 md:px-12 md:py-12 max-w-140">
+          <div className="relative z-10 flex flex-col justify-center h-full px-8 lg:px-16 py-16 pr-12 lg:pr-16 max-w-140">
             <p
-              className="font-bold tracking-widest uppercase mb-3"
-              style={{ fontSize: "11px", color: "var(--primary)" }}
+              className="font-bold tracking-widest uppercase mb-3 text-teal-400"
+              style={{ fontSize: "11px" }}
             >
               {currentExperiencia.tagline}
             </p>
 
             <p
-              className="text-white/80 mb-6 leading-relaxed"
+              className="text-gray-200 mb-6 leading-relaxed"
               style={{ fontSize: "16px" }}
             >
               {currentExperiencia.desc}
@@ -639,13 +651,7 @@ export function HomeScreen({
               {currentExperiencia.chips.map((chip) => (
                 <span
                   key={chip}
-                  className="px-3 py-1.5 rounded-full text-[12px] font-medium text-white
-                             transition-colors cursor-default"
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.10)",
-                    border: "1px solid rgba(255,255,255,0.16)",
-                    backdropFilter: "blur(4px)",
-                  }}
+                  className="border border-white/30 text-white/90 bg-white/10 px-3 py-1 rounded-full text-xs font-medium hover:bg-white/20 transition-colors cursor-default"
                 >
                   {chip}
                 </span>
@@ -657,12 +663,13 @@ export function HomeScreen({
               onClick={() => onNavigate("guia")}
               className="self-start flex items-center gap-2 px-7 py-3.5 rounded-full
                          bg-white text-(--preto) font-bold cursor-pointer border-none
-                         transition-all duration-150 min-h-12
+                         transition-all duration-150 min-h-12 mt-6
                          hover:opacity-90 active:scale-[0.98]"
               style={{
                 fontSize: "14px",
                 boxShadow: "0 4px 20px rgba(255,255,255,0.12)",
               }}
+              aria-label={`${t.vejaLista} - ${currentExperiencia.tagline}`}
             >
               {t.vejaLista}
               <ArrowRight size={16} strokeWidth={2.5} />

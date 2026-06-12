@@ -38,14 +38,14 @@ export function EtapaDias({
   return (
     <div>
       <div className="flex items-center justify-between gap-4 mb-1">
-        <h2 className="font-['Fjalla_One'] text-xl text-[var(--preto)]">
+        <h2 className="font-semibold font-display tracking-tight text-xl text-[var(--preto)]">
           {t.wizardDaysTitle}
         </h2>
         <div className="flex items-baseline gap-1 bg-[var(--teal-leve)] px-3 py-1 rounded-full border border-[var(--primary)]/20 shrink-0">
-          <span className="font-['Fjalla_One'] text-xl text-[var(--primary)] leading-none">
+          <span className="font-semibold font-display text-xl text-[var(--primary)] leading-none">
             {days}
           </span>
-          <span className="text-[var(--primary)] text-[10px] font-extrabold uppercase tracking-wider">
+          <span className="text-[var(--primary)] text-[10px] font-bold uppercase tracking-wider">
             {t.wizardDaysLabel || "dias"}
           </span>
         </div>
@@ -122,7 +122,8 @@ export function EtapaDias({
               <span
                 style={{
                   fontSize: "18px",
-                  fontFamily: "var(--font-display, 'Fjalla One')",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 600,
                   lineHeight: 1.1,
                 }}
               >

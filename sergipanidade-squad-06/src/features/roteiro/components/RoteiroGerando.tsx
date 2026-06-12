@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Bot, MapPin, Sparkles, Clock } from "lucide-react";
+import { MapPin, Sparkles, Clock } from "lucide-react";
 import { translations } from "@/constants/translations";
 import { TIMEOUT_IA_MS } from "@/services/itinerary.service";
+import serginhoImg from "@/assets/images/serginho.png";
 
 interface RoteiroGerandoProps {
   language: "pt" | "en" | "es";
@@ -155,19 +156,19 @@ export function RoteiroGerando({ language, concluido, onAnimacaoConcluida }: Rot
         />
         {/* Avatar principal */}
         <div
-          className="w-24 h-24 rounded-full flex items-center justify-center"
+          className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #0D7377 0%, #14544A 100%)",
             boxShadow: "0 0 0 4px rgba(13,115,119,0.15), 0 8px 32px rgba(13,115,119,0.4)",
             animation: "avatarFloat 3s ease-in-out infinite",
           }}
         >
-          <Bot size={38} className="text-white" />
+          <img src={serginhoImg} alt="Serginho" className="w-[54px] h-[54px] object-contain animate-pulse" />
         </div>
       </div>
 
       {/* Título */}
-      <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-2">
+      <h2 className="font-semibold font-display tracking-tight text-2xl text-[var(--preto)] mb-2">
         {t.aiItineraryTitle}
       </h2>
 

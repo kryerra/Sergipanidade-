@@ -89,7 +89,7 @@ export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMap
       <polyline
         points={routePts}
         fill="none"
-        stroke="#F06030"
+        stroke="#0D7377"
         strokeWidth="3"
         strokeDasharray="10 6"
         strokeLinecap="round"
@@ -110,7 +110,7 @@ export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMap
             y={my}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#F06030"
+            fill="#0D7377"
             fontSize="10"
             transform={`rotate(${angle}, ${mx}, ${my})`}
           >
@@ -122,7 +122,7 @@ export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMap
       {stops.map((s, i) => (
         <g key={s.id}>
           <circle cx={px(s.lon)} cy={py(s.lat)} r={17} fill="white" />
-          <circle cx={px(s.lon)} cy={py(s.lat)} r={15} fill="#F06030" />
+          <circle cx={px(s.lon)} cy={py(s.lat)} r={15} fill="#0D7377" />
           <text
             x={px(s.lon)}
             y={py(s.lat) + 1}
@@ -163,7 +163,7 @@ export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMap
           textAnchor="middle"
           y={-4}
           fontSize="8"
-          fill="#F06030"
+          fill="#0D7377"
           fontWeight="700"
         >
           N

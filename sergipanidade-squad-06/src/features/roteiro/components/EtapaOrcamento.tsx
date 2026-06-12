@@ -20,7 +20,7 @@ export function EtapaOrcamento({
 
   return (
     <div>
-      <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-1">
+      <h2 className="font-semibold font-display tracking-tight text-2xl text-[var(--preto)] mb-1">
         {t.wizardBudgetTitle}
       </h2>
       <p className="text-[var(--cinza-txt)] text-sm mb-6">{t.budget}</p>
@@ -64,7 +64,7 @@ export function EtapaOrcamento({
       <button
         onClick={onGenerate}
         disabled={!canGenerate}
-        className={`w-full flex items-center justify-center gap-2 py-4 rounded-[var(--radius-sm)] font-['Fjalla_One'] text-base tracking-wide min-h-[56px] transition-all ${
+        className={`w-full flex items-center justify-center gap-2 py-4 rounded-[var(--radius-sm)] font-bold text-base tracking-wide min-h-[56px] transition-all ${
           canGenerate
             ? "bg-[var(--primary)] text-white hover:bg-[#0A5D61] shadow-lg"
             : "bg-[var(--cinza-med)] text-[var(--cinza-txt)] cursor-not-allowed"

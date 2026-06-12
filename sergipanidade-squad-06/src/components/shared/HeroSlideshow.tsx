@@ -100,13 +100,15 @@ export function HeroSlideshow({
           {images.map((_, index) => (
             <button
               key={index}
+              role="button"
+              tabIndex={0}
               onClick={() => setCurrentIndex(index)}
-              className="w-2 h-2 rounded-full transition-all duration-300"
-              style={{
-                backgroundColor: index === currentIndex ? '#FFFFFF' : 'rgba(255,255,255,0.4)',
-                width: index === currentIndex ? '24px' : '8px',
-              }}
-              aria-label={`Slide ${index + 1}`}
+              className={`h-2 transition-all duration-300 border-none cursor-pointer ${
+                index === currentIndex
+                  ? 'w-6 rounded bg-white'
+                  : 'w-2 rounded-full bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Ir para slide ${index + 1}`}
             />
           ))}
         </div>
