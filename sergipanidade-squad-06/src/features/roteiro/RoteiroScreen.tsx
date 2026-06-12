@@ -1,16 +1,24 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useToast } from "@/context/AppContext";
 import { translations } from "@/constants/translations";
 import { ParadaGerada, WizardData, RoteiroItem } from "@/types";
-import { gerarRoteiroComIAComFallback } from "@/services/itinerary.service";
+import { gerarRoteiroComIAComFallback, gerarChaveCache } from "@/services/itinerary.service";
 import { RoteiroVazio } from "@/features/roteiro/components/RoteiroVazio";
 import { RoteiroGerando } from "@/features/roteiro/components/RoteiroGerando";
 import { FundoVisual } from "@/features/roteiro/components/FundoVisual";
 import { RoteiroAssistente } from "@/features/roteiro/components/RoteiroAssistente";
 import { RoteiroCronograma } from "@/features/roteiro/components/RoteiroCronograma";
 
+const obterDataLocalHoje = (): string => {
+  const d = new Date();
+  const ano = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+};
+
 interface RoteiroScreenProps {
   onNavigate: (tela: string, idDestino?: string) => void;
-  onToast: (mensagem: string) => void;
   roteiro: RoteiroItem[];
   onAddToRoteiro: (idDestino: string, nota?: string) => void;
   onRemoveFromRoteiro: (idDestino: string) => void;
@@ -25,7 +33,6 @@ interface RoteiroScreenProps {
  */
 export function RoteiroScreen({
   onNavigate,
-  onToast,
   roteiro,
   onAddToRoteiro,
   onRemoveFromRoteiro,
@@ -33,6 +40,7 @@ export function RoteiroScreen({
   onOpenGPS,
   language,
 }: RoteiroScreenProps) {
+  const { toast: onToast } = useToast();
   const t = translations[language];
 
   // Definição dos estados possíveis de tela
@@ -46,41 +54,112 @@ export function RoteiroScreen({
   const [dadosWizard, setDadosWizard] = useState<WizardData>({
     who: "",
     days: 3,
-    startDate: new Date().toISOString().slice(0, 10),
+    startDate: obterDataLocalHoje(),
     interests: [],
     budget: "",
+    stopsPerDay: 3, // Tarefa 7: valor padrão recomendado
   });
   
   const [paradasGeradas, setParadasGeradas] = useState<ParadaGerada[]>([]);
+  const [isAI, setIsAI] = useState(false);
   const [diasAbertos, setDiasAbertos] = useState<string[]>(["day-1"]);
+  const [geracaoConcluida, setGeracaoConcluida] = useState(false);
   const refMontado = useRef(true);
+  const controllerRef = useRef<AbortController | null>(null);
 
-  // Sincroniza a tela caso o roteiro seja alterado externamente
+  // Carrega do cache de sessão ao montar para persistir o estado visual correto de IA / Offline
+  useEffect(() => {
+    if (roteiro.length > 0) {
+      try {
+        const storedWizard = sessionStorage.getItem("sergipanidade_current_wizard_data");
+        if (storedWizard) {
+          const parsedWizard = JSON.parse(storedWizard) as WizardData;
+          setDadosWizard(parsedWizard);
+          
+          const chaveCache = gerarChaveCache(parsedWizard, language);
+          const cacheHit = sessionStorage.getItem(chaveCache);
+          if (cacheHit) {
+            const parsed = JSON.parse(cacheHit);
+            if (parsed && typeof parsed === "object") {
+              if (Array.isArray(parsed.paradas)) {
+                setParadasGeradas(parsed.paradas);
+                setIsAI(!!parsed.isAI);
+                return;
+              }
+            }
+          }
+        }
+
+        // Fallback: busca qualquer cache se o dadosWizard salvo não for encontrado
+        const prefixoCache = "sergipanidade_roteiro_";
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          if (key && key.startsWith(prefixoCache)) {
+            const cacheHit = sessionStorage.getItem(key);
+            if (cacheHit) {
+              const parsed = JSON.parse(cacheHit);
+              if (parsed && typeof parsed === "object") {
+                if (Array.isArray(parsed)) {
+                  setParadasGeradas(parsed);
+                  setIsAI(true);
+                } else if (Array.isArray(parsed.paradas)) {
+                  setParadasGeradas(parsed.paradas);
+                  setIsAI(!!parsed.isAI);
+                }
+                break;
+              }
+            }
+          }
+        }
+      } catch {}
+    }
+  }, [roteiro.length, language]);
+
+  // Sincroniza a tela caso o roteiro seja alterado externamente ou esvaziado
   useEffect(() => {
     if (roteiro.length > 0 && estadoVisual === "empty") {
       setEstadoVisual("view");
+    } else if (roteiro.length === 0 && estadoVisual === "view") {
+      setEstadoVisual("empty");
     }
   }, [roteiro.length, estadoVisual]);
 
-  // Marca o componente como desmontado para evitar atualizações de estado assíncronas após navegação
+  // Marca o componente como desmontado para evitar atualizações de estado assíncronas após navegação e aborta requisições
   useEffect(() => {
     refMontado.current = true;
     return () => {
       refMontado.current = false;
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
     };
   }, []);
+
+  const handleGeracaoConcluida = useCallback(() => {
+    if (!refMontado.current) return;
+    onToast(t.itineraryGenerated);
+    setEstadoVisual("view");
+  }, [onToast, t.itineraryGenerated]);
 
   /**
    * Dispara a requisição assíncrona para gerar o roteiro e configura a resposta.
    */
   const gerarRoteiro = async () => {
     setEstadoVisual("generating");
+    setGeracaoConcluida(false);
     const tempoInicio = Date.now();
     
+    // Aborta qualquer requisição anterior ativa
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = new AbortController();
+    
     try {
-      const { paradas, isAI } = await gerarRoteiroComIAComFallback(
+      const { paradas, isAI: respostaVindaDeIA } = await gerarRoteiroComIAComFallback(
         dadosWizard,
         language,
+        controllerRef.current.signal
       );
 
       // Garante uma exibição mínima da animação para evitar flashes visuais abruptos
@@ -95,7 +174,13 @@ export function RoteiroScreen({
       // Evita atualizar estados se o usuário saiu da tela enquanto a requisição rodava
       if (!refMontado.current) return;
 
+      // Salva os dados do wizard no sessionStorage para persistência entre navegações
+      try {
+        sessionStorage.setItem("sergipanidade_current_wizard_data", JSON.stringify(dadosWizard));
+      } catch {}
+
       setParadasGeradas(paradas);
+      setIsAI(respostaVindaDeIA);
       
       const novoRoteiro = paradas.map((p) => ({
         destinationId: p.destinationId,
@@ -110,28 +195,18 @@ export function RoteiroScreen({
 
       setDiasAbertos(Array.from(new Set(paradas.map((p) => `day-${p.dia}`))));
 
-      const mensagemSucesso = isAI
-        ? language === "pt"
-          ? "✨ Roteiro gerado com Inteligência Artificial!"
-          : language === "es"
-            ? "✨ ¡Itinerario generado con Inteligencia Artificial!"
-            : "✨ Itinerary generated with Artificial Intelligence!"
-        : t.itineraryGenerated;
-
-      onToast(mensagemSucesso);
-      setEstadoVisual("view");
-    } catch (erro) {
+      setGeracaoConcluida(true);
+    } catch (erro: any) {
+      // Ignora erro se a requisição foi cancelada intencionalmente
+      if (erro.name === "AbortError" || erro.message === "Request aborted") {
+        return;
+      }
+      
       if (!refMontado.current) return;
       if (import.meta.env.DEV) {
         console.error("[DEV] Erro inesperado em gerarRoteiro:", erro);
       }
-      onToast(
-        language === "pt"
-          ? "Erro ao gerar roteiro. Tente novamente."
-          : language === "es"
-            ? "Error al generar itinerario. Inténtalo de nuevo."
-            : "Error generating itinerary. Please try again.",
-      );
+      onToast(t.itineraryError);
       setEstadoVisual("empty");
     }
   };
@@ -160,7 +235,11 @@ export function RoteiroScreen({
   if (estadoVisual === "generating") {
     return (
       <FundoVisual className="pt-[62px] flex items-center justify-center">
-        <RoteiroGerando language={language} />
+        <RoteiroGerando
+          language={language}
+          concluido={geracaoConcluida}
+          onAnimacaoConcluida={handleGeracaoConcluida}
+        />
       </FundoVisual>
     );
   }
@@ -193,6 +272,7 @@ export function RoteiroScreen({
       roteiro={roteiro}
       wizardData={dadosWizard}
       generatedParadas={paradasGeradas}
+      isAI={isAI}
       onNavigate={onNavigate}
       onToast={onToast}
       onRemoveFromRoteiro={onRemoveFromRoteiro}

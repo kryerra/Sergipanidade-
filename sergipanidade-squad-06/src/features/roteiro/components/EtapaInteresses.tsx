@@ -26,7 +26,7 @@ export function EtapaInteresses({
 
   return (
     <div>
-      <h2 className="font-['Fjalla_One'] text-2xl text-[var(--preto)] mb-1">
+      <h2 className="font-semibold font-display tracking-tight text-2xl text-[var(--preto)] mb-1">
         {t.wizardInterestsTitle}
       </h2>
       <p className="text-[var(--cinza-txt)] text-sm mb-6">

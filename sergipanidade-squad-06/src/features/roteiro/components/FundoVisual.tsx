@@ -18,6 +18,7 @@ export function FundoVisual({
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundAttachment: "fixed",
       }}
     >
       {/* Camada de sobreposição semitransparente para legibilidade */}

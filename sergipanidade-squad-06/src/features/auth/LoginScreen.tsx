@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
+import { useToast } from "@/context/AppContext";
 import loginBg1 from '@/assets/images/lambesujo.jpg';
 import loginBgTeste from '@/assets/images/login_teste.png';
 import loginBg3 from '@/assets/images/samba-de-coco-laranjeiras.jpg';
@@ -29,7 +30,6 @@ const LOGIN_LOGO_STYLE = {
 
 interface LoginScreenProps {
   onNavigate: (screen: string) => void;
-  onToast: (message: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
   onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   onLogin: (profile: UserProfile) => void;
@@ -42,7 +42,8 @@ interface SavedAccount {
   createdAt: string;
 }
 
-export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, onLogin }: LoginScreenProps): JSX.Element {
+export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }: LoginScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language];
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRecoverModal, setShowRecoverModal] = useState(false);
@@ -278,7 +279,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             <line x1="2" y1="12" x2="22" y2="12" />
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
-          <span>{language === 'pt' ? 'PT' : language === 'en' ? 'EN' : language === 'es' ? 'ES' : 'SP'}</span>
+          <span>{language === 'pt' ? 'Sergipanês pt-BR' : language === 'sp' ? 'Sergipanês pt-BR' : language === 'en' ? 'EN' : 'ES'}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="6 9 12 15 18 9" />
           </svg>
@@ -300,7 +301,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   : 'bg-white text-[#555] hover:bg-[#F7F6F3]'
                 }`}
             >
-              <span>{t.languages.portuguese}</span>
+              <span>Sergipanês pt-BR</span>
               {language === 'pt' && <span className="ml-auto text-[#0D7377]">✓</span>}
             </button>
             <button
@@ -330,20 +331,6 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
             >
               <span>{t.languages.spanish}</span>
               {language === 'es' && <span className="ml-auto text-[#0D7377]">✓</span>}
-            </button>
-            <button
-              onClick={() => {
-                onChangeLanguage('sp');
-                setShowLanguageMenu(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium
-                          transition-all border-none cursor-pointer ${language === 'sp'
-                  ? 'bg-[#0D7377]/10 text-[#0D7377]'
-                  : 'bg-white text-[#555] hover:bg-[#F7F6F3]'
-                }`}
-            >
-              <span>{t.languages.sergipanes}</span>
-              {language === 'sp' && <span className="ml-auto text-[#0D7377]">✓</span>}
             </button>
           </div>
         )}
@@ -384,7 +371,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
           {!showLoginForm ? (
             <>
               {/* Tela de Opções */}
-              <h2 className="font-['Fjalla_One'] text-[36px] text-(--preto) mb-3 tracking-wide text-center">
+              <h2 className="font-semibold font-display text-[36px] text-(--preto) mb-3 tracking-tight text-center">
                 {t.welcomeBack}
               </h2>
               <p className="text-sm text-[#777] mb-10 text-center leading-relaxed">
@@ -430,27 +417,27 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
 
               {/* Termos e Política */}
               <p className="text-sm text-black text-center mt-8 leading-relaxed px-4">
-                Ao continuar, você aceita os{' '}
+                {t.byContinuingYouAccept}{' '}
                 <button
                   onClick={() => { setDocsTab('termos'); setIsDocsOpen(true); }}
                   className="text-[#0D7377] hover:underline bg-transparent border-none p-0 cursor-pointer font-sm inline"
                 >
-                  Termos de Uso
+                  {t.termsOfUse}
                 </button>
-                {' '}e a{' '}
+                {' '}{t.and}{' '}
                 <button
                   onClick={() => { setDocsTab('privacidade'); setIsDocsOpen(true); }}
                   className="text-[#0D7377] hover:underline bg-transparent border-none p-0 cursor-pointer font-sm inline"
                 >
-                  Política de Privacidade
+                  {t.privacyPolicy}
                 </button>
-                {' '}do Sergipanidade.
+                {' '}{t.ofSergipanidade}
               </p>
             </>
           ) : (
             <>
               {/* Tela de Login */}
-              <h2 className="font-['Fjalla_One'] text-[32px] text-(--preto) mb-2 tracking-wide">
+              <h2 className="font-semibold font-display text-[32px] text-(--preto) mb-2 tracking-tight">
                 {t.welcomeBack}
               </h2>
               <p className="text-sm text-[#777] mb-8">{t.accessAccount}</p>
@@ -459,11 +446,11 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                 {/* Campo Email/Telefone */}
                 <div>
                   <label className="block text-xs font-semibold uppercase text-[#555] mb-2 tracking-wide">
-                    E-mail ou Telefone
+                    {t.emailOrPhone}
                   </label>
                   <input
                     type="text"
-                    placeholder="seu@email.com"
+                    placeholder={t.emailPlaceholder}
                     value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     className="w-full px-4 py-3.5 border border-[#D0D0D0] rounded-lg
@@ -512,7 +499,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
                   onClick={handleBackToLoginOptions}
                   className="block text-center w-full text-sm font-medium text-[#0D7377] hover:underline mt-4"
                 >
-                  Voltar
+                  {t.back}
                 </button>
               </div>
             </>
@@ -523,7 +510,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
       {showRecoverModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 sm:p-10 max-w-md w-full mx-4 shadow-2xl">
-            <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-3 tracking-wide">
+            <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-3 tracking-tight">
               {t.recoverPassword}
             </h3>
             <p className="text-sm text-[#777] mb-8 leading-relaxed">
@@ -536,7 +523,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
               </label>
               <input
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={t.emailPlaceholder}
                 value={recoverEmail}
                 onChange={(e) => setRecoverEmail(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleRecoverPassword()}
@@ -575,7 +562,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
       {showRegisterModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-auto backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 sm:p-10 max-w-2xl w-full mx-4 my-8 shadow-2xl">
-            <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-3 tracking-wide">
+            <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-3 tracking-tight">
               {t.createNewAccount}
             </h3>
             <p className="text-sm text-[#777] mb-8 leading-relaxed">
@@ -660,7 +647,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
               </label>
               <input
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={t.emailPlaceholder}
                 value={registerData.email}
                 onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                 className="w-full px-4 py-3.5 border border-[#D0D0D0] rounded-lg
@@ -768,7 +755,7 @@ export function LoginScreen({ onNavigate, onToast, language, onChangeLanguage, o
           <div className="bg-white rounded-2xl p-12 max-w-md w-full mx-4 text-center shadow-2xl">
             <div className="mb-8">
               <img src={googleLogo} alt="Google logo" className="mx-auto mb-5 w-14 h-14 object-contain" />
-              <h3 className="font-['Fjalla_One'] text-3xl text-[#1A1A1A] mb-2 tracking-wide">
+              <h3 className="font-semibold font-display text-3xl text-[#1A1A1A] mb-2 tracking-tight">
                 {t.connectingGoogle}
               </h3>
               <p className="text-sm text-[#777]">

@@ -31,7 +31,7 @@ export function GPSModal({ isOpen, onClose, onConfirm, language, destinationName
         <div className="flex justify-center mb-3 text-[var(--teal)]">
           <Map size={48} />
         </div>
-        <h3 className="font-['Fjalla_One'] text-lg md:text-[22px] text-[var(--preto)] mb-2">{t.openInGPS}</h3>
+        <h3 className="font-semibold font-display tracking-tight text-lg md:text-[22px] text-[var(--preto)] mb-2">{t.openInGPS}</h3>
         <p className="text-sm text-[#777] mb-6 leading-relaxed">
           {t.gpsRedirectMessage}
           {destinationName && (

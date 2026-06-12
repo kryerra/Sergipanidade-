@@ -168,3 +168,10 @@ export const useAppContext = () => {
   }
   return context;
 };
+
+export function useToast() {
+  const { handleToast } = useAppContext();
+  return {
+    toast: handleToast
+  };
+}

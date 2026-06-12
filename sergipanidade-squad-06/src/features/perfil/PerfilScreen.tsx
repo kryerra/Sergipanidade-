@@ -1,21 +1,16 @@
 import { useState } from 'react';
+import { useToast } from "@/context/AppContext";
 import {
   User,
   Bell,
-  Route,
   Heart,
   Star,
-  Eye,
   Edit3,
-  FileDown,
   Trash2,
-  Plus,
   ChevronDown,
   ChevronUp,
   Lock,
   Download,
-  MapPin,
-  Calendar,
   Shield,
 } from 'lucide-react';
 import { translations } from "@/constants/translations";
@@ -29,7 +24,6 @@ import { DocumentosModal } from '@/components/shared/DocumentosModal';
 type Tab =
   | 'dados'
   | 'notificacoes'
-  | 'roteiros'
   | 'favoritos'
   | 'avaliacoes';
 type FavFilter = 'all' | 'atracoes' | 'restaurantes' | 'hoteis';
@@ -142,7 +136,6 @@ function Toggle({
 
 // ─── Prop types ────────────────────────────────────────────────
 interface PerfilScreenProps {
-  onToast: (message: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
@@ -150,11 +143,11 @@ interface PerfilScreenProps {
 
 // ─── Main component ────────────────────────────────────────────
 export function PerfilScreen({
-  onToast,
   language,
   userProfile,
   onUpdateProfile,
 }: PerfilScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language] as typeof translations['pt'] & {
     notifNewsletter: string;
     tabDados: string;
@@ -315,10 +308,11 @@ export function PerfilScreen({
   // ── Tab config ──
   const TABS: { id: Tab; label: string; Icon: typeof User }[] = [
     { id: 'dados', label: t.tabDados || 'Dados', Icon: User },
-    { id: 'notificacoes', label: t.tabNotificacoes || 'Notificações', Icon: Bell },
-    { id: 'roteiros', label: t.tabRoteiros || 'Roteiros', Icon: Route },
-    { id: 'favoritos', label: t.tabFavoritos || 'Favoritos', Icon: Heart },
-    { id: 'avaliacoes', label: t.tabAvaliacoes || 'Avaliações', Icon: Star },
+    ...(!isEstabelecimento ? [
+      { id: 'notificacoes' as Tab, label: t.tabNotificacoes || 'Notificações', Icon: Bell },
+      { id: 'favoritos' as Tab, label: t.tabFavoritos || 'Favoritos', Icon: Heart },
+      { id: 'avaliacoes' as Tab, label: t.tabAvaliacoes || 'Avaliações', Icon: Star },
+    ] : []),
   ];
 
   const notifItems = [
@@ -347,7 +341,7 @@ export function PerfilScreen({
       {/* ── PROFILE HEADER ── */}
       <div
         className="px-4 sm:px-8 py-10"
-        style={{ backgroundColor: '#111111' }}
+        style={{ background: 'linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)' }}
       >
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-5">
           {/* Avatar */}
@@ -362,13 +356,13 @@ export function PerfilScreen({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap mb-1.5">
               <h1
-                className="font-['Fjalla_One'] text-white tracking-wide"
+                className="font-semibold font-display text-white tracking-tight"
                 style={{ fontSize: '28px', lineHeight: 1.1 }}
               >
                 {userProfile.name}
               </h1>
               <span
-                className="px-2.5 py-0.5 rounded-full text-white font-['Fjalla_One'] tracking-wider"
+                className="px-2.5 py-0.5 rounded-full text-white font-bold tracking-wider"
                 style={{ fontSize: '11px', backgroundColor: profileBadgeBg }}
               >
                 {profileBadge}
@@ -391,7 +385,7 @@ export function PerfilScreen({
             ].map((stat: { value: string; label: string }): JSX.Element => (
               <div key={stat.label} className="text-center">
                 <div
-                  className="font-['Fjalla_One'] text-white"
+                  className="font-semibold font-display text-white"
                   style={{ fontSize: '22px' }}
                 >
                   {stat.value}
@@ -441,7 +435,7 @@ export function PerfilScreen({
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
               <h2
-                className="font-['Fjalla_One'] text-(--preto) mb-5"
+                className="font-semibold font-display text-(--preto) mb-5"
                 style={{ fontSize: '20px' }}
               >
                 {t.profileData}
@@ -491,29 +485,31 @@ export function PerfilScreen({
                     style={{ fontSize: '14px' }}
                   />
                 </div>
-                <div>
-                  <label
-                    className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
-                    style={{ fontSize: '11px', fontWeight: 700 }}
-                  >
-                    CNPJ
-                  </label>
-                  <input
-                    type="text"
-                    value={cnpj}
-                    onChange={(e) => setCnpj(e.target.value)}
-                    className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
-                               bg-(--cinza-leve) outline-none text-(--preto)
-                               focus:border-primary focus:bg-white transition-all"
-                    style={{ fontSize: '14px' }}
-                  />
-                </div>
+                {isEstabelecimento && (
+                  <div>
+                    <label
+                      className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
+                      style={{ fontSize: '11px', fontWeight: 700 }}
+                    >
+                      CNPJ
+                    </label>
+                    <input
+                      type="text"
+                      value={cnpj}
+                      onChange={(e) => setCnpj(e.target.value)}
+                      className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
+                                 bg-(--cinza-leve) outline-none text-(--preto)
+                                 focus:border-primary focus:bg-white transition-all"
+                      style={{ fontSize: '14px' }}
+                    />
+                  </div>
+                )}
               </div>
 
               <button
                 onClick={handleSaveData}
                  className="min-h-12 px-8 rounded-sm bg-primary text-white
-                            border-none cursor-pointer font-['Fjalla_One'] tracking-wider
+                            border-none cursor-pointer font-bold tracking-wider
                             hover:bg-[#D04820] transition-colors"
                 style={{ fontSize: '14px' }}
               >
@@ -656,7 +652,7 @@ export function PerfilScreen({
         {activeTab === 'notificacoes' && (
           <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
             <h2
-              className="font-['Fjalla_One'] text-(--preto) mb-5"
+              className="font-semibold font-display text-(--preto) mb-5"
               style={{ fontSize: '20px' }}
             >
               {t.notifications}
@@ -686,106 +682,6 @@ export function PerfilScreen({
           </div>
         )}
 
-        {/* ────── ABA ROTEIROS SALVOS ────── */}
-        {activeTab === 'roteiros' && (
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {itineraries.map((itin: Itinerary): JSX.Element => (
-                <div
-                  key={itin.id}
-                  className="bg-white rounded-lg shadow-(--sombra-sm) overflow-hidden"
-                >
-                  {/* Thumbnail */}
-                  <div className="relative h-35 overflow-hidden">
-                    <ImageWithFallback
-                      src={itin.img}
-                      alt={itin.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-3 left-3">
-                      <p
-                        className="font-['Fjalla_One'] text-white tracking-wide"
-                        style={{ fontSize: '16px' }}
-                      >
-                        {itin.title}
-                      </p>
-                      <div className="flex items-center gap-2 text-white/70" style={{ fontSize: '12px' }}>
-                        <Calendar size={11} />
-                        <span>{itin.days} dias</span>
-                        <span>·</span>
-                        <span>{itin.type}</span>
-                        <span>·</span>
-                        <MapPin size={11} />
-                        <span>{itin.stops} paradas</span>
-                      </div>
-                    </div>
-                    <div
-                      className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/50 text-white"
-                      style={{ fontSize: '10px' }}
-                    >
-                      {itin.date}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 px-3 py-3 border-t border-(--cinza-med)">
-                    {[
-                      { label: 'Ver', Icon: Eye },
-                      { label: 'Editar', Icon: Edit3 },
-                      { label: t.exportPDF || 'PDF', Icon: FileDown },
-                    ].map(({ label, Icon }: { label: string; Icon: typeof Eye }): JSX.Element => (
-                      <button
-                        key={label}
-                        onClick={() => onToast(`📄 ${label}: ${itin.title}`)}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-sm
-                                   border border-(--cinza-med) bg-white text-(--preto)
-                                   cursor-pointer hover:border-primary hover:text-primary
-                                   transition-colors min-h-9"
-                        style={{ fontSize: '12px' }}
-                      >
-                        <Icon size={12} />
-                        {label}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => {
-                        setItineraries((p: Itinerary[]): Itinerary[] => p.filter((it: Itinerary): boolean => it.id !== itin.id));
-                        onToast(t.itineraryDeleted || '🗑️ Roteiro excluído');
-                      }}
-                      className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-sm
-                                 border border-red-200 bg-white text-red-500
-                                 cursor-pointer hover:bg-red-55 transition-colors min-h-9"
-                      style={{ fontSize: '12px' }}
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              {/* Create new */}
-              <button
-                onClick={() => onToast('🗺️ Abrindo wizard de roteiro…')}
-                className="min-h-50 rounded-lg border-2 border-dashed border-(--cinza-med)
-                           bg-white flex flex-col items-center justify-center gap-3
-                           cursor-pointer hover:border-primary hover:bg-(--laranja-leve)
-                           transition-all group"
-              >
-                <div className="w-12 h-12 rounded-full bg-(--cinza-leve) group-hover:bg-primary/10
-                                flex items-center justify-center transition-colors">
-                  <Plus size={22} color="var(--primary)" />
-                </div>
-                <p
-                  className="text-(--cinza-txt) group-hover:text-primary font-medium transition-colors"
-                  style={{ fontSize: '14px' }}
-                >
-                  {t.createNewItinerary || 'Criar novo roteiro'}
-                </p>
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* ────── ABA FAVORITOS ────── */}
         {activeTab === 'favoritos' && (
