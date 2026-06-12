@@ -1,7 +1,7 @@
 /* Container de tamanho fixo para o mapa */
 .roteiro-mapa-container {
   width: 100%;
-  min-height: 300px;
+  min-height: 100%;
   height: 100%;
   border-radius: var(--radius, 12px);
   overflow: hidden;

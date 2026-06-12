@@ -56,6 +56,18 @@ export const INTEREST_CATEGORY_MAP: InterestMapping[] = [
     keywords: ["pet", "animal", "bicho", "dog", "cat"],
     category: "PET FRIENDLY",
   },
+  {
+    keywords: ["compras", "shopping", "loja", "mercado", "feira"],
+    category: "GASTRONOMIA",
+  },
+  {
+    keywords: ["musica", "música", "music", "show", "festival", "forró"],
+    category: "CULTURA",
+  },
+  {
+    keywords: ["fotografia", "foto", "photo", "photography", "instagram"],
+    category: "NATUREZA",
+  },
 ];
 
 /**

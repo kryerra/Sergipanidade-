@@ -50,7 +50,7 @@ export default function App(): JSX.Element {
         navigate('/cultura');
         break;
       case 'playlist':
-        navigate('/playlist');
+        window.open('https://open.spotify.com/playlist/5WHu1dFKmpDCC90eD1Dkf6?si=mDnYttIqQPGmEBpCPhO6Kg&pi=FzmppWApTg23l', '_blank', 'noopener,noreferrer');
         break;
       case 'login':
       default:
@@ -77,7 +77,6 @@ export default function App(): JSX.Element {
   else if (currentPath.includes('/parceiro')) currentScreen = 'parceiro';
   else if (currentPath.includes('/perfil')) currentScreen = 'perfil';
   else if (currentPath.includes('/cultura')) currentScreen = 'cultura';
-  else if (currentPath.includes('/playlist')) currentScreen = 'playlist';
 
   const isNavbarVisible = currentScreen !== 'login';
   const isChatBotVisible = currentScreen !== 'login';
@@ -98,7 +97,6 @@ export default function App(): JSX.Element {
 
       <AppRoutes 
         onNavigate={handleNavigate} 
-        onToast={handleToast}
         onChangeLanguage={handleChangeLanguage}
         currentScreen={currentScreen}
         language={language}

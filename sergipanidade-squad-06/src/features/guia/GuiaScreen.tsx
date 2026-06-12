@@ -14,6 +14,7 @@ import {
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { HeroSlideshow } from '@/components/shared/HeroSlideshow';
 import { SERGIPE_BEACHES } from "@/constants/sergipeImages";
+import { useToast } from "@/context/AppContext";
 
 // ─── Configurações de categoria ──────────────────────────────────────────────
 
@@ -62,16 +63,63 @@ function parseDistance(d: string): number {
   return parseFloat(d.replace(/[^0-9.]/g, '')) || 0;
 }
 
+// Helper to translate category filter label
+function getCategoryLabel(cat: string, lang: string): string {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cat === 'Todos') {
+    return cleanLang === 'en' ? 'All' : cleanLang === 'es' ? 'Todos' : 'Todos';
+  }
+  if (cat === 'Gastronomia') return cleanLang === 'en' ? 'Gastronomy' : cleanLang === 'es' ? 'Gastronómica' : 'Gastronomia';
+  if (cat === 'Cultura') return cleanLang === 'en' ? 'Culture' : cleanLang === 'es' ? 'Cultura' : 'Cultura';
+  if (cat === 'Praias') return cleanLang === 'en' ? 'Beaches' : cleanLang === 'es' ? 'Playas' : 'Praias';
+  if (cat === 'História') return cleanLang === 'en' ? 'History' : cleanLang === 'es' ? 'Historia' : 'História';
+  if (cat === 'Natureza') return cleanLang === 'en' ? 'Nature' : cleanLang === 'es' ? 'Naturaleza' : 'Natureza';
+  if (cat === 'Pet Friendly') return 'Pet Friendly';
+  return cat;
+}
+
+// Helper to translate sort options label
+function getSortOptionLabel(value: string, lang: string): string {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (value === 'relevance') {
+    return cleanLang === 'en' ? 'Most relevant' : cleanLang === 'es' ? 'Más relevantes' : 'Mais relevantes';
+  }
+  if (value === 'rating') {
+    return cleanLang === 'en' ? 'Best rated' : cleanLang === 'es' ? 'Mejor valorados' : 'Melhor avaliados';
+  }
+  if (value === 'distance') {
+    return cleanLang === 'en' ? 'Nearest' : cleanLang === 'es' ? 'Más cercanos' : 'Mais próximos';
+  }
+  return value;
+}
+
+// Helper to translate region names
+function getRegionTraduzida(region: string, lang: string): string {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cleanLang === 'pt') return region;
+  if (region === 'Aracaju') return 'Aracaju';
+  if (region === 'Interior') {
+    return cleanLang === 'en' ? 'Countryside' : 'Interior';
+  }
+  if (region === 'Litoral Norte') {
+    return cleanLang === 'en' ? 'North Coast' : 'Costa Norte';
+  }
+  if (region === 'Litoral Sul') {
+    return cleanLang === 'en' ? 'South Coast' : 'Costa Sur';
+  }
+  return region;
+}
+
 // ─── DestinationCard ─────────────────────────────────────────────────────────
 
 interface CardProps {
   dest: Destination;
   onNavigate: (screen: string, id: string) => void;
-  onToast: (msg: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
 }
 
-function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
+function DestinationCard({ dest, onNavigate, language }: CardProps) {
+  const { toast: onToast } = useToast();
   const [liked, setLiked]   = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [saved, setSaved]   = useState(false);
@@ -127,7 +175,7 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
         {/* Nome */}
         <h3
           onClick={() => onNavigate('detalhe', dest.id)}
-          className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-1.5
+          className="font-semibold font-display text-[var(--preto)] tracking-tight leading-tight mb-1.5
                      cursor-pointer hover:text-[var(--primary)] transition-colors"
           style={{ fontSize: '16px' }}
         >
@@ -138,7 +186,7 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
         <div className="flex items-center gap-1 mb-2">
           <MapPin size={11} className="text-[var(--cinza-txt)] shrink-0" />
           <span className="text-[12px] text-[var(--cinza-txt)]">
-            {dest.bairro} · {dest.region}
+            {dest.bairro} · {getRegionTraduzida(dest.region, language)}
           </span>
           <span className="text-[11px] text-[var(--cinza-txt)]/60 ml-auto shrink-0">{dest.distance}</span>
         </div>
@@ -171,7 +219,7 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
         <div className="flex items-center gap-1.5 mb-3">
           {/* Like */}
           <button
-            onClick={() => { setLiked(!liked); setDisliked(false); if (!liked) onToast(`Curtido!`); }}
+            onClick={() => { setLiked(!liked); setDisliked(false); if (!liked) onToast(language === 'en' ? 'Liked!' : language === 'es' ? '¡Gustó!' : 'Curtido!'); }}
             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium
                         border transition-all min-h-[30px]
                         ${liked
@@ -196,18 +244,30 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
 
           {/* Compartilhar */}
           <button
-            onClick={() => onToast(`Link copiado!`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(dest.address);
+              const msg = language === 'en' ? 'Location copied!'
+                        : language === 'es' ? '¡Ubicación copiada!'
+                        : 'Localização copiada!';
+              onToast(msg);
+            }}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px]
                        border border-[var(--cinza-med)] text-[var(--cinza-txt)] transition-all min-h-[30px]
                        hover:border-[var(--azul)]/40 hover:text-[var(--azul)]"
           >
             <Share2 size={11} strokeWidth={2} />
-            <span className="hidden lg:inline">Compartilhar</span>
+            <span className="hidden lg:inline">{language === 'en' ? 'Share' : language === 'es' ? 'Compartir' : 'Compartilhar'}</span>
           </button>
 
           {/* Salvar — empurrado para a direita */}
           <button
-            onClick={() => { setSaved(!saved); onToast(saved ? `Removido` : `${dest.name} salvo!`); }}
+            onClick={() => {
+              setSaved(!saved);
+              const savedMsg = language === 'en' ? 'saved!' : language === 'es' ? '¡guardado!' : 'salvo!';
+              const removedMsg = language === 'en' ? 'Removed' : language === 'es' ? 'Removido' : 'Removido';
+              onToast(saved ? removedMsg : `${dest.name} ${savedMsg}`);
+            }}
             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] ml-auto
                         border transition-all min-h-[30px]
                         ${saved
@@ -215,19 +275,23 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
                           : 'border-[var(--cinza-med)] text-[var(--cinza-txt)] hover:border-[var(--primary)]/30 hover:text-[var(--primary)]'}`}
           >
             <Bookmark size={11} fill={saved ? 'currentColor' : 'none'} strokeWidth={2} />
-            <span className="hidden lg:inline">Salvar</span>
+            <span className="hidden lg:inline">
+              {saved
+                ? (language === 'en' ? 'Saved' : language === 'es' ? 'Guardado' : 'Salvo')
+                : (translations[language]?.salvar || 'Salvar')}
+            </span>
           </button>
         </div>
 
         {/* CTA — Explorar */}
         <button
           onClick={() => onNavigate('detalhe', dest.id)}
-          className="w-full py-2.5 rounded-[10px] text-white font-['Fjalla_One'] text-[12px]
+          className="w-full py-2.5 rounded-[10px] text-white font-bold text-[12px]
                      tracking-widest uppercase cursor-pointer border-none transition-all min-h-[40px]
                      hover:opacity-90 active:scale-[0.98]"
           style={{ backgroundColor: 'var(--primary)', boxShadow: '0 2px 10px rgba(240,96,48,0.22)' }}
         >
-          EXPLORAR
+          {translations[language]?.exploreButton || 'EXPLORAR'}
         </button>
       </div>
     </div>
@@ -239,12 +303,11 @@ function DestinationCard({ dest, onNavigate, onToast, language }: CardProps) {
 
 interface GuiaScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
-  onToast: (message: string) => void;
   onOpenGPS: (destinationId?: string) => void;
   language: 'pt' | 'en' | 'es' | 'sp';
 }
 
-export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScreenProps) {
+export function GuiaScreen({ onNavigate, onOpenGPS, language }: GuiaScreenProps) {
   const [activeRegion, setActiveRegion]   = useState('Todos');
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchTerm, setSearchTerm]       = useState('');
@@ -291,7 +354,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
       ════════════════════════════════════════════════════════════ */}
       <HeroSlideshow images={SERGIPE_BEACHES} height="480px" overlayOpacity={0.55} fit="cover">
           <h1
-            className="font-['Fjalla_One'] text-white tracking-wide"
+            className="font-semibold font-display text-white tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}
           >
             {t.guideTitle ?? 'Guia de Destinos'}
@@ -339,7 +402,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                   }}
                 >
                   {IconComponent && <IconComponent size={13} strokeWidth={2} />}
-                  {cat}
+                  {getCategoryLabel(cat, language)}
                 </button>
               );
             })}
@@ -352,7 +415,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--cinza-txt)] pointer-events-none" />
               <input
                 type="text"
-                placeholder="Buscar destino..."
+                placeholder={language === 'en' ? 'Search destination...' : language === 'es' ? 'Buscar destino...' : 'Buscar destino...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 rounded-[8px] text-[13px] outline-none
@@ -386,7 +449,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                            hover:border-[var(--primary)]/40 transition-colors min-h-[36px] whitespace-nowrap"
               >
                 <SlidersHorizontal size={13} className="text-[var(--cinza-txt)]" />
-                {currentSort.label}
+                {getSortOptionLabel(currentSort.value, language)}
                 <ChevronDown size={13} className={`text-[var(--cinza-txt)] transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
               </button>
 
@@ -406,7 +469,7 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                       onMouseEnter={(e) => { if (sortOrder !== opt.value) (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--cinza-leve)'; }}
                       onMouseLeave={(e) => { if (sortOrder !== opt.value) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}
                     >
-                      {opt.label}
+                      {getSortOptionLabel(opt.value, language)}
                       {sortOrder === opt.value && <span className="text-[11px]">✓</span>}
                     </button>
                   ))}
@@ -428,15 +491,29 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
           {(searchTerm || activeCategory !== 'Todos') && (
             <div className="flex items-center justify-between mb-5">
               <p className="text-[13px] text-[var(--cinza-txt)]">
-                <span className="font-bold text-[var(--preto)]">{result.length}</span> destino{result.length !== 1 ? 's' : ''} encontrado{result.length !== 1 ? 's' : ''}
-                {searchTerm && <> para "<span className="font-medium text-[var(--preto)]">{searchTerm}</span>"</>}
+                {language === 'en' ? (
+                  <>
+                    <span className="font-bold text-[var(--preto)]">{result.length}</span> destination{result.length !== 1 ? 's' : ''} found
+                    {searchTerm && <> for "<span className="font-medium text-[var(--preto)]">{searchTerm}</span>"</>}
+                  </>
+                ) : language === 'es' ? (
+                  <>
+                    <span className="font-bold text-[var(--preto)]">{result.length}</span> destino{result.length !== 1 ? 's' : ''} encontrado{result.length !== 1 ? 's' : ''}
+                    {searchTerm && <> para "<span className="font-medium text-[var(--preto)]">{searchTerm}</span>"</>}
+                  </>
+                ) : (
+                  <>
+                    <span className="font-bold text-[var(--preto)]">{result.length}</span> destino{result.length !== 1 ? 's' : ''} encontrado{result.length !== 1 ? 's' : ''}
+                    {searchTerm && <> para "<span className="font-medium text-[var(--preto)]">{searchTerm}</span>"</>}
+                  </>
+                )}
               </p>
               <button
                 onClick={() => { setSearchTerm(''); setActiveCategory('Todos'); }}
                 className="text-[12px] text-[var(--primary)] font-medium bg-transparent border-none
                            cursor-pointer hover:underline"
               >
-                Limpar filtros
+                {language === 'en' ? 'Clear filters' : language === 'es' ? 'Limpiar filtros' : 'Limpar filtros'}
               </button>
             </div>
           )}
@@ -449,7 +526,6 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
                   key={dest.id}
                   dest={dest}
                   onNavigate={(screen, id) => onNavigate(screen, id)}
-                  onToast={onToast}
                   language={language}
                 />
               ))}
@@ -460,20 +536,20 @@ export function GuiaScreen({ onNavigate, onToast, onOpenGPS, language }: GuiaScr
               <div className="mb-4">
               <Search size={48} className="text-[var(--cinza-txt)]" />
             </div>
-              <h3 className="font-['Fjalla_One'] text-[var(--preto)] mb-2" style={{ fontSize: '22px' }}>
-                Nenhum destino encontrado
+              <h3 className="font-semibold font-display tracking-tight text-[var(--preto)] mb-2" style={{ fontSize: '22px' }}>
+                {t.noResults?.title || 'Nenhum destino encontrado'}
               </h3>
               <p className="text-[var(--cinza-txt)] mb-6 max-w-[320px]" style={{ fontSize: '14px' }}>
-                Tente outra região, categoria ou termo de busca
+                {language === 'en' ? 'Try another region, category or search term' : language === 'es' ? 'Intente otra región, categoría o término de búsqueda' : 'Tente outra região, categoria ou termo de busca'}
               </p>
               <button
                 onClick={() => { setSearchTerm(''); setActiveCategory('Todos'); setActiveRegion('Todos'); }}
-                className="px-6 py-3 rounded-[10px] text-white font-['Fjalla_One'] text-[13px]
+                className="px-6 py-3 rounded-[10px] text-white font-bold text-[13px]
                            tracking-wider uppercase cursor-pointer border-none transition-all
                            hover:opacity-90 min-h-[44px]"
                 style={{ backgroundColor: 'var(--primary)' }}
               >
-                LIMPAR FILTROS
+                {t.noResults?.clearButton || 'LIMPAR FILTROS'}
               </button>
             </div>
           )}

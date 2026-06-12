@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { MapPin } from "lucide-react";
 import type { Destination } from "@/constants/destinations";
 
@@ -5,7 +6,7 @@ interface RoteiroMapaSVGProps {
   stops: Destination[];
 }
 
-export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
+export const RoteiroMapaSVG = memo(function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
   if (stops.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-[var(--cinza-leve)] rounded-[var(--radius)]">
@@ -88,7 +89,7 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
       <polyline
         points={routePts}
         fill="none"
-        stroke="#F06030"
+        stroke="#0D7377"
         strokeWidth="3"
         strokeDasharray="10 6"
         strokeLinecap="round"
@@ -109,7 +110,7 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
             y={my}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#F06030"
+            fill="#0D7377"
             fontSize="10"
             transform={`rotate(${angle}, ${mx}, ${my})`}
           >
@@ -121,7 +122,7 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
       {stops.map((s, i) => (
         <g key={s.id}>
           <circle cx={px(s.lon)} cy={py(s.lat)} r={17} fill="white" />
-          <circle cx={px(s.lon)} cy={py(s.lat)} r={15} fill="#F06030" />
+          <circle cx={px(s.lon)} cy={py(s.lat)} r={15} fill="#0D7377" />
           <text
             x={px(s.lon)}
             y={py(s.lat) + 1}
@@ -162,7 +163,7 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
           textAnchor="middle"
           y={-4}
           fontSize="8"
-          fill="#F06030"
+          fill="#0D7377"
           fontWeight="700"
         >
           N
@@ -172,4 +173,4 @@ export function RoteiroMapaSVG({ stops }: RoteiroMapaSVGProps) {
       </g>
     </svg>
   );
-}
+});

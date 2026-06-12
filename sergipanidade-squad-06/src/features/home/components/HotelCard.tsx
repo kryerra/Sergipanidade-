@@ -6,6 +6,7 @@
 import { MapPin, ExternalLink } from 'lucide-react';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { StarRating } from '@/components/ui/StarRating';
+import { useToast } from "@/context/AppContext";
 
 interface HotelCardProps {
   id: string;
@@ -21,7 +22,7 @@ interface HotelCardProps {
   verOpcoesLabel: string;
   apartirDeLabel: string;
   porNoiteLabel: string;
-  onToast: (msg: string) => void;
+  link?: string;
 }
 
 /** Renderiza $ $ $ $ com os ativos em âmbar */
@@ -58,20 +59,21 @@ export function HotelCard({
   verOpcoesLabel,
   apartirDeLabel,
   porNoiteLabel,
-  onToast,
+  link,
 }: HotelCardProps) {
+  const { toast: onToast } = useToast();
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden flex flex-col
-                 shadow-[0_4px_20px_rgba(17,17,17,0.09)] border border-[rgba(17,17,17,0.06)]
-                 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(17,17,17,0.15)]"
+                 border border-[rgba(17,17,17,0.06)] cursor-pointer
+                 transition-shadow duration-200 hover:shadow-md group"
     >
       {/* — Foto — */}
-      <div className="relative overflow-hidden" style={{ height: '210px' }}>
+      <div className="relative aspect-video overflow-hidden rounded-t-xl">
         <ImageWithFallback
           src={image}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
 
@@ -86,11 +88,11 @@ export function HotelCard({
         </div>
 
         {/* Preço sobre a foto — canto inferior direito */}
-        <div className="absolute bottom-3 right-3 bg-black/55 backdrop-blur-sm rounded-xl px-3 py-1.5">
-          <span className="text-[11px] text-white/70 block leading-none mb-0.5">{apartirDeLabel}</span>
-          <span className="text-white font-bold" style={{ fontSize: '14px' }}>
+        <div className="absolute bottom-2 right-2 bg-black/65 text-white text-xs font-semibold px-2 py-1 rounded-md">
+          <span className="text-[10px] text-white/80 block leading-none mb-0.5">{apartirDeLabel}</span>
+          <span className="text-white font-bold text-xs">
             {startingPrice}
-            <span className="text-white/60 text-[10px] font-normal"> {porNoiteLabel}</span>
+            <span className="text-white/80 text-[9px] font-normal"> {porNoiteLabel}</span>
           </span>
         </div>
       </div>
@@ -99,7 +101,7 @@ export function HotelCard({
       <div className="p-4 flex flex-col flex-1">
         {/* Nome */}
         <h3
-          className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-1.5"
+          className="font-semibold font-display text-[var(--preto)] tracking-tight leading-tight mb-1.5"
           style={{ fontSize: '17px' }}
         >
           {name}
@@ -112,8 +114,9 @@ export function HotelCard({
         </div>
 
         {/* Faixa de preço + Avaliação */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2 flex-wrap mb-3">
           <PriceRange level={priceLevel} />
+          <span className="text-gray-300 select-none">·</span>
           <StarRating rating={rating} reviews={reviews} size="sm" />
         </div>
 
@@ -122,30 +125,44 @@ export function HotelCard({
           {amenities.map((a) => (
             <span
               key={a}
-              className="px-2 py-0.5 rounded-md text-[11px] font-medium"
-              style={{
-                backgroundColor: 'rgba(74,143,212,0.08)',
-                color: 'var(--azul)',
-              }}
+              className="px-2 py-0.5 rounded-md text-[11px] font-medium text-gray-600 bg-gray-100"
             >
               {a}
             </span>
           ))}
         </div>
 
-        {/* Botão "Ver opções" */}
+        {/* Botão "Saiba mais" */}
         <div className="mt-auto">
-          <button
-            onClick={() => onToast('Abrindo opções de hospedagem...')}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
-                       text-white font-['Fjalla_One'] text-[13px] tracking-wider uppercase
-                       cursor-pointer border-none transition-all min-h-[44px]
-                       hover:opacity-90 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--azul)' }}
-          >
-            <ExternalLink size={14} strokeWidth={2.5} />
-            {verOpcoesLabel}
-          </button>
+          {link ? (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
+                         text-white font-bold text-[13px]
+                         cursor-pointer border-none transition-all min-h-[44px]
+                         hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--azul)', textDecoration: 'none' }}
+              aria-label={`Saiba mais sobre hospedagem em ${name}`}
+            >
+              <ExternalLink size={14} strokeWidth={2.5} />
+              {verOpcoesLabel}
+            </a>
+          ) : (
+            <button
+              onClick={() => onToast('Abrindo opções de hospedagem...')}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px]
+                         text-white font-bold text-[13px]
+                         cursor-pointer border-none transition-all min-h-[44px]
+                         hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--azul)' }}
+              aria-label={`Saiba mais sobre hospedagem em ${name}`}
+            >
+              <ExternalLink size={14} strokeWidth={2.5} />
+              {verOpcoesLabel}
+            </button>
+          )}
         </div>
       </div>
     </div>
