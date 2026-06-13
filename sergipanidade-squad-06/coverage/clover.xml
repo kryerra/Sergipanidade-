@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1781305288957" clover="3.2.0">
+  <project timestamp="1781305288957" name="All files">
+    <metrics statements="274" coveredstatements="231" conditionals="205" coveredconditionals="129" methods="51" coveredmethods="39" elements="530" coveredelements="399" complexity="0" loc="274" ncloc="274" packages="12" files="49" classes="49"/>
+    <package name="assets.images">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="arco-orla.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\arco-orla.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="memorial-de-sergipe.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.canion-xingo">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="canions-dt.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\canion-xingo\canions-dt.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="canions-dt2.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\canion-xingo\canions-dt2.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="canions-dt3.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\canion-xingo\canions-dt3.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="canions-dt4.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\canion-xingo\canions-dt4.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="canions-dt5.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\canion-xingo\canions-dt5.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.centro-historico">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="centrohistorico-dt.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\centro-historico\centrohistorico-dt.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="centrohistorico-dt4.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\centro-historico\centrohistorico-dt4.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="centrohistorico-dt5.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\centro-historico\centrohistorico-dt5.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="centrohistorico-dt7.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\centro-historico\centrohistorico-dt7.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="centrohistorico-dt8.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\centro-historico\centrohistorico-dt8.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.memorial-de-sergipe">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="memorial-dt.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe\memorial-dt.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="memorial-dt2.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe\memorial-dt2.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="memorial-dt3.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe\memorial-dt3.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="memorial-dt4.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe\memorial-dt4.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="memorial-dt6.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\memorial-de-sergipe\memorial-dt6.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.mercado-thales">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="mercado-dt.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\mercado-thales\mercado-dt.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="mercado-dt2.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\mercado-thales\mercado-dt2.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="mercado-dt3.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\mercado-thales\mercado-dt3.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="mercado-dt5.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\mercado-thales\mercado-dt5.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="mercado-dt7.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\mercado-thales\mercado-dt7.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.miauteria">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="miauteria-1.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\miauteria\miauteria-1.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="miauteria-2.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\miauteria\miauteria-2.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="miauteria-3.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\miauteria\miauteria-3.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="miauteria-4.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\miauteria\miauteria-4.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="miauteria-5.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\miauteria\miauteria-5.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.museu-gente">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="museu-1.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\museu-gente\museu-1.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="museu-2.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\museu-gente\museu-2.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="museu-3.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\museu-gente\museu-3.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="museu-4.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\museu-gente\museu-4.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="museu-5.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\museu-gente\museu-5.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.orla-atalaia">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="orla-1.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla-1.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="orla-2.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla-2.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="orla-3.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla-3.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="orla-4.png" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla-4.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="orla-5.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla-5.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="orla.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\orla-atalaia\orla.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="assets.images.gallery.parque-sementeira">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="sementeira-dt.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\parque-sementeira\sementeira-dt.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="sementeira-dt2.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\parque-sementeira\sementeira-dt2.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="sementeira-dt3.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\parque-sementeira\sementeira-dt3.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="sementeira-dt5.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\parque-sementeira\sementeira-dt5.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="sementeira-dt6.jpg" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\assets\images\gallery\parque-sementeira\sementeira-dt6.jpg">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="constants">
+      <metrics statements="16" coveredstatements="13" conditionals="6" coveredconditionals="3" methods="9" coveredmethods="5"/>
+      <file name="destinations.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\constants\destinations.ts">
+        <metrics statements="4" coveredstatements="1" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="95" count="1" type="stmt"/>
+        <line num="394" count="0" type="stmt"/>
+        <line num="398" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="399" count="0" type="stmt"/>
+      </file>
+      <file name="interests.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\constants\interests.ts">
+        <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="4"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="78" count="5" type="stmt"/>
+        <line num="80" count="5" type="stmt"/>
+        <line num="81" count="5" type="stmt"/>
+        <line num="86" count="5" type="stmt"/>
+        <line num="87" count="230" type="cond" truecount="2" falsecount="0"/>
+        <line num="88" count="5" type="stmt"/>
+        <line num="93" count="5" type="stmt"/>
+      </file>
+      <file name="periods.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\constants\periods.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="49" count="17" type="stmt"/>
+        <line num="55" count="17" type="cond" truecount="1" falsecount="1"/>
+      </file>
+    </package>
+    <package name="services">
+      <metrics statements="258" coveredstatements="218" conditionals="199" coveredconditionals="126" methods="42" coveredmethods="34"/>
+      <file name="chatbot.service.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\services\chatbot.service.ts">
+        <metrics statements="24" coveredstatements="20" conditionals="18" coveredconditionals="10" methods="4" coveredmethods="2"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="46" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="53" count="3" type="stmt"/>
+        <line num="54" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="65" count="2" type="stmt"/>
+        <line num="66" count="2" type="stmt"/>
+        <line num="84" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="85" count="1" type="stmt"/>
+        <line num="86" count="1" type="stmt"/>
+        <line num="89" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="90" count="1" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="107" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="117" count="1" type="stmt"/>
+        <line num="122" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+      </file>
+      <file name="itinerary.service.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\services\itinerary.service.ts">
+        <metrics statements="219" coveredstatements="186" conditionals="167" coveredconditionals="104" methods="35" coveredmethods="30"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="34" count="5" type="stmt"/>
+        <line num="35" count="5" type="stmt"/>
+        <line num="36" count="25" type="stmt"/>
+        <line num="37" count="25" type="stmt"/>
+        <line num="39" count="5" type="stmt"/>
+        <line num="48" count="29" type="cond" truecount="3" falsecount="1"/>
+        <line num="49" count="29" type="stmt"/>
+        <line num="50" count="29" type="stmt"/>
+        <line num="66" count="16" type="stmt"/>
+        <line num="68" count="16" type="stmt"/>
+        <line num="69" count="16" type="stmt"/>
+        <line num="70" count="1984" type="stmt"/>
+        <line num="71" count="1984" type="stmt"/>
+        <line num="72" count="1984" type="stmt"/>
+        <line num="74" count="16" type="stmt"/>
+        <line num="82" count="5" type="stmt"/>
+        <line num="83" count="5" type="stmt"/>
+        <line num="84" count="29" type="stmt"/>
+        <line num="85" count="29" type="cond" truecount="2" falsecount="0"/>
+        <line num="86" count="28" type="stmt"/>
+        <line num="87" count="28" type="stmt"/>
+        <line num="101" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="103" count="10" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="105" count="2" type="stmt"/>
+        <line num="106" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="109" count="16" type="stmt"/>
+        <line num="110" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="115" count="2" type="stmt"/>
+        <line num="117" count="4" type="cond" truecount="3" falsecount="1"/>
+        <line num="118" count="4" type="stmt"/>
+        <line num="122" count="4" type="cond" truecount="3" falsecount="1"/>
+        <line num="123" count="4" type="stmt"/>
+        <line num="126" count="4" type="stmt"/>
+        <line num="129" count="2" type="stmt"/>
+        <line num="130" count="2" type="stmt"/>
+        <line num="132" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="133" count="2" type="stmt"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="135" count="2" type="stmt"/>
+        <line num="136" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="139" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="144" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="146" count="2" type="stmt"/>
+        <line num="152" count="2" type="stmt"/>
+        <line num="155" count="2" type="stmt"/>
+        <line num="170" count="8" type="stmt"/>
+        <line num="172" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="178" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="179" count="1" type="stmt"/>
+        <line num="180" count="8" type="stmt"/>
+        <line num="182" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="183" count="1" type="stmt"/>
+        <line num="189" count="0" type="stmt"/>
+        <line num="190" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="191" count="0" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="194" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="197" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="198" count="0" type="stmt"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="239" count="24" type="cond" truecount="9" falsecount="0"/>
+        <line num="241" count="3" type="stmt"/>
+        <line num="245" count="9" type="stmt"/>
+        <line num="251" count="12" type="stmt"/>
+        <line num="256" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="257" count="3" type="stmt"/>
+        <line num="258" count="3" type="stmt"/>
+        <line num="261" count="3" type="stmt"/>
+        <line num="264" count="3" type="stmt"/>
+        <line num="265" count="24" type="stmt"/>
+        <line num="269" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="271" count="24" type="stmt"/>
+        <line num="273" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="274" count="6" type="stmt"/>
+        <line num="278" count="24" type="stmt"/>
+        <line num="279" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="280" count="12" type="stmt"/>
+        <line num="281" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="285" count="3" type="stmt"/>
+        <line num="288" count="24" type="stmt"/>
+        <line num="295" count="42" type="stmt"/>
+        <line num="297" count="3" type="stmt"/>
+        <line num="298" count="3" type="stmt"/>
+        <line num="299" count="3" type="stmt"/>
+        <line num="300" count="3" type="stmt"/>
+        <line num="301" count="3" type="stmt"/>
+        <line num="304" count="3" type="stmt"/>
+        <line num="305" count="24" type="stmt"/>
+        <line num="308" count="3" type="stmt"/>
+        <line num="309" count="18" type="stmt"/>
+        <line num="310" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="313" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="314" count="6" type="stmt"/>
+        <line num="316" count="18" type="stmt"/>
+        <line num="319" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="322" count="18" type="stmt"/>
+        <line num="323" count="144" type="stmt"/>
+        <line num="324" count="144" type="cond" truecount="2" falsecount="0"/>
+        <line num="325" count="126" type="cond" truecount="2" falsecount="0"/>
+        <line num="326" count="123" type="stmt"/>
+        <line num="330" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="331" count="0" type="stmt"/>
+        <line num="332" count="0" type="stmt"/>
+        <line num="337" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="338" count="0" type="stmt"/>
+        <line num="343" count="18" type="stmt"/>
+        <line num="344" count="123" type="stmt"/>
+        <line num="346" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="349" count="18" type="stmt"/>
+        <line num="350" count="99" type="cond" truecount="1" falsecount="1"/>
+        <line num="352" count="99" type="stmt"/>
+        <line num="353" count="99" type="stmt"/>
+        <line num="357" count="18" type="stmt"/>
+        <line num="358" count="81" type="stmt"/>
+        <line num="360" count="18" type="stmt"/>
+        <line num="363" count="18" type="stmt"/>
+        <line num="367" count="18" type="stmt"/>
+        <line num="368" count="18" type="stmt"/>
+        <line num="372" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="378" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="380" count="18" type="stmt"/>
+        <line num="388" count="18" type="stmt"/>
+        <line num="412" count="9" type="stmt"/>
+        <line num="413" count="9" type="stmt"/>
+        <line num="414" count="9" type="stmt"/>
+        <line num="415" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="416" count="3" type="stmt"/>
+        <line num="417" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="419" count="1" type="stmt"/>
+        <line num="420" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="421" count="1" type="stmt"/>
+        <line num="422" count="1" type="stmt"/>
+        <line num="423" count="1" type="stmt"/>
+        <line num="424" count="1" type="stmt"/>
+        <line num="426" count="1" type="stmt"/>
+        <line num="428" count="1" type="cond" truecount="4" falsecount="1"/>
+        <line num="429" count="1" type="stmt"/>
+        <line num="430" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="431" count="1" type="stmt"/>
+        <line num="439" count="7" type="stmt"/>
+        <line num="440" count="56" type="stmt"/>
+        <line num="447" count="7" type="stmt"/>
+        <line num="448" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="449" count="9" type="stmt"/>
+        <line num="450" count="9" type="stmt"/>
+        <line num="452" count="21" type="cond" truecount="1" falsecount="3"/>
+        <line num="456" count="9" type="stmt"/>
+        <line num="457" count="9" type="stmt"/>
+        <line num="460" count="9" type="stmt"/>
+        <line num="461" count="9" type="cond" truecount="1" falsecount="1"/>
+        <line num="462" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="463" count="0" type="stmt"/>
+        <line num="464" count="0" type="stmt"/>
+        <line num="466" count="0" type="stmt"/>
+        <line num="469" count="7" type="stmt"/>
+        <line num="497" count="7" type="stmt"/>
+        <line num="498" count="7" type="stmt"/>
+        <line num="500" count="7" type="stmt"/>
+        <line num="501" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="502" count="0" type="stmt"/>
+        <line num="507" count="5" type="stmt"/>
+        <line num="508" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="509" count="0" type="stmt"/>
+        <line num="515" count="5" type="stmt"/>
+        <line num="517" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="518" count="0" type="stmt"/>
+        <line num="523" count="5" type="cond" truecount="3" falsecount="1"/>
+        <line num="524" count="0" type="stmt"/>
+        <line num="529" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="530" count="1" type="stmt"/>
+        <line num="534" count="5" type="stmt"/>
+        <line num="535" count="5" type="stmt"/>
+        <line num="536" count="29" type="cond" truecount="1" falsecount="1"/>
+        <line num="537" count="0" type="stmt"/>
+        <line num="543" count="29" type="stmt"/>
+        <line num="548" count="29" type="stmt"/>
+        <line num="549" count="128" type="stmt"/>
+        <line num="552" count="29" type="cond" truecount="2" falsecount="0"/>
+        <line num="554" count="1" type="stmt"/>
+        <line num="556" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="559" count="1" type="stmt"/>
+        <line num="561" count="1" type="stmt"/>
+        <line num="566" count="1" type="stmt"/>
+        <line num="567" count="1" type="stmt"/>
+        <line num="570" count="28" type="stmt"/>
+        <line num="571" count="28" type="stmt"/>
+        <line num="575" count="5" type="stmt"/>
+        <line num="578" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="579" count="2" type="stmt"/>
+        <line num="583" count="5" type="stmt"/>
+        <line num="584" count="5" type="stmt"/>
+        <line num="585" count="30" type="stmt"/>
+        <line num="586" count="30" type="cond" truecount="1" falsecount="1"/>
+        <line num="587" count="30" type="stmt"/>
+        <line num="595" count="5" type="stmt"/>
+        <line num="596" count="5" type="stmt"/>
+        <line num="601" count="5" type="stmt"/>
+        <line num="603" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="604" count="0" type="stmt"/>
+        <line num="606" count="2" type="cond" truecount="5" falsecount="0"/>
+        <line num="608" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="609" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="610" count="0" type="stmt"/>
+        <line num="612" count="0" type="stmt"/>
+        <line num="613" count="0" type="stmt"/>
+        <line num="615" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="616" count="0" type="stmt"/>
+        <line num="618" count="0" type="stmt"/>
+        <line num="621" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="622" count="2" type="stmt"/>
+        <line num="627" count="2" type="stmt"/>
+        <line num="628" count="2" type="stmt"/>
+        <line num="630" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="631" count="0" type="stmt"/>
+        <line num="633" count="0" type="stmt"/>
+      </file>
+      <file name="schemas.ts" path="C:\Users\angel\frontend-sergipanidade\sergipanidade-squad-06\src\services\schemas.ts">
+        <metrics statements="15" coveredstatements="12" conditionals="14" coveredconditionals="12" methods="3" coveredmethods="2"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="9" count="4" type="stmt"/>
+        <line num="10" count="16" type="stmt"/>
+        <line num="11" count="16" type="cond" truecount="3" falsecount="1"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="15" count="16" type="stmt"/>
+        <line num="16" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="25" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

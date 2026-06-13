@@ -41,7 +41,6 @@ interface NavbarProps {
   onNavigate: (screen: string) => void;
   isVisible: boolean;
   language: 'pt' | 'en' | 'es' | 'sp';
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
 }
 
 export function Navbar({

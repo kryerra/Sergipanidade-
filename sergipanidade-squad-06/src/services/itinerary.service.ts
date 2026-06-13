@@ -10,7 +10,8 @@
 import { destinations } from "@/constants/destinations";
 import { getMatchedCategories } from "@/constants/interests";
 import { getPeriodLabels } from "@/constants/periods";
-import { ParadaGerada } from "@/types";
+import { ParadaGerada, WizardData } from "@/types";
+import { ParadaGeradaArraySchema } from "./schemas";
 import { gerarRoteiroComIA } from "./gemini/gemini.service";
 
 /* ──────────────────────────────────────
@@ -251,17 +252,7 @@ function obterCustoDestino(id: string): "economico" | "moderado" | "premium" {
   }
 }
 
-export function gerarRoteiroLocal(
-  dados: {
-    who: string;
-    days: number;
-    startDate: string;
-    interests: string[];
-    budget: string;
-    stopsPerDay?: number;
-  },
-  idioma: "pt" | "en" | "es",
-): ParadaGerada[] {
+export function gerarRoteiroLocal(dados: WizardData, idioma: "pt" | "en" | "es"): ParadaGerada[] {
   const paradasPorDia = dados.stopsPerDay ?? 3;
   const totalParadas = dados.days * paradasPorDia;
   const categoriasCompativeis = getMatchedCategories(dados.interests);
@@ -413,14 +404,7 @@ export function gerarRoteiroLocal(
  * @returns { paradas, isAI } – `isAI` indica se a resposta veio da IA.
  */
 export async function gerarRoteiroComIAComFallback(
-  dados: {
-    who: string;
-    days: number;
-    startDate: string;
-    interests: string[];
-    budget: string;
-    stopsPerDay?: number;
-  },
+  dados: WizardData,
   idioma: "pt" | "en" | "es",
   signal?: AbortSignal,
 ): Promise<{ paradas: ParadaGerada[]; isAI: boolean }> {
@@ -430,19 +414,21 @@ export async function gerarRoteiroComIAComFallback(
     const cacheHit = sessionStorage.getItem(chaveCache);
     if (cacheHit) {
       const parsed = JSON.parse(cacheHit);
-      if (parsed) {
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Formato antigo: apenas um array (tratar como isAI: true e migrar para o novo formato)
-          const paradas = parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Formato antigo: apenas um array (tratar como isAI: true e migrar para o novo formato)
+        const validation = ParadaGeradaArraySchema.safeParse(parsed);
+        if (validation.success) {
+          const paradas = validation.data;
           const isAI = true;
-          // Migra o formato no cache
           try {
             sessionStorage.setItem(chaveCache, JSON.stringify({ paradas, isAI }));
           } catch {}
           return { paradas, isAI };
-        } else if (typeof parsed === "object" && Array.isArray(parsed.paradas)) {
-          // Novo formato: { paradas, isAI }
-          return { paradas: parsed.paradas, isAI: !!parsed.isAI };
+        }
+      } else if (typeof parsed === "object" && parsed !== null && Array.isArray((parsed as any).paradas)) {
+        const validation = ParadaGeradaArraySchema.safeParse((parsed as any).paradas);
+        if (validation.success) {
+          return { paradas: validation.data, isAI: !!(parsed as any).isAI };
         }
       }
     }

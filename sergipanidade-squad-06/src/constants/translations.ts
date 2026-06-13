@@ -489,6 +489,7 @@ const translationsBase = {
     chatBotWelcome: 'Olá! Sou o Serginho. Posso te ajudar a explorar o melhor de Sergipe!',
     chatBotSuggestion: 'Experimente: "praias", "gastronomia", "museus" ou "eventos".',
     chatInputPlaceholder: 'Pergunte algo…',
+    chatBotMessagesLabel: 'Histórico do chat de ajuda',
     chatResponses: {
       praias: 'Sergipe tem praias paradisíacas! Orla de Atalaia, Praia de Mangue Seco e Praia do Saco são imperdíveis. Quer saber mais?',
       gastronomia: 'A culinária sergipana é incrível! Caruru, Caldo de Sururu, Moqueca… O Mercado Thales Ferraz é o lugar certo para começar!',
@@ -1176,6 +1177,7 @@ const translationsBase = {
     chatBotWelcome: 'Hello! I\'m Serginho. I can help you explore the best of Sergipe!',
     chatBotSuggestion: 'Try: "beaches", "gastronomy", "museums" or "events".',
     chatInputPlaceholder: 'Ask something…',
+    chatBotMessagesLabel: 'Help chat history',
     chatResponses: {
       praias: 'Sergipe has paradisiacal beaches! Orla de Atalaia, Praia de Mangue Seco and Praia do Saco are unmissable. Want to know more?',
       gastronomia: 'Sergipe cuisine is amazing! Caruru, Caldo de Sururu, Moqueca… Mercado Thales Ferraz is the right place to start!',
@@ -1863,6 +1865,7 @@ const translationsBase = {
     chatBotWelcome: '¡Hola! Soy Serginho 🦀 ¡Puedo ayudarte a explorar lo mejor de Sergipe!',
     chatBotSuggestion: 'Prueba: "playas", "gastronomía", "museos" o "eventos".',
     chatInputPlaceholder: 'Pregunta algo…',
+    chatBotMessagesLabel: 'Historial de chat de ayuda',
     chatResponses: {
       praias: '¡Sergipe tiene playas paradisíacas! 🏖️ Orla de Atalaia, Praia de Mangue Seco y Praia do Saco son imperdibles. ¿Quieres saber más?',
       gastronomia: '¡La cocina sergipana es increíble! 🍽️ Caruru, Caldo de Sururu, Moqueca… ¡El Mercado Thales Ferraz es el lugar correcto para empezar!',

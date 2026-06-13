@@ -456,23 +456,19 @@ export function GuiaScreen({ onNavigate, onOpenGPS, language }: GuiaScreenProps)
               {showSortMenu && (
                 <div className="absolute top-full left-0 mt-1.5 bg-white rounded-[10px] shadow-[var(--sombra-md)]
                                 border border-[var(--cinza-med)] overflow-hidden z-50 min-w-[190px]">
-                  {SORT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => { setSortOrder(opt.value); setShowSortMenu(false); }}
-                      className="w-full flex items-center justify-between px-4 py-3 text-left text-[13px]
-                                 font-medium bg-transparent border-none cursor-pointer transition-colors"
-                      style={{
-                        color: sortOrder === opt.value ? 'var(--primary)' : 'var(--preto)',
-                        backgroundColor: sortOrder === opt.value ? 'var(--laranja-leve)' : 'transparent',
-                      }}
-                      onMouseEnter={(e) => { if (sortOrder !== opt.value) (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--cinza-leve)'; }}
-                      onMouseLeave={(e) => { if (sortOrder !== opt.value) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}
-                    >
-                      {getSortOptionLabel(opt.value, language)}
-                      {sortOrder === opt.value && <span className="text-[11px]">✓</span>}
-                    </button>
-                  ))}
+                  {SORT_OPTIONS.map((opt) => {
+                    const isActive = sortOrder === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => { setSortOrder(opt.value); setShowSortMenu(false); }}
+                        className={`w-full flex items-center justify-between px-4 py-3 text-left text-[13px] font-medium border-none cursor-pointer transition-colors ${isActive ? 'bg-[var(--laranja-leve)] text-[var(--primary)]' : 'bg-transparent hover:bg-[var(--cinza-leve)] text-[var(--preto)]'}`}
+                      >
+                        {getSortOptionLabel(opt.value, language)}
+                        {isActive && <span className="text-[11px]">✓</span>}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
