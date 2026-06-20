@@ -30,3 +30,4 @@ rename.bat
 *.bat
 # coverage/ 
 coverage
+coverage/
