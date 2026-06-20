@@ -50,7 +50,7 @@ const translationsBase = {
     // Seção 4 — Arrei as Malas (hospedagem)
     arreiMalasTag: 'ARREI AS MALAS',
     arreiMalasTitle: 'Uma mistura de charme, modernidade e excelência',
-    arreiMalasSubtitle: 'As melhores hospedagens para sua estada em Sergipe',
+    arreiMalasSubtitle: 'As melhores hospedagens para sua estadia em Sergipe',
     verOpcoes: 'Saiba mais',
     apartirDe: 'A partir de',
     porNoite: '/ noite',
