@@ -133,29 +133,13 @@ export function RestauranteCard({
         <div className="mt-auto flex gap-2">
           <button
             onClick={() => onToast(`Abrindo cardápio de ${name}...`)}
-            className="flex-1 py-2.5 rounded-[10px] border-[1.5px] text-[12px] font-bold
-                       cursor-pointer transition-all min-h-[44px]"
-            style={{
-              borderColor: 'var(--vermelho)',
-              color: 'var(--vermelho)',
-              backgroundColor: 'transparent',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--vermelho)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'white';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--vermelho)';
-            }}
+            className="flex-1 py-2.5 rounded-[10px] border-[1.5px] text-[12px] font-bold cursor-pointer transition-all min-h-[44px] border-[var(--vermelho)] text-[var(--vermelho)] hover:bg-[var(--vermelho)] hover:text-white"
           >
             {verCardapioLabel}
           </button>
           <button
             onClick={() => onToast(`Reservando mesa em ${name}...`)}
-            className="flex-1 py-2.5 rounded-[10px] text-white text-[12px] font-bold border-none
-                       cursor-pointer transition-all min-h-[44px] hover:opacity-90 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--vermelho)' }}
+            className="flex-1 py-2.5 rounded-[10px] text-white text-[12px] font-bold border-none cursor-pointer transition-all min-h-[44px] hover:opacity-90 active:scale-[0.98] bg-[var(--vermelho)]"
           >
             {reservarMesaLabel}
           </button>

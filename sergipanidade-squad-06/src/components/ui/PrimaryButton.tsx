@@ -30,43 +30,25 @@ export function PrimaryButton({
   ...rest
 }: PrimaryButtonProps) {
   const sizeStyle = SIZE_MAP[size];
-
   return (
     <button
       disabled={disabled}
+      className={
+        `${fullWidth ? 'w-full' : ''} inline-flex items-center justify-center gap-2 rounded-[12px] border-none font-sans font-bold uppercase transition-transform transition-colors` +
+        ` ${disabled ? 'bg-[#D9D9D9] text-[#777] cursor-not-allowed' : 'bg-[#0D7377] text-white hover:bg-[#0A5D61] active:scale-95 cursor-pointer'}`
+      }
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         gap: 8,
-        width: fullWidth ? '100%' : undefined,
         padding: sizeStyle.padding,
         minHeight: sizeStyle.minHeight,
-        backgroundColor: disabled ? '#D9D9D9' : '#0D7377',
-        color: '#FFFFFF',
-        border: 'none',
         borderRadius: 12,
         fontSize: sizeStyle.fontSize,
         fontFamily: "var(--font-sans)",
         fontWeight: 700,
         letterSpacing: '0.06em',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        transition: 'background-color 0.15s, transform 0.12s',
         outline: 'none',
         textTransform: 'uppercase',
         ...style,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0A5D61';
-      }}
-      onMouseLeave={(e) => {
-        if (!disabled) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0D7377';
-      }}
-      onMouseDown={(e) => {
-        if (!disabled) (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)';
-      }}
-      onMouseUp={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
       }}
       {...rest}
     >

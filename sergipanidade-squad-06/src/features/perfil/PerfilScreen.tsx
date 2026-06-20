@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useToast } from "@/context/AppContext";
 import {
   User,
@@ -18,7 +18,7 @@ import { UserAvatar } from '@/components/shared/UserAvatar';
 import { destinations } from "@/constants/destinations";
 import type { UserProfile } from '@/types';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
-import { DocumentosModal } from '@/components/shared/DocumentosModal';
+const LazyDocumentosModal = lazy(() => import('@/components/shared/DocumentosModal').then(m => ({ default: m.DocumentosModal })));
 
 // ─── Types ────────────────────────────────────────────────────
 type Tab =
@@ -854,7 +854,9 @@ export function PerfilScreen({
 
       </div>
       
-      <DocumentosModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} defaultTab={docsTab} />
+      <Suspense fallback={null}>
+        <LazyDocumentosModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} defaultTab={docsTab} />
+      </Suspense>
     </div>
   );
 }

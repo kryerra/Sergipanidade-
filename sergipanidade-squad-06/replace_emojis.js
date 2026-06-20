@@ -21,7 +21,7 @@ content = content.replace(/🤖/g, '<Bot size={36} className="text-white" />');
 
 // Replace mapping/organizing emojis
 content = content.replace(/📍 Organizando paradas por proximidade…/g, 'Organizando paradas por proximidade…');
-content = content.replace(/📍 Organizando paradas por proximidad…/g, 'Organizando paradas por proximidad…');
+content = content.replace(/📍 Organizando paradas por proximidade…/g, 'Organizando paradas por proximidade…');
 content = content.replace(/📍 Organizing stops by proximity…/g, 'Organizing stops by proximity…');
 content = content.replace(/✨ Adicionando dicas exclusivas…/g, 'Adicionando dicas exclusivas…');
 content = content.replace(/✨ Agregando consejos exclusivos…/g, 'Agregando consejos exclusivos…');
