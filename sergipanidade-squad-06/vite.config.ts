@@ -34,4 +34,19 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+  build: {
+    // Help keep very large vendor modules split out of the main chunk
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('node_modules')) {
+            if (id.includes('mapbox-gl')) return 'vendor-mapbox';
+            if (id.includes('react-map-gl')) return 'vendor-react-map-gl';
+            // Group other node_modules into a vendor chunk
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
 })

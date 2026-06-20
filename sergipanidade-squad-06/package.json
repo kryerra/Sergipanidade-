@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "test": "vitest",
+    "optimize-images": "node scripts/optimize-images.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -73,6 +75,8 @@
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "4.7.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "jsdom": "^29.1.1",
     "tailwindcss": "4.2.4",
     "typescript": "^6.0.3",
     "vite": "6.4.2"

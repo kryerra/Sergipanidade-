@@ -5,8 +5,6 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router';
 import { useAppContext } from "@/context/AppContext";
-import { translations } from "@/constants/translations";
-import { getDestinationById } from "@/constants/destinations";
 
 // Lazy loaded screens
 const LoginScreen = React.lazy(() => import("@/features/auth/LoginScreen").then(m => ({ default: m.LoginScreen })));
@@ -19,15 +17,10 @@ const ParceiroScreen = React.lazy(() => import("@/features/parceiro/ParceiroScre
 const PerfilScreen = React.lazy(() => import("@/features/perfil/PerfilScreen").then(m => ({ default: m.PerfilScreen })));
 const CulturaScreen = React.lazy(() => import("@/features/cultura/CulturaScreen").then(m => ({ default: m.CulturaScreen })));
 
-export interface AppRoutesProps {
-  onNavigate: (screen: string, destinationId?: string) => void;
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
-  currentScreen: string;
-  language: 'pt' | 'en' | 'es' | 'sp';
-}
-
-export function AppRoutes({ onNavigate, onChangeLanguage, language }: AppRoutesProps) {
+export function AppRoutes() {
   const {
+    language,
+    setLanguage,
     userProfile,
     setUserProfile,
     roteiro,
@@ -36,23 +29,62 @@ export function AppRoutes({ onNavigate, onChangeLanguage, language }: AppRoutesP
     removeFromRoteiro,
     reviews,
     addReview,
-    gpsDestinationId,
     openGPS,
   } = useAppContext();
 
   const navigate = useNavigate();
-  const { id: destinationId } = useParams<{ id: string }>();
 
-  // Map Sergipanês (sp) to Portuguese (pt) for subcomponents that only accept pt | en | es
   const cleanLanguage = language === 'sp' ? 'pt' : language;
 
-  // Wrapper components for routes that need params or complex props
+  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es' | 'sp') => {
+    setLanguage(lang);
+  };
+
+  const handleNavigate = (screen: string, destinationId?: string) => {
+    switch (screen) {
+      case 'home':
+        navigate('/home');
+        break;
+      case 'guia':
+        navigate('/guia');
+        break;
+      case 'detalhe':
+        if (destinationId) {
+          navigate(`/detalhe/${destinationId}`);
+        }
+        break;
+      case 'roteiro':
+        navigate('/roteiro');
+        break;
+      case 'parceiro':
+        navigate('/parceiro');
+        break;
+      case 'perfil':
+        navigate('/perfil');
+        break;
+      case 'cultura':
+        navigate('/cultura');
+        break;
+      case 'playlist':
+        window.open(
+          'https://open.spotify.com/playlist/5WHu1dFKmpDCC90eD1Dkf6?si=mDnYttIqQPGmEBpCPhO6Kg&pi=FzmppWApTg23l',
+          '_blank',
+          'noopener,noreferrer',
+        );
+        break;
+      case 'login':
+      default:
+        navigate('/');
+        break;
+    }
+  };
+
   const DetalheWrapper = () => {
     const { id } = useParams<{ id: string }>();
     return (
       <DetalheScreen
         destinationId={id}
-        onNavigate={onNavigate}
+        onNavigate={handleNavigate}
         onOpenGPS={openGPS}
         onAddToRoteiro={addToRoteiro}
         isInRoteiro={!!roteiro.find(item => item.destinationId === id)}
@@ -64,39 +96,38 @@ export function AppRoutes({ onNavigate, onChangeLanguage, language }: AppRoutesP
     );
   };
 
-  // Simple loading state matching the app background
-  const LoadingFallback = () => <div className="min-h-screen" style={{ backgroundColor: 'var(--branco)' }}></div>;
+  const LoadingFallback = () => <div className="min-h-screen" style={{ backgroundColor: 'var(--branco)' }} />;
 
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
         <Route path="/" element={
-          <LoginScreen 
-            onNavigate={onNavigate} 
-            language={cleanLanguage} 
-            onChangeLanguage={onChangeLanguage}
+          <LoginScreen
+            onNavigate={handleNavigate}
+            language={cleanLanguage}
+            onChangeLanguage={handleChangeLanguage}
             onLogin={setUserProfile}
           />
         } />
         
         <Route path="/home" element={
           <HomeScreen
-            onNavigate={onNavigate}
+            onNavigate={handleNavigate}
             language={cleanLanguage}
-            onChangeLanguage={onChangeLanguage}
+            onChangeLanguage={handleChangeLanguage}
             userProfile={userProfile}
           />
         } />
 
         <Route path="/guia" element={
-          <GuiaScreen onNavigate={onNavigate} onOpenGPS={openGPS} language={cleanLanguage} />
+          <GuiaScreen onNavigate={handleNavigate} onOpenGPS={openGPS} language={cleanLanguage} />
         } />
 
         <Route path="/detalhe/:id" element={<DetalheWrapper />} />
 
         <Route path="/roteiro" element={
           <RoteiroScreen
-            onNavigate={onNavigate}
+            onNavigate={handleNavigate}
             roteiro={roteiro}
             onAddToRoteiro={addToRoteiro}
             onRemoveFromRoteiro={removeFromRoteiro}

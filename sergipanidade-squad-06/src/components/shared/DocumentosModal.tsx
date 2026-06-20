@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Download, ShieldCheck, FileText } from 'lucide-react';
 import { useAppContext } from "@/context/AppContext";
 import { translations } from "@/constants/translations";
@@ -209,8 +209,26 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
 
   if (!isOpen) return null;
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-9999 p-4 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="documentos-title"
+      aria-describedby="documentos-desc"
+      tabIndex={-1}
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-9999 p-4 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white rounded-2xl w-full max-w-3xl h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-[#D9D9D9] relative animate-[scaleIn_0.25s_cubic-bezier(0.34,1.56,0.64,1)]">
         
         {/* Header */}
@@ -222,7 +240,7 @@ export function DocumentosModal({ isOpen, onClose, defaultTab = 'termos' }: Docu
               <ShieldCheck className="text-[#0D7377] w-6 h-6" />
             )}
             <div>
-              <h2 className="font-semibold font-display text-xl text-[#1E1E1E] uppercase tracking-tight">
+              <h2 id="documentos-title" className="font-semibold font-display text-xl text-[#1E1E1E] uppercase tracking-tight">
                 {t.legalDocuments}
               </h2>
               <p className="text-xs text-[#737373]">

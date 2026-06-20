@@ -40,16 +40,12 @@ export function SecondaryButton({
 }: SecondaryButtonProps) {
   const sizeStyle = SIZE_MAP[size];
   const colorStyle = COLOR_MAP[color];
-
   return (
     <button
       disabled={disabled}
+      className={` ${fullWidth ? 'w-full' : ''} inline-flex items-center justify-center gap-2 rounded-[8px] transition-colors transition-transform ${disabled ? 'cursor-not-allowed' : 'cursor-pointer hover:opacity-95 active:scale-95'}`}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         gap: 8,
-        width: fullWidth ? '100%' : undefined,
         padding: sizeStyle.padding,
         minHeight: sizeStyle.minHeight,
         backgroundColor: 'transparent',
@@ -60,31 +56,9 @@ export function SecondaryButton({
         fontFamily: "var(--font-sans)",
         fontWeight: 700,
         letterSpacing: '0.06em',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        transition: 'background-color 0.15s, color 0.15s, transform 0.12s',
         outline: 'none',
         textTransform: 'uppercase',
         ...style,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) {
-          const el = e.currentTarget as HTMLButtonElement;
-          el.style.backgroundColor = colorStyle.hover;
-          el.style.color = colorStyle.hoverText;
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!disabled) {
-          const el = e.currentTarget as HTMLButtonElement;
-          el.style.backgroundColor = 'transparent';
-          el.style.color = colorStyle.text;
-        }
-      }}
-      onMouseDown={(e) => {
-        if (!disabled) (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)';
-      }}
-      onMouseUp={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
       }}
       {...rest}
     >

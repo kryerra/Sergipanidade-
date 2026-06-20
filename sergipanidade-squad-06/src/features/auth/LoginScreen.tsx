@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { translations } from "@/constants/translations";
 import type { UserProfile } from '@/types';
 import { useToast } from "@/context/AppContext";
@@ -11,7 +11,7 @@ import logoSergipanidade from "@/imports/Logo_Sergipanidade.png";
 import logoSaoJoao from '@/assets/images/logo-sao-joao.png';
 import avatarJoao from '@/assets/images/AVATAR JOAO.jpg';
 import avatarMiauteria from '@/assets/images/miauteriapf.jpeg';
-import { DocumentosModal } from '@/components/shared/DocumentosModal';
+const LazyDocumentosModal = lazy(() => import('@/components/shared/DocumentosModal').then(m => ({ default: m.DocumentosModal })));
 
 const LOGIN_BACKGROUNDS = [loginBg1, loginBgTeste, loginBg3, loginBg4];
 
@@ -37,9 +37,18 @@ interface LoginScreenProps {
 
 interface SavedAccount {
   email: string;
-  password?: string;
+  passwordHash: string;
   profile: UserProfile;
   createdAt: string;
+}
+
+async function hashString(text: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }: LoginScreenProps): JSX.Element {
@@ -77,13 +86,13 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [docsTab, setDocsTab] = useState<'termos' | 'privacidade'>('termos');
 
-  // Função para salvar conta no localStorage
-  const saveAccount = (email: string, password: string, profile: UserProfile): void => {
+  // Função para salvar conta no localStorage usando hash em vez de senha em texto claro.
+  const saveAccount = async (email: string, password: string, profile: UserProfile): Promise<void> => {
     try {
-      const accounts = JSON.parse(localStorage.getItem('sergipanidade_accounts') || '[]');
+      const accounts = JSON.parse(localStorage.getItem('sergipanidade_accounts') || '[]') as SavedAccount[];
       accounts.push({
         email,
-        password,
+        passwordHash: await hashString(password),
         profile,
         createdAt: new Date().toISOString(),
       });
@@ -93,12 +102,13 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
     }
   };
 
-  // Função para verificar credenciais
-  const validateCredentials = (email: string, password: string): UserProfile | null => {
+  // Função para verificar credenciais de login de forma segura usando hash de senha.
+  const validateCredentials = async (email: string, password: string): Promise<UserProfile | null> => {
     try {
-      const accounts: SavedAccount[] = JSON.parse(localStorage.getItem('sergipanidade_accounts') || '[]');
+      const accounts = JSON.parse(localStorage.getItem('sergipanidade_accounts') || '[]') as SavedAccount[];
+      const passwordHash = await hashString(password);
       const account = accounts.find(
-        (acc: SavedAccount) => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
+        (acc) => acc.email.toLowerCase() === email.toLowerCase() && acc.passwordHash === passwordHash
       );
       return account ? account.profile : null;
     } catch (error) {
@@ -139,7 +149,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
     onToast(t.linkSent);
   };
 
-  const handleRegister = (): void => {
+  const handleRegister = async (): Promise<void> => {
     if (!registerData.name.trim()) {
       onToast(t.enterName);
       return;
@@ -184,6 +194,9 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
         ? t.touristAccountCreated
         : t.establishmentAccountCreated;
 
+    const email = registerData.email;
+    const password = registerData.password;
+
     setRegisterData({
       name: '',
       email: '',
@@ -193,8 +206,8 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
       acceptTerms: false,
     });
 
-    // Salvar conta no localStorage
-    saveAccount(registerData.email, registerData.password, profile);
+    // Salvar conta no localStorage usando hash de senha para evitar texto claro.
+    await saveAccount(email, password, profile);
 
     // Fazer login automático após cadastro
     onLogin(profile);
@@ -236,7 +249,7 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
     }, 2500);
   };
 
-  const handleTraditionalLogin = (): void => {
+  const handleTraditionalLogin = async (): Promise<void> => {
     if (!loginData.email.trim()) {
       onToast(t.enterEmail);
       return;
@@ -246,8 +259,8 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
       return;
     }
 
-    // Validar credenciais
-    const profile = validateCredentials(loginData.email, loginData.password);
+    // Validar credenciais usando hash de senha em vez de comparação de texto claro.
+    const profile = await validateCredentials(loginData.email, loginData.password);
     if (!profile) {
       onToast(t.invalidCredentials);
       return;
@@ -857,7 +870,9 @@ export function LoginScreen({ onNavigate, language, onChangeLanguage, onLogin }:
         </div>
       )}
 
-      <DocumentosModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} defaultTab={docsTab} />
+      <Suspense fallback={null}>
+        <LazyDocumentosModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} defaultTab={docsTab} />
+      </Suspense>
     </div>
   );
 }
