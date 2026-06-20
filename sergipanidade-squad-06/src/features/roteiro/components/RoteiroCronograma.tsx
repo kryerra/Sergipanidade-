@@ -16,7 +16,7 @@ import {
   FileText,
   Image,
 } from "lucide-react";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, lazy, Suspense } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { getDestinationById } from "@/constants/destinations";
 import type { Destination } from "@/constants/destinations";
@@ -25,7 +25,9 @@ import { ParadaGerada, WizardData, RoteiroItem } from "@/types";
 import { travelLabel } from "@/utils/geo";
 import { PERIODO_TIME, PERIODO_DUR, getPeriodLabels } from "@/constants/periods";
 import { FundoVisual } from "./FundoVisual";
-import { RoteiroMapa } from "./RoteiroMapa";
+import { RoteiroMapaSVG } from "./RoteiroMapaSVG";
+
+const LazyRoteiroMapa = lazy(() => import("./RoteiroMapa").then((m) => ({ default: m.RoteiroMapa })));
 import { getWhoOptions } from "../constants/opcoesAssistente";
 
 interface RoteiroCronogramaProps {
@@ -375,7 +377,7 @@ export function RoteiroCronograma({
     const link = document.createElement("a");
     link.href = url;
     link.download = "roteiro-aracaju.ics";
-    link.style.display = "none";
+    link.hidden = true;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -620,17 +622,9 @@ export function RoteiroCronograma({
 
                                 {/* Conteúdo do card */}
                                 <div
-                                  className="flex-1 rounded-[var(--radius-sm)] p-3 sm:p-4 mb-2 transition-all duration-200 hover:shadow-[var(--sombra-md)] cursor-default group/card"
+                                  className="flex-1 rounded-[var(--radius-sm)] p-3 sm:p-4 mb-2 transition-all duration-200 hover:shadow-[var(--sombra-md)] cursor-default group/card bg-white border border-[var(--cinza-med)] group-hover:border-[rgba(13,115,119,0.3)]"
                                   style={{
-                                    background: "#fff",
-                                    border: "1px solid var(--cinza-med)",
                                     boxShadow: "var(--sombra-sm)",
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(13,115,119,0.3)";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    (e.currentTarget as HTMLDivElement).style.borderColor = "var(--cinza-med)";
                                   }}
                                 >
                                   <div className="flex items-start gap-2 sm:gap-3">
@@ -722,20 +716,7 @@ export function RoteiroCronograma({
                                     </button>
                                     <button
                                       onClick={() => onNavigate("detalhe", dest.id)}
-                                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px]"
-                                      style={{
-                                        border: "1px solid var(--cinza-med)",
-                                        background: "#fff",
-                                        color: "var(--preto)",
-                                      }}
-                                      onMouseEnter={(e) => {
-                                        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--primary)";
-                                        (e.currentTarget as HTMLButtonElement).style.color = "var(--primary)";
-                                      }}
-                                      onMouseLeave={(e) => {
-                                        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--cinza-med)";
-                                        (e.currentTarget as HTMLButtonElement).style.color = "var(--preto)";
-                                      }}
+                                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all hover:scale-105 min-h-[36px] border border-[var(--cinza-med)] bg-white text-[var(--preto)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
                                     >
                                       <Eye size={12} />
                                       {t.viewDetails}
@@ -777,16 +758,7 @@ export function RoteiroCronograma({
                                       /* Estado normal — botão de lixeira */
                                       <button
                                         onClick={() => iniciarConfirmacao(dest.id)}
-                                        className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs transition-all min-h-[36px]"
-                                        style={{ color: "var(--cinza-txt)" }}
-                                        onMouseEnter={(e) => {
-                                          (e.currentTarget as HTMLButtonElement).style.color = "var(--vermelho, #EF4444)";
-                                          (e.currentTarget as HTMLButtonElement).style.background = "#FEE2E2";
-                                        }}
-                                        onMouseLeave={(e) => {
-                                          (e.currentTarget as HTMLButtonElement).style.color = "var(--cinza-txt)";
-                                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                                        }}
+                                        className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs transition-all min-h-[36px] text-[var(--cinza-txt)] hover:text-[var(--vermelho)] hover:bg-[#FEE2E2]"
                                       >
                                         <Trash2 size={12} />
                                       </button>
@@ -826,20 +798,7 @@ export function RoteiroCronograma({
                           </div>
                           <button
                             onClick={() => onNavigate("guia")}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-[var(--radius-sm)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px]"
-                            style={{
-                              background: "var(--teal-leve)",
-                              border: "2px dashed rgba(13, 115, 119, 0.35)",
-                              color: "var(--primary)",
-                            }}
-                            onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.75)";
-                              (e.currentTarget as HTMLButtonElement).style.background = "rgba(13, 115, 119, 0.12)";
-                            }}
-                            onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.35)";
-                              (e.currentTarget as HTMLButtonElement).style.background = "var(--teal-leve)";
-                            }}
+                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-[var(--radius-sm)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px] bg-[var(--teal-leve)] text-[var(--primary)] border-2 border-dashed border-[rgba(13,115,119,0.35)] hover:border-[rgba(13,115,119,0.75)] hover:bg-[rgba(13,115,119,0.12)]"
                           >
                             <Plus size={16} />
                             {t.timelineAddStop}
@@ -877,20 +836,7 @@ export function RoteiroCronograma({
 
             <button
               onClick={() => onNavigate("guia")}
-              className="mt-4 w-full py-3.5 rounded-[var(--radius)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px]"
-              style={{
-                background: "var(--teal-leve)",
-                border: "2px dashed rgba(13, 115, 119, 0.35)",
-                color: "var(--primary)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.75)";
-                (e.currentTarget as HTMLButtonElement).style.background = "rgba(13, 115, 119, 0.12)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13, 115, 119, 0.35)";
-                (e.currentTarget as HTMLButtonElement).style.background = "var(--teal-leve)";
-              }}
+              className="mt-4 w-full py-3.5 rounded-[var(--radius)] text-sm font-bold transition-all hover:scale-[1.01] min-h-[44px] bg-[var(--teal-leve)] text-[var(--primary)] border-2 border-dashed border-[rgba(13,115,119,0.35)] hover:border-[rgba(13,115,119,0.75)] hover:bg-[rgba(13,115,119,0.12)]"
             >
               {t.addNewStop}
             </button>
@@ -930,7 +876,9 @@ export function RoteiroCronograma({
                   </span>
                 </div>
                 <div className="p-3 h-[300px] sm:h-[420px]">
-                  <RoteiroMapa stops={mapStops} />
+                  <Suspense fallback={<RoteiroMapaSVG stops={mapStops} />}>
+                    <LazyRoteiroMapa stops={mapStops} />
+                  </Suspense>
                 </div>
               </div>
 

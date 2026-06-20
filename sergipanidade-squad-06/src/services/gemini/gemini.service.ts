@@ -3,8 +3,40 @@
  * Utiliza a API oficial do Google AI Studio diretamente para maior velocidade (1-2s) e gratuidade.
  */
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+let testGeminiApiKey: string | null = null;
 const MODELO_IA = "gemini-2.5-flash"; // Modelo padrão rápido e gratuito do Gemini
+
+function getGeminiApiKey(): string | null {
+  const apiKey = testGeminiApiKey ?? import.meta.env.VITE_GEMINI_API_KEY;
+  return apiKey && apiKey.length > 0 ? apiKey : null;
+}
+
+export function setGeminiApiKeyForTest(apiKey: string | null): void {
+  testGeminiApiKey = apiKey;
+}
+
+interface GeminiApiResponsePart {
+  text?: string;
+}
+
+interface GeminiApiResponseContent {
+  parts?: GeminiApiResponsePart[];
+}
+
+interface GeminiApiResponseCandidate {
+  content?: GeminiApiResponseContent;
+}
+
+interface GeminiApiResponse {
+  candidates?: GeminiApiResponseCandidate[];
+}
+
+interface GeminiApiErrorBody {
+  error?: {
+    message?: string;
+    code?: string;
+  };
+}
 
 /**
  * Extrai o tempo de espera sugerido (em milissegundos) a partir de um erro de limite de requisições (429).
@@ -37,14 +69,15 @@ export function isCotaDiariaEsgotada(erro: unknown): boolean {
  * Retorna em 1-2 segundos e é 100% gratuito (15 requisições por minuto).
  */
 async function chamarGoogleAIStudio(prompt: string, signal?: AbortSignal, schema?: any): Promise<string> {
-  if (!API_KEY) {
+  const apiKey = getGeminiApiKey();
+  if (!apiKey) {
     throw new Error(
       'Chave de API do Gemini não definida. Crie um arquivo .env com VITE_GEMINI_API_KEY.'
     );
   }
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODELO_IA}:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODELO_IA}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: {
@@ -67,21 +100,19 @@ async function chamarGoogleAIStudio(prompt: string, signal?: AbortSignal, schema
   );
 
   if (!response.ok) {
-    let detalheErro = "";
-    try {
-      const errorJson = await response.json();
-      detalheErro = errorJson.error?.message || JSON.stringify(errorJson);
-    } catch {
-      detalheErro = response.statusText;
+    let detalheErro = response.statusText;
+    const errorJson = (await response.json().catch(() => null)) as GeminiApiErrorBody | null;
+    if (errorJson?.error?.message) {
+      detalheErro = errorJson.error.message;
     }
     throw new Error(`Erro na chamada da API Google AI Studio (Status ${response.status}): ${detalheErro}`);
   }
 
-  const data = await response.json();
-  const respostaTexto = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const data = (await response.json().catch(() => null)) as GeminiApiResponse | null;
+  const respostaTexto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!respostaTexto) {
-    throw new Error('Resposta vazia da API do Google AI Studio');
+    throw new Error('Resposta inválida ou vazia da API do Google AI Studio');
   }
 
   return respostaTexto;

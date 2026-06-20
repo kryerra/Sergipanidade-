@@ -28,3 +28,6 @@ dist-ssr
 # Scripts utilitários locais
 rename.bat
 *.bat
+# coverage/ 
+coverage
+coverage/

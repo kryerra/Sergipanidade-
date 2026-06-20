@@ -358,8 +358,8 @@ export function HomeScreen({
             </h1>
 
             <p
-              className="text-white/90 mb-8 max-w-140 leading-relaxed [text-shadow:0_1px_8px_rgba(0,0,0,0.65)]"
-              style={{ fontSize: "17px" }}
+              className="text-white/90 mb-8 max-w-140 leading-relaxed"
+              style={{ fontSize: "17px", textShadow: "0 1px 8px rgba(0, 0, 0, 0.65)" }}
             >
               {t.homeSubtitle}
             </p>
