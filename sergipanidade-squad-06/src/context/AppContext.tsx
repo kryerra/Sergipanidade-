@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { UserProfile, RoteiroItem, Review } from '@/types'; // Fix 6: fonte única de tipos
 import { translations } from '@/constants/translations';
+import { mockService } from '@/services/mock.service';
+import { getDestinationById } from '@/constants/destinations';
 
 interface AppContextType {
   language: 'pt' | 'en' | 'es' | 'sp';
@@ -122,6 +124,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addReview = (destinationId: string, rating: number, comment: string, userName: string) => {
+    const dest = getDestinationById(destinationId);
+    const placeName = dest ? dest.name : 'Destino';
+
     const newReview: Review = {
       id: Date.now().toString(),
       destinationId,
@@ -131,6 +136,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       date: new Date().toISOString(),
     };
     setReviews(prev => [...prev, newReview]);
+
+    // Persist user review in mock service
+    mockService.reviews.addUserReview({
+      id: newReview.id,
+      place: placeName,
+      rating,
+      date: new Date().toLocaleDateString('pt-BR'),
+      text: comment,
+      partnerResponse: null,
+      partnerInitials: null,
+    });
   };
 
   return (

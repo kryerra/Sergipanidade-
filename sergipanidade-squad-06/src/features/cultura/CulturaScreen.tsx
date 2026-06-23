@@ -57,13 +57,7 @@ interface CulturaEvent {
   thisWeek: boolean;
 }
 
-import artistsData from "@/constants/artists.json";
-import storiesData from "@/constants/stories.json";
-import eventsData from "@/constants/events.json";
-
-const ARTISTS: Artist[] = artistsData as Artist[];
-const STORIES: Story[] = storiesData as unknown as Story[];
-const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
+import { mockService } from "@/services/mock.service";
 
 
 
@@ -155,12 +149,22 @@ export function CulturaScreen({ language = 'pt' }: CulturaScreenProps): JSX.Elem
   const cleanLanguage = language === 'sp' ? 'pt' : language;
   const t = translations[cleanLanguage];
   const { toast: onToast } = useToast();
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [events, setEvents] = useState<CulturaEvent[]>([]);
+
+  useEffect(() => {
+    mockService.cultura.getArtists().then(setArtists);
+    mockService.cultura.getStories().then(setStories);
+    mockService.cultura.getEvents().then(setEvents);
+  }, []);
+
   const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
   const [eventsView, setEventsView] = useState<'lista' | 'calendario'>('lista');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const translatedArtists = ARTISTS.map((artist: Artist): Artist => {
+  const translatedArtists = artists.map((artist: Artist): Artist => {
     const data = (t as any).artistsData?.[artist.id];
     if (!data) return artist;
     return {
@@ -182,7 +186,7 @@ export function CulturaScreen({ language = 'pt' }: CulturaScreenProps): JSX.Elem
     };
   });
 
-  const translatedStories = STORIES.map((story: Story): Story => {
+  const translatedStories = stories.map((story: Story): Story => {
     const data = (t as any).storiesData?.[story.id];
     if (!data) return story;
     return {
@@ -194,7 +198,7 @@ export function CulturaScreen({ language = 'pt' }: CulturaScreenProps): JSX.Elem
     };
   });
 
-  const translatedEvents = EVENTS.map((event: CulturaEvent): CulturaEvent => {
+  const translatedEvents = events.map((event: CulturaEvent): CulturaEvent => {
     const data = (t as any).eventsData?.[event.id];
     const monthKey = `month${event.month.charAt(0).toUpperCase()}${event.month.slice(1).toLowerCase()}`;
     const translatedMonth = (t as any)[monthKey] || event.month;

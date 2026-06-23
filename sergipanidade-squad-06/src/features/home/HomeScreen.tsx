@@ -44,20 +44,7 @@ const EXPERIENCIAS_BG_2 =
 const EXPERIENCIAS_BG_3 =
   "src/assets/images/sj-exp1.png";
 
-import hotelsData from "@/constants/hotels.json";
-
-interface HotelMock {
-  id: string;
-  name: string;
-  category: string;
-  bairro: string;
-  priceLevel: number;
-  startingPrice: string;
-  rating: number;
-  reviews: string;
-  image: string;
-  amenities: string[];
-}
+import { mockService, Hotel as HotelMock } from "@/services/mock.service";
 
 interface HomeScreenProps {
   onNavigate: (screen: string, destinationId?: string) => void;
@@ -65,8 +52,6 @@ interface HomeScreenProps {
   onChangeLanguage: (lang: "pt" | "en" | "es") => void;
   userProfile: UserProfile;
 }
-
-const HOTELS_MOCK: HotelMock[] = hotelsData;
 
 
 const DEST_LIKES: Record<string, string> = {
@@ -126,6 +111,11 @@ export function HomeScreen({
   onChangeLanguage,
 }: HomeScreenProps) {
   const { toast: onToast } = useToast();
+  const [hotels, setHotels] = useState<HotelMock[]>([]);
+
+  useEffect(() => {
+    mockService.hotels.getHotels().then(setHotels);
+  }, []);
   const [showLanguageMenu, setShowLanguageMenu] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [experienciaIndex, setExperienciaIndex] = useState<number>(0);
@@ -551,7 +541,7 @@ export function HomeScreen({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {HOTELS_MOCK.map((hotel) => (
+          {hotels.map((hotel) => (
             <HotelCard
               key={hotel.id}
               {...hotel}
