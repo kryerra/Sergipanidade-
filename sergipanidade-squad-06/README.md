@@ -1,9 +1,13 @@
-# 🌌 Antigravity — Sergipanidade Portal
-> **Design-Driven Engineering Specification & System Documentation**
-> 
-> *A cinematographic tourism ecosystem for Aracaju, Sergipe, built under the highest standards of Apple UX aesthetics and Meta Software Engineering scalability.*
+# Sergipanidade Portal
 
----
+<p align="left">
+  <img src="https://img.shields.io/badge/React-18.3-0D7377?style=flat-square&logo=react&logoColor=FFFFFF" alt="React 18.3" />
+  <img src="https://img.shields.io/badge/TypeScript-6.0-0D7377?style=flat-square&logo=typescript&logoColor=FFFFFF" alt="TypeScript 6.0" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4.2-0D7377?style=flat-square&logo=tailwindcss&logoColor=FFFFFF" alt="TailwindCSS 4.2" />
+  <img src="https://img.shields.io/badge/Vite-6.4-0D7377?style=flat-square&logo=vite&logoColor=FFFFFF" alt="Vite 6.4" />
+  <img src="https://img.shields.io/badge/Gemini_AI-2.5_Flash-E9D8B4?style=flat-square&logo=googlegemini&logoColor=1E1E1E" alt="Gemini AI 2.5 Flash" />
+  <img src="https://img.shields.io/badge/Lucide_Icons-0.57-E9D8B4?style=flat-square&logo=lucide&logoColor=1E1E1E" alt="Lucide Icons" />
+</p>
 
 ## 🧭 Visão do Projeto & Filosofia
 
@@ -13,7 +17,7 @@ No backend do cliente, a arquitetura segue os princípios de robustez e alto des
 
 ---
 
-## 🛠️ Arquitetura de Alto Nível (RFC / Meta Standard)
+## 🛠️ Arquitetura de Alto Nível
 
 A base de código está estruturada de forma modular, separando a lógica de negócios da interface gráfica e de serviços externos:
 
@@ -28,26 +32,26 @@ graph TD
 ```
 
 ### Principais Padrões de Design Adotados
-1. **Ports and Adapters (Arquitetura Hexagonal)**: Definidos em [mock.service.ts](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/services/mock.service.ts) como interfaces de repositórios (`IHotelRepository`, `IReviewRepository`, `ICulturaRepository`, etc.) e implementados por adapters que servem dados locais simulando latência e processamento assíncrono.
-2. **Singleton Pattern**: A classe [MockService](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/services/mock.service.ts) expõe uma instância única e centralizada via `MockService.getInstance()`, garantindo que todo o sistema compartilhe a mesma fonte de dados mockados em memória.
+1. **Ports and Adapters (Arquitetura Hexagonal)**: Definidos em MockService.tsx como interfaces de repositórios (`IHotelRepository`, `IReviewRepository`, `ICulturaRepository`, etc.) e implementados por adapters que servem dados locais simulando latência e processamento assíncrono.
+2. **Singleton Pattern**: A classe MockService expõe uma instância única e centralizada via `MockService.getInstance()`, garantindo que todo o sistema compartilhe a mesma fonte de dados mockados em memória.
 3. **Lazy Loading**: Telas pesadas e features independentes são carregadas de forma assíncrona usando `React.lazy()` e encapsuladas em `<Suspense>` com placeholders fluidos, reduzindo drasticamente o bundle size inicial e o First Contentful Paint (FCP).
 
 ---
 
 ## 🛣️ Matriz de Rotas do Sistema
 
-O roteamento da aplicação é construído utilizando o `react-router` de forma desacoplada no componente [AppRoutes](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/routes/AppRoutes.tsx).
+O roteamento da aplicação é construído utilizando o `react-router` de forma desacoplada no componente [AppRoutes]
 
 | Rota | Tela correspondente | Tipo de Acesso | Parâmetros / Props Importantes | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| `/` | [LoginScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/auth/LoginScreen.tsx) | Público | `onLogin`, `onChangeLanguage` | Portal de autenticação com termo de cookies e LGPD. |
-| `/home` | [HomeScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/home/HomeScreen.tsx) | Autenticado | `userProfile`, `language` | Painel central com carrossel de fotos, busca rápida e hotéis. |
-| `/guia` | [GuiaScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/guia/GuiaScreen.tsx) | Autenticado | `onOpenGPS`, `language` | Catálogo de atrações e pontos turísticos filtráveis por região. |
-| `/detalhe/:id` | [DetalheScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/detalhe/DetalheScreen.tsx) | Autenticado | `id` (param), `reviews`, `onAddReview` | Página detalhada do destino, galeria de fotos e avaliações. |
-| `/roteiro` | [RoteiroScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/roteiro/RoteiroScreen.tsx) | Autenticado | `roteiro`, `onSetRoteiro`, `onOpenGPS` | Módulo gerador de itinerários personalizados (IA + Fallback). |
-| `/parceiro` | [ParceiroScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/parceiro/ParceiroScreen.tsx) | Estabelecimento | `onToast`, `language` | Painel B2B para gestão de avaliações, selos e fotos do local. |
-| `/perfil` | [PerfilScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/perfil/PerfilScreen.tsx) | Autenticado | `userProfile`, `onUpdateProfile` | Dados cadastrais, aba de roteiros salvos e central de privacidade LGPD. |
-| `/cultura` | [CulturaScreen](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/features/cultura/CulturaScreen.tsx) | Autenticado | `onToast`, `language` | Espaço dedicado a artistas sergipanos, histórias locais e eventos. |
+| `/` | [LoginScreen] | Público | `onLogin`, `onChangeLanguage` | Portal de autenticação com termo de cookies e LGPD. |
+| `/home` | [HomeScreen] | Autenticado | `userProfile`, `language` | Painel central com carrossel de fotos, busca rápida e hotéis. |
+| `/guia` | [GuiaScreen] | Autenticado | `onOpenGPS`, `language` | Catálogo de atrações e pontos turísticos filtráveis por região. |
+| `/detalhe/:id` | [DetalheScreen] | Autenticado | `id` (param), `reviews`, `onAddReview` | Página detalhada do destino, galeria de fotos e avaliações. |
+| `/roteiro` | [RoteiroScreen] | Autenticado | `roteiro`, `onSetRoteiro`, `onOpenGPS` | Módulo gerador de itinerários personalizados (IA + Fallback). |
+| `/parceiro` | [ParceiroScreen] | Estabelecimento | `onToast`, `language` | Painel B2B para gestão de avaliações, selos e fotos do local. |
+| `/perfil` | [PerfilScreen] | Autenticado | `userProfile`, `onUpdateProfile` | Dados cadastrais, aba de roteiros salvos e central de privacidade LGPD. |
+| `/cultura` | [CulturaScreen] | Autenticado | `onToast`, `language` | Espaço dedicado a artistas sergipanos, histórias locais e eventos. |
 
 ---
 
@@ -58,11 +62,11 @@ O sistema integra-se de forma direta com a API do **Google AI Studio** para a ge
 
 *   **Modelo de IA**: `gemini-2.5-flash` (escolhido por sua baixíssima latência de 1-2 segundos e alta taxa de acertos em geração de dados estruturados).
 *   **Endpoint utilizado**: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}`
-*   **Resiliência & Retry (429 Rate Limits)**: O serviço em [gemini.service.ts](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/services/gemini/gemini.service.ts) calcula dinamicamente o tempo de cooldown indicado no cabeçalho/corpo de erro da API do Google (`retry in Xs`). Caso o erro ocorra, o sistema aguarda de forma assíncrona o tempo necessário (até 30 segundos) e tenta novamente.
+*   **Resiliência & Retry (429 Rate Limits)**: O serviço em gemini.service.ts calcula dinamicamente o tempo de cooldown indicado no cabeçalho/corpo de erro da API do Google (`retry in Xs`). Caso o erro ocorra, o sistema aguarda de forma assíncrona o tempo necessário (até 30 segundos) e tenta novamente.
 *   **Controle de Cota**: Se a cota diária for excedida, a chamada falha de imediato para disparar o mecanismo de fallback offline.
 
 ### 2. Algoritmo Determinístico Offline (Fallback Heurístico)
-Caso a API do Gemini falhe por limites de requisições, falta de internet ou erro de rede, o sistema executa de forma invisível o método `gerarRoteiroLocal` em [itinerary.service.ts](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/src/services/itinerary.service.ts).
+Caso a API do Gemini falhe por limites de requisições, falta de internet ou erro de rede, o sistema executa de forma invisível o método `gerarRoteiroLocal` em itinerary.service.ts.
 *   **Passos do Fallback**:
     1.  **Embaralhamento de semente**: Executa o algoritmo *Fisher-Yates* O(n) na lista de destinos para evitar bias e repetições entre gerações.
     2.  **Scoring de interesse**: Aplica pesos (+2 para categorias correspondentes e +1 para as demais).
@@ -74,7 +78,7 @@ Caso a API do Gemini falhe por limites de requisições, falta de internet ou er
 
 ## 🔒 Credenciais e Variáveis de Ambiente
 
-As credenciais do sistema são configuradas via variáveis de ambiente no frontend. Crie um arquivo [.env](file:///c:/Users/Matheus/Documents/Leon/mobile/sergipanidade/branch-2/frontend-sergipanidade/sergipanidade-squad-06/.env) na raiz do projeto com o seguinte formato:
+As credenciais do sistema são configuradas via variáveis de ambiente no frontend. Crie um arquivo .env na raiz do projeto com o seguinte formato:
 
 ```env
 # Google AI Studio API Key para chamadas diretas ao Gemini-2.5-flash
@@ -119,3 +123,9 @@ A interface do Sergipanidade foi criada inspirada no minimalismo polido da Apple
 
 ### Tipografia Geométrica
 O sistema utiliza fontes de largura geométrica (como **Fjalla One** para grandes títulos regionais e fontes legíveis e otimizadas para corpo de texto), mantendo espaços negativos intencionais amplos para dar sofisticação de produto Premium.
+
+### 📐 Iconografia & Visual Consistente
+Para garantir a estética Apple-standard (métrica clean, pesos consistentes e minimalismo), adotamos a biblioteca **Lucide React** para todos os ícones da aplicação.
+*   **Padrão de Grid**: Todos os ícones secundários e botões de ação seguem um grid rígido de `24x24px` ou `16x16px` para alinhamento sub-pixel perfeito.
+*   **Espessura de Linha**: Padronizado com `strokeWidth={2}` ou `strokeWidth={2.5}` para equilibrar peso visual e contraste com os títulos em **Raleway** e textos em **Lato**.
+*   **Semântica Visual**: Os ícones guiam o usuário de forma intuitiva pelas rotas e fluxos do app, garantindo uma linguagem de design homogênea e livre de ícones redundantes ou genéricos.
