@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   Eye,
   MapPin,
@@ -14,74 +14,33 @@ import {
   ChevronRight,
   BarChart2,
   Award,
-  ShieldCheck,
   TrendingUp,
 } from "lucide-react";
+import defaultProfilePhoto from "../../assets/images/miauteriapf.jpeg";
+import partnerBackground from "../../assets/images/miauteria_nova.jpg";
 import { translations } from "@/constants/translations";
+import { useToast } from "@/context/AppContext";
 
 /* ─────────── Tipos ─────────── */
 interface ParceiroScreenProps {
-  onToast: (message: string) => void;
   language: "pt" | "en" | "es";
 }
 
-/* ─────────── Mock data ─────────── */
-const REVIEWS_DATA = [
-  {
-    id: 1,
-    name: "Maria Silva",
-    initials: "MS",
-    rating: 5,
-    comment:
-      "Lugar incrível! Os gatinhos são muito fofos e o café é delicioso. Passei horas lá e não queria ir embora.",
-    date: "2 dias atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 2,
-    name: "João Santos",
-    initials: "JS",
-    rating: 5,
-    comment: "Ambiente acolhedor e os gatos são super carinhosos. Recomendo muito para quem ama felinos!",
-    date: "5 dias atrás",
-    replied: true,
-    existingResponse: "Obrigado pelo carinho, João! Esperamos você sempre aqui na Miauteria!",
-  },
-  {
-    id: 3,
-    name: "Ana Costa",
-    initials: "AC",
-    rating: 4,
-    comment: "Muito bom, mas estava um pouco cheio quando visitei. Vale reservar com antecedência.",
-    date: "1 semana atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 4,
-    name: "Pedro Oliveira",
-    initials: "PO",
-    rating: 5,
-    comment: "A experiência de tomar um café rodeado por gatinhos resgatados é única em Aracaju. Voltarei com certeza!",
-    date: "10 dias atrás",
-    replied: false,
-    existingResponse: null,
-  },
-  {
-    id: 5,
-    name: "Carla Ferreira",
-    initials: "CF",
-    rating: 4,
-    comment: "Café de qualidade e causa social linda. Adotei uma das gatas e estou muito feliz!",
-    date: "2 semanas atrás",
-    replied: true,
-    existingResponse: "Que notícia maravilhosa, Carla! Boa sorte com sua nova companheira!",
-  },
-];
+interface Review {
+  id: number;
+  initials: string;
+  name: string;
+  date: string;
+  rating: number;
+  comment: string;
+  existingResponse?: string;
+  replied: boolean;
+}
 
-/* ──��──────── Avatar colorido por iniciais ─────────── */
-const AVATAR_COLORS = [
+import { mockService } from "@/services/mock.service";
+
+/* ─────────── Avatar colorido por iniciais ─────────── */
+const AVATAR_COLORS: string[] = [
   "bg-[#F06030]",
   "bg-[#0D9488]",
   "bg-[#7C3AED]",
@@ -93,10 +52,12 @@ const AVATAR_COLORS = [
 function EvolutionChart({
   values,
   labels,
+  ariaLabel,
 }: {
   values: number[];
   labels: string[];
-}) {
+  ariaLabel?: string;
+}): JSX.Element {
   const W = 340;
   const H = 170;
   const PAD = { top: 12, right: 12, bottom: 28, left: 42 };
@@ -107,23 +68,23 @@ function EvolutionChart({
   const maxV = Math.max(...values);
   const range = maxV - minV || 1;
 
-  const cx = (i: number) =>
+  const cx = (i: number): number =>
     PAD.left + (i / (values.length - 1)) * plotW;
-  const cy = (v: number) =>
+  const cy = (v: number): number =>
     PAD.top + plotH - ((v - minV) / range) * plotH;
 
   const linePath = values
-    .map((v, i) => `${i === 0 ? "M" : "L"}${cx(i)},${cy(v)}`)
+    .map((v: number, i: number): string => `${i === 0 ? "M" : "L"}${cx(i)},${cy(v)}`)
     .join(" ");
 
   const areaPath = `${linePath} L${cx(values.length - 1)},${PAD.top + plotH} L${cx(0)},${PAD.top + plotH}Z`;
 
   // 3 horizontal grid lines
   const gridVals = [minV, (minV + maxV) / 2, maxV].map(
-    (v) => Math.round(v / 100) * 100
+    (v: number): number => Math.round(v / 100) * 100
   );
 
-  const fmt = (v: number) =>
+  const fmt = (v: number): string =>
     v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v);
 
   return (
@@ -131,10 +92,10 @@ function EvolutionChart({
       viewBox={`0 0 ${W} ${H}`}
       className="w-full"
       style={{ height: H, display: "block" }}
-      aria-label="Gráfico de evolução de visualizações"
+      aria-label={ariaLabel || "Gráfico de evolução de visualizações"}
     >
       {/* Horizontal grid lines */}
-      {gridVals.map((gv, gi) => (
+      {gridVals.map((gv: number, gi: number): JSX.Element => (
         <g key={`grid-${gi}`}>
           <line
             x1={PAD.left}
@@ -170,7 +131,7 @@ function EvolutionChart({
       />
 
       {/* Dots */}
-      {values.map((v, i) => (
+      {values.map((v: number, i: number): JSX.Element => (
         <circle
           key={`dot-${i}`}
           cx={cx(i)}
@@ -183,7 +144,7 @@ function EvolutionChart({
       ))}
 
       {/* X-axis labels */}
-      {labels.map((lbl, i) => (
+      {labels.map((lbl: string, i: number): JSX.Element => (
         <text
           key={`lbl-${i}`}
           x={cx(i)}
@@ -199,9 +160,95 @@ function EvolutionChart({
   );
 }
 
+// Helper to translate category pills
+const getCategoryLabel = (cat: string, lang: string): string => {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cat === 'Cafeteria') {
+    return cleanLang === 'en' ? 'Coffee Shop' : cleanLang === 'es' ? 'Cafetería' : 'Cafeteria';
+  }
+  if (cat === 'Adoção') {
+    return cleanLang === 'en' ? 'Adoption' : cleanLang === 'es' ? 'Adopción' : 'Adoção';
+  }
+  return cat; // "Pet Friendly"
+};
+
+// Helper to translate relative date strings
+const getDateTraduzida = (dateStr: string, lang: string): string => {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cleanLang === 'pt') return dateStr;
+
+  let translated = dateStr;
+  if (cleanLang === 'en') {
+    translated = translated
+      .replace(/dias atrás/gi, "days ago")
+      .replace(/dia atrás/gi, "day ago")
+      .replace(/semana atrás/gi, "week ago")
+      .replace(/semanas atrás/gi, "weeks ago")
+      .replace(/mês atrás/gi, "month ago")
+      .replace(/meses atrás/gi, "months ago");
+  } else if (cleanLang === 'es') {
+    translated = translated
+      .replace(/dias atrás/gi, "días atrás")
+      .replace(/dia atrás/gi, "día atrás")
+      .replace(/semana atrás/gi, "semana atrás")
+      .replace(/semanas atrás/gi, "semanas atrás")
+      .replace(/mês atrás/gi, "mes atrás")
+      .replace(/meses atrás/gi, "meses atrás");
+  }
+  return translated;
+};
+
+const REVIEW_TRANSLATIONS: Record<number, { comment?: Record<string, string>; existingResponse?: Record<string, string> }> = {
+  1: {
+    comment: {
+      en: "Extraordinary space! The harmony between the sheltered kittens and the coffee menu is impeccable. The respect and love for the animals is noticeable, and the service is very attentive.",
+      es: "¡Espacio extraordinario! La armonía entre los gatitos acogidos y el menú de cafés es impecable. Se percibe el respeto y cariño por los animales, además de una atención muy atenta."
+    }
+  },
+  2: {
+    comment: {
+      en: "Extremely cozy environment, ideal for reading or casual meetings in the presence of felines. The social proposal of the cat café deserves all the recognition in Aracaju.",
+      es: "Ambiente extremadamente acogedor, ideal para lectura o reuniones casuales en presencia de los felinos. La propuesta social del cat café merece todo el reconocimiento en Aracaju."
+    },
+    existingResponse: {
+      en: "Thank you so much for the prestige and positive feedback, João! Your presence and support strengthen our cause. We hope to see you again soon at Miauteria!",
+      es: "¡Muchísimas gracias por el prestigio y el comentario positivo, João! Tu presencia y apoyo fortalecen nuestra causa. ¡Esperamos verte pronto en la Miauteria!"
+    }
+  },
+  3: {
+    comment: {
+      en: "The cafe's proposal is wonderful and the sweets are delicious. However, on weekends the place usually reaches maximum capacity quickly, so it is wise to plan your visit in advance.",
+      es: "La propuesta del café es maravillosa y los dulces son deliciosos. Sin embargo, los fines de semana el local suele alcanzar su capacidad máxima rápidamente, por lo que es prudente planificar la visita con anticipación."
+    }
+  },
+  4: {
+    comment: {
+      en: "The initiative of integrating specialty coffee consumption with the responsible adoption of rescued felines is exemplary. Congratulations to the team for the care with hygiene and well-being of all.",
+      es: "La iniciativa de integrar el consumo de cafés de especialidad con la adopción responsable de felinos rescatados es ejemplar. Felicitaciones al equipo por el cuidado con la higiene y el bienestar de todos."
+    }
+  },
+  5: {
+    comment: {
+      en: "I visited to learn about the project and ended up adopting a beautiful kitten. The screening process is very serious and the coffee served is of top quality. Highly recommend the visit!",
+      es: "Visité para conocer el proyecto y terminó adoptando una hermosa gatita. El proceso de selección es muy serio y el café servido es de primerísima calidad. ¡Recomiendo mucho la visita!"
+    },
+    existingResponse: {
+      en: "We are immensely happy with the adoption, Carla! We wish you many joys in this new journey with your feline companion. A big hug from our entire team!",
+      es: "¡Estamos inmensamente felices con la adopción, Carla! Te deseamos muchas alegrías en este nuevo viaje con tu compañera felina. ¡Un gran abrazo de todo nuestro equipo!"
+    }
+  }
+};
+
 /* ─────────── Componente ─────────── */
-export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
+export function ParceiroScreen({ language }: ParceiroScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language];
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    mockService.reviews.getPartnerReviews().then((data) => setReviews(data as Review[]));
+  }, []);
 
   /* Modal state */
   const [showEditModal, setShowEditModal] = useState(false);
@@ -214,6 +261,16 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
     "Cafeteria pet friendly com adoção de gatos"
   );
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [profilePhoto, setProfilePhoto] = useState<string>(defaultProfilePhoto);
+  const profilePhotoObjectUrlRef = useRef<string | null>(null);
+
+  useEffect((): () => void => {
+    return (): void => {
+      if (profilePhotoObjectUrlRef.current) {
+        URL.revokeObjectURL(profilePhotoObjectUrlRef.current);
+      }
+    };
+  }, []);
 
   /* Inline review reply */
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
@@ -237,65 +294,91 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
   const SEAL_PCT = 87;
 
   /* Handlers */
-  const handleSaveEdit = () => {
+  const handleSaveEdit = (): void => {
     setShowEditModal(false);
     onToast(t.profileUpdated);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>): void => {
     if (e.target.files) setSelectedFiles(Array.from(e.target.files));
   };
 
-  const handleUploadPhotos = () => {
+  const handleUploadPhotos = (): void => {
     if (selectedFiles.length === 0) {
-      onToast("📸 Selecione fotos primeiro");
+      onToast(t.selectPhotosFirst);
       return;
     }
+
+    if (profilePhotoObjectUrlRef.current) {
+      URL.revokeObjectURL(profilePhotoObjectUrlRef.current);
+    }
+
+    const newProfileUrl = URL.createObjectURL(selectedFiles[0]);
+    profilePhotoObjectUrlRef.current = newProfileUrl;
+    setProfilePhoto(newProfileUrl);
+
     setShowPhotoModal(false);
     setSelectedFiles([]);
     onToast(`${t.photosAdded}`);
   };
 
-  const handleSendReply = (reviewId: number) => {
+  const handleSendReply = (reviewId: number): void => {
     const text = replyText[reviewId];
     if (!text?.trim()) {
-      onToast("✏️ Escreva uma resposta antes de publicar");
+      onToast(t.writeReplyFirst);
       return;
     }
-    setSentReplies((prev) => ({ ...prev, [reviewId]: text.trim() }));
-    setReplyText((prev) => ({ ...prev, [reviewId]: "" }));
-    setReplyingTo(null);
-    onToast(t.responseSent);
+    mockService.reviews.addPartnerResponse(reviewId, text.trim()).then(() => {
+      setSentReplies((prev) => ({ ...prev, [reviewId]: text.trim() }));
+      setReplyText((prev) => ({ ...prev, [reviewId]: "" }));
+      setReplyingTo(null);
+      onToast(t.responseSent);
+      
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId ? { ...r, replied: true, existingResponse: text.trim() } : r
+        )
+      );
+    });
   };
 
   /* ═══════════════════════════════════════════════════
      JSX
   ═══════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--cinza-leve)', paddingTop: 'var(--navbar-height)' }}>
 
       {/* ══════ HEADER BRANCO COM IMAGEM DE FUNDO ══════ */}
       <div
-        className="pt-[62px] relative overflow-hidden"
-        style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #E5E7EB' }}
+        className="relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
+          borderBottom: '1px solid #E5E7EB',
+        }}
       >
-        
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-12 relative z-10">
+        <img
+          src={partnerBackground}
+          alt="Portal background"
+          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-40"
+          style={{ zIndex: 0, objectPosition: 'center center' }}
+        />
+        <div className="absolute inset-0 bg-black/15" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-36 pb-10 relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <div>
               <h1
-                className="font-bold tracking-tight leading-tight"
-                style={{ fontSize: "36px", color: '#1E293B', fontFamily: 'Inter, sans-serif' }}
+                className="font-semibold tracking-tight leading-tight"
+                style={{ fontSize: "36px", color: '#FFFFFF', fontFamily: "var(--font-display)" }}
               >
                 {t.partnerPortal}
               </h1>
-              <p className="text-sm mt-0.5" style={{ color: '#64748B' }}>{t.manageEstablishment}</p>
+              <p className="text-sm mt-0.5 font-medium" style={{ color: '#FFFFFF' }}>{t.manageEstablishment}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 -mt-4 pb-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 mt-6 pb-20">
 
         {/* ══════ CARD ESTABELECIMENTO ══════ */}
         <div
@@ -307,9 +390,17 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
           <div className="flex flex-col sm:flex-row items-start gap-5">
             {/* Logo */}
             <div
-              className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-gradient-to-br from-[#ED2100] to-[#1A0050] flex items-center justify-center"
+              className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-linear-to-br from-[#ED2100] to-[#1A0050] flex items-center justify-center"
             >
-              <Camera size={36} className="text-white" />
+              {profilePhoto ? (
+                <img
+                  src={profilePhoto}
+                  alt={t.establishmentPhotoAlt || "Foto do estabelecimento"}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Camera size={36} className="text-white" />
+              )}
             </div>
 
             {/* Info */}
@@ -324,7 +415,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                   </h2>
                   <div className="flex items-center gap-1.5 text-sm mb-2" style={{ color: '#64748B' }}>
                     <MapPin size={14} className="shrink-0" style={{ color: '#0D7C84' }} strokeWidth={2.5} />
-                    <span>Rua João Pessoa, 280 — Centro, Aracaju/SE</span>
+                    <span>Av. Dr. Edelzio Vieira de Melo, 1337 - Pereira Lobo, Aracaju - SE</span>
                   </div>
                   {/* Category pills */}
                   <div className="flex flex-wrap gap-1.5 mb-3">
@@ -334,7 +425,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                         className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                         style={{ backgroundColor: '#F1F5F9', color: '#64748B' }}
                       >
-                        {cat}
+                        {getCategoryLabel(cat, language)}
                       </span>
                     ))}
                     {/* Verificado badge */}
@@ -361,7 +452,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                 {/* Edit button */}
                 <button
                   onClick={() => setShowEditModal(true)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-sm min-h-[44px] transition-all text-white shrink-0 hover:opacity-90"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-sm min-h-11 transition-all text-white shrink-0 hover:opacity-90"
                   style={{ backgroundColor: "#0D7C84" }}
                 >
                   <PenLine size={15} strokeWidth={2.5} />
@@ -520,7 +611,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                       className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
                       style={{ color: '#F59E0B', backgroundColor: '#FEF3C7' }}
                     >
-                      Em progresso
+                      {t.inProgress || "Em progresso"}
                     </span>
                   )}
                 </div>
@@ -543,7 +634,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             </div>
             <p className="text-xs mb-4" style={{ color: '#64748B' }}>{t.evolutionChartDesc}</p>
 
-            <EvolutionChart values={CHART_VALUES} labels={months} />
+            <EvolutionChart values={CHART_VALUES} labels={months} ariaLabel={t.evolutionChartAria} />
           </div>
         </div>
 
@@ -556,7 +647,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             {/* Fotos */}
             <button
               onClick={() => setShowPhotoModal(true)}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -569,14 +660,14 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                 <p className="font-bold text-white text-sm">
                   {t.addPhotos}
                 </p>
-                <p className="text-white/70 text-xs mt-0.5">Galeria · fotos do local</p>
+                <p className="text-white/70 text-xs mt-0.5">{t.quickActionsGalleryDesc}</p>
               </div>
             </button>
 
             {/* Responder */}
             <button
               onClick={() => {
-                const firstUnreplied = REVIEWS_DATA.find(
+                const firstUnreplied = reviews.find(
                   (r) => !r.replied && !sentReplies[r.id]
                 );
                 if (firstUnreplied) {
@@ -586,7 +677,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     ?.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
               }}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -600,7 +691,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                   {t.respondReviews}
                 </p>
                 <p className="text-white/70 text-xs mt-0.5">
-                  {REVIEWS_DATA.filter((r) => !r.replied && !sentReplies[r.id]).length} pendente(s)
+                  {reviews.filter((r) => !r.replied && !sentReplies[r.id]).length} {t.pendingReviews}
                 </p>
               </div>
             </button>
@@ -608,7 +699,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
             {/* Promover */}
             <button
               onClick={() => setShowPromoteModal(true)}
-              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-[80px]"
+              className="flex items-center gap-3 p-5 rounded-2xl text-left transition-all hover:opacity-90 active:scale-[0.98] min-h-20"
               style={{
                 backgroundColor: "#0D7C84",
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
@@ -619,9 +710,9 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
               </div>
               <div>
                 <p className="font-bold text-white text-sm">
-                  PROMOVER
+                  {t.promote}
                 </p>
-                <p className="text-white/70 text-xs mt-0.5">Planos · destaque · visibilidade</p>
+                <p className="text-white/70 text-xs mt-0.5">{t.quickActionsPromoteDesc}</p>
               </div>
             </button>
           </div>
@@ -648,12 +739,12 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
               className="text-xs px-2 py-1 rounded-full"
               style={{ color: '#64748B', backgroundColor: '#F1F5F9' }}
             >
-              {REVIEWS_DATA.length} {t.reviews}
+              {reviews.length} {t.reviews}
             </span>
           </div>
 
-          <div className="divide-y divide-[var(--cinza-med)]">
-            {REVIEWS_DATA.map((review, idx) => {
+          <div className="divide-y divide-(--cinza-med)">
+            {reviews.map((review, idx) => {
               const isReplying = replyingTo === review.id;
               const hasSentReply = !!sentReplies[review.id];
               const displayReply = hasSentReply
@@ -678,8 +769,8 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-1.5">
                         <div>
-                          <span className="font-bold text-sm text-[var(--preto)]">{review.name}</span>
-                          <span className="ml-2 text-xs text-[var(--cinza-txt)]">{review.date}</span>
+                          <span className="font-bold text-sm text-(--preto)">{review.name}</span>
+                          <span className="ml-2 text-xs text-(--cinza-txt)">{getDateTraduzida(review.date, language)}</span>
                         </div>
                         {/* Stars */}
                         <div className="flex">
@@ -690,21 +781,21 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                               className={
                                 s <= review.rating
                                   ? "text-[#F5A623] fill-[#F5A623]"
-                                  : "text-[var(--cinza-med)]"
+                                  : "text-(--cinza-med)"
                               }
                             />
                           ))}
                         </div>
                       </div>
 
-                      <p className="text-sm text-[var(--cinza-txt)] leading-relaxed mb-3">
-                        {review.comment}
+                      <p className="text-sm text-(--cinza-txt) leading-relaxed mb-3">
+                        {REVIEW_TRANSLATIONS[review.id]?.comment?.[language] || review.comment}
                       </p>
 
                       {/* Existing / sent reply */}
                       {displayReply && (
                         <div
-                          className="mb-3 p-3.5 rounded-[var(--radius-sm)]"
+                          className="mb-3 p-3.5 rounded-sm"
                           style={{
                             backgroundColor: "#F0FDFA",
                             borderLeft: "3px solid #0D7C84",
@@ -716,8 +807,8 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                           >
                             {t.yourResponse}
                           </p>
-                          <p className="text-xs text-[var(--cinza-txt)] leading-relaxed">
-                            {displayReply}
+                          <p className="text-xs text-gray-500 leading-relaxed">
+                            {hasSentReply ? sentReplies[review.id] : (REVIEW_TRANSLATIONS[review.id]?.existingResponse?.[language] || review.existingResponse)}
                           </p>
                         </div>
                       )}
@@ -742,7 +833,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleSendReply(review.id)}
-                              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-lg text-xs font-bold min-h-[36px] hover:opacity-90 transition-opacity"
+                              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-lg text-xs font-bold min-h-9 hover:opacity-90 transition-opacity"
                               style={{ backgroundColor: "#0D7C84" }}
                             >
                               <Send size={12} />
@@ -750,7 +841,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                             </button>
                             <button
                               onClick={() => setReplyingTo(null)}
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-colors min-h-[36px]"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-colors min-h-9"
                               style={{ border: '1px solid #E5E7EB', color: '#64748B', backgroundColor: '#FFFFFF' }}
                             >
                               <X size={12} />
@@ -764,7 +855,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                       {!isReplied && !isReplying && (
                         <button
                           onClick={() => setReplyingTo(review.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors min-h-[36px]"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors min-h-9"
                           style={{ border: '1px solid #E5E7EB', color: '#64748B' }}
                         >
                           <MessageSquare size={12} />
@@ -772,13 +863,9 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                         </button>
                       )}
                       {isReplied && !isReplying && (
-                        <span className="flex items-center gap-1.5 text-xs text-[var(--verde)] font-medium">
+                        <span className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
                           <CheckCircle2 size={13} />
-                          {language === "pt"
-                            ? "Respondido"
-                            : language === "en"
-                            ? "Replied"
-                            : "Respondido"}
+                          {t.replied}
                         </span>
                       )}
                     </div>
@@ -797,51 +884,51 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
       {/* Edit modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[var(--radius)] p-7 max-w-lg w-full shadow-2xl">
+          <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-[var(--preto)]">
+              <h3 className="font-semibold font-display tracking-tight text-2xl text-gray-900">
                 {t.editEstablishment}
               </h3>
               <button
                 onClick={() => setShowEditModal(false)}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="mb-4">
-              <label className="block text-xs font-bold tracking-widest uppercase text-[var(--cinza-txt)] mb-2">
+              <label className="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">
                 {t.name}
               </label>
               <input
                 type="text"
                 value={establishmentName}
                 onChange={(e) => setEstablishmentName(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--cinza-med)] rounded-[var(--radius-sm)] text-sm outline-none focus:border-[#004D5A] transition-colors bg-[var(--cinza-leve)]"
+                className="w-full px-4 py-3 border border-gray-300 rounded-sm text-sm outline-none focus:border-[#004D5A] transition-colors bg-gray-50"
               />
             </div>
             <div className="mb-6">
-              <label className="block text-xs font-bold tracking-widest uppercase text-[var(--cinza-txt)] mb-2">
+              <label className="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">
                 {t.description}
               </label>
               <textarea
                 value={establishmentDesc}
                 onChange={(e) => setEstablishmentDesc(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--cinza-med)] rounded-[var(--radius-sm)] text-sm outline-none focus:border-[#004D5A] transition-colors bg-[var(--cinza-leve)] resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-sm text-sm outline-none focus:border-[#004D5A] transition-colors bg-gray-50 resize-none"
                 rows={3}
               />
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handleSaveEdit}
-                className="flex-1 py-3 text-white rounded-lg font-bold text-sm min-h-[44px] hover:opacity-90 transition-opacity"
+                className="flex-1 py-3 text-white rounded-lg font-bold text-sm min-h-11 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: "#0D7C84" }}
               >
                 {t.save}
               </button>
               <button
                 onClick={() => setShowEditModal(false)}
-                className="flex-1 py-3 border-2 border-[var(--cinza-med)] text-[var(--cinza-txt)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--preto)] hover:text-[var(--preto)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 border-2 border-gray-300 text-gray-500 rounded-sm font-bold text-sm hover:border-gray-900 hover:text-gray-900 transition-colors min-h-11"
               >
                 {t.cancel}
               </button>
@@ -853,21 +940,21 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
       {/* Photo modal */}
       {showPhotoModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[var(--radius)] p-7 max-w-lg w-full shadow-2xl">
+          <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-[var(--preto)]">
+              <h3 className="font-semibold font-display tracking-tight text-2xl text-gray-900">
                 {t.addPhotosTitle}
               </h3>
               <button
                 onClick={() => { setShowPhotoModal(false); setSelectedFiles([]); }}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="border-2 border-dashed rounded-2xl p-10 text-center mb-6 transition-colors" style={{ borderColor: '#E5E7EB' }}>
               <Camera size={48} className="mx-auto mb-3" style={{ color: '#94A3B8' }} strokeWidth={1.5} />
-              <p className="text-sm text-[var(--cinza-txt)] mb-4">{t.dragPhotos}</p>
+              <p className="text-sm text-gray-500 mb-4">{t.dragPhotos}</p>
               <input
                 type="file"
                 multiple
@@ -885,20 +972,20 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
               </label>
               {selectedFiles.length > 0 && (
                 <p className="text-sm font-bold mt-3" style={{ color: "#0D7C84" }}>
-                  {selectedFiles.length} arquivo(s) selecionado(s)
+                  {selectedFiles.length} {t.filesSelected}
                 </p>
               )}
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handleUploadPhotos}
-                className="flex-1 py-3 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] font-bold text-sm hover:bg-[var(--vermelho)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 bg-primary text-white rounded-sm font-bold text-sm hover:bg-red-600 transition-colors min-h-11"
               >
                 {t.upload}
               </button>
               <button
                 onClick={() => { setShowPhotoModal(false); setSelectedFiles([]); }}
-                className="flex-1 py-3 border-2 border-[var(--cinza-med)] text-[var(--cinza-txt)] rounded-[var(--radius-sm)] font-bold text-sm hover:border-[var(--preto)] hover:text-[var(--preto)] transition-colors min-h-[44px]"
+                className="flex-1 py-3 border-2 border-gray-300 text-gray-500 rounded-sm font-bold text-sm hover:border-gray-900 hover:text-gray-900 transition-colors min-h-11"
               >
                 {t.cancel}
               </button>
@@ -913,21 +1000,17 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
           <div className="bg-white rounded-2xl p-7 max-w-3xl w-full my-8 shadow-2xl">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-2xl" style={{ color: '#0F172A' }}>
-                {language === "pt" ? "Promova seu Estabelecimento" : language === "en" ? "Promote your Establishment" : "Promociona tu Establecimiento"}
+                {t.promoteTitle}
               </h3>
               <button
                 onClick={() => setShowPromoteModal(false)}
-                className="w-9 h-9 flex items-center justify-center text-[var(--cinza-txt)] hover:text-[var(--preto)] rounded-full hover:bg-[var(--cinza-leve)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
             <p className="text-sm mb-6" style={{ color: '#64748B' }}>
-              {language === "pt"
-                ? "Aumente sua visibilidade e alcance mais turistas com nossos planos"
-                : language === "en"
-                ? "Increase your visibility and reach more tourists with our plans"
-                : "Aumenta tu visibilidad y alcanza más turistas con nuestros planes"}
+              {t.promoteDesc}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -935,22 +1018,22 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
               <div className="border-2 rounded-2xl p-5 transition-colors" style={{ borderColor: '#E5E7EB' }}>
                 <div className="text-center mb-4">
                   <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>
-                    {language === "pt" ? "Básico" : language === "en" ? "Basic" : "Básico"}
+                    {t.planBasic}
                   </h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0D7C84' }}>
-                    R$ 99<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 99<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque na listagem</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Galeria de até 10 fotos</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Estatísticas básicas</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail3}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Básico selecionado!"); }}
-                  className="w-full py-2.5 border-2 border-[var(--azul)] text-[var(--azul)] rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[var(--azul)] hover:text-white transition-colors"
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planBasicSelected); }}
+                  className="w-full py-2.5 border-2 border-(--azul) text-(--azul) rounded-sm text-xs font-bold hover:bg-(--azul) hover:text-white transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
 
@@ -964,52 +1047,52 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps) {
                 </div>
                 <div className="text-center mb-4">
                   <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>
-                    {language === "pt" ? "Profissional" : language === "en" ? "Professional" : "Profesional"}
+                    {t.planProfessional}
                   </h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0D7C84' }}>
-                    R$ 199<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 199<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque no topo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Fotos ilimitadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Estatísticas avançadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Post em redes sociais</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail3}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail4}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Profissional selecionado!"); }}
-                  className="w-full py-2.5 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[var(--vermelho)] transition-colors"
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planProfessionalSelected); }}
+                  className="w-full py-2.5 bg-primary text-white rounded-sm text-xs font-bold hover:bg-(--vermelho) transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
 
               {/* Premium */}
               <div className="border-2 rounded-2xl p-5 transition-colors" style={{ borderColor: '#E5E7EB' }}>
                 <div className="text-center mb-4">
-                  <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>Premium</h4>
+                  <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>{t.planPremium}</h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0F172A' }}>
-                    R$ 349<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 349<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
-                <ul className="text-xs text-[var(--cinza-txt)] space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Destaque exclusivo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Conteúdo em vídeo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Análise completa</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-[var(--verde)]" /> Gerente dedicado</li>
+                <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail3}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail4}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Premium selecionado!"); }}
-                  className="w-full py-2.5 border-2 border-[#7C3AED] text-[#7C3AED] rounded-[var(--radius-sm)] text-xs font-bold hover:bg-[#7C3AED] hover:text-white transition-colors"
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planPremiumSelected); }}
+                  className="w-full py-2.5 border-2 border-[#7C3AED] text-[#7C3AED] rounded-sm text-xs font-bold hover:bg-[#7C3AED] hover:text-white transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
             </div>
 
             <div className="rounded-xl p-3 text-center" style={{ backgroundColor: '#F1F5F9' }}>
               <p className="text-xs" style={{ color: '#64748B' }}>
-                Todos os planos incluem 7 dias de teste gratuito. Cancele a qualquer momento.
+                {t.plansTerms}
               </p>
             </div>
           </div>

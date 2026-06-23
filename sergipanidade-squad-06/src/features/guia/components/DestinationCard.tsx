@@ -21,7 +21,7 @@ interface Destination {
 
 interface DestinationCardProps {
   destination: Destination;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   onNavigate: (screen: string, id: string) => void;
   exploreLabel?: string;
   onAction?: (e: React.MouseEvent) => void;
@@ -72,7 +72,7 @@ export function DestinationCard({
       {/* Conteúdo */}
       <div className="px-4 py-3.5">
         <h3
-          className="font-['Fjalla_One'] text-[17px] text-[var(--preto)] tracking-wide mb-1"
+          className="font-semibold font-display text-[17px] text-[var(--preto)] tracking-tight mb-1"
           style={{ lineHeight: 1.3 }}
         >
           {destination.name}

@@ -1,24 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { useToast } from "@/context/AppContext";
 import {
   User,
   Bell,
-  Route,
   Heart,
   Star,
-  Eye,
   Edit3,
-  FileDown,
   Trash2,
-  Plus,
   ChevronDown,
   ChevronUp,
   Lock,
   Download,
-  MapPin,
-  Calendar,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
   Shield,
 } from 'lucide-react';
 import { translations } from "@/constants/translations";
@@ -26,71 +18,17 @@ import { UserAvatar } from '@/components/shared/UserAvatar';
 import { destinations } from "@/constants/destinations";
 import type { UserProfile } from '@/types';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
+const LazyDocumentosModal = lazy(() => import('@/components/shared/DocumentosModal').then(m => ({ default: m.DocumentosModal })));
+
+import { mockService, UserReview, Itinerary } from '@/services/mock.service';
 
 // ─── Types ────────────────────────────────────────────────────
 type Tab =
   | 'dados'
   | 'notificacoes'
-  | 'roteiros'
   | 'favoritos'
   | 'avaliacoes';
 type FavFilter = 'all' | 'atracoes' | 'restaurantes' | 'hoteis';
-
-// ─── Mock Data ────────────────────────────────────────────────
-const MOCK_ITINERARIES = [
-  {
-    id: '1',
-    title: 'Aracaju',
-    days: 3,
-    type: 'Casal',
-    date: 'Jan 2024',
-    stops: 6,
-    img: 'https://images.unsplash.com/photo-1709133108199-424031785704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
-  },
-  {
-    id: '2',
-    title: 'Litoral Norte',
-    days: 1,
-    type: 'Solo',
-    date: 'Mar 2024',
-    stops: 4,
-    img: 'https://images.unsplash.com/photo-1773407060124-c093ab4ff969?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
-  },
-];
-
-const MOCK_REVIEWS = [
-  {
-    id: '1',
-    place: 'Orla de Atalaia',
-    rating: 5,
-    date: 'Fev 2024',
-    text: 'Lugar incrível! O pôr do sol é espetacular e a orla está muito bem cuidada. Recomendo muito a caminhada ao entardecer.',
-    partnerResponse: null as string | null,
-    partnerInitials: null as string | null,
-  },
-  {
-    id: '2',
-    place: 'Museu da Gente Sergipana',
-    rating: 4,
-    date: 'Mar 2024',
-    text: 'Um museu moderno e envolvente. Aprendi muito sobre a riquíssima cultura sergipana. Vale cada minuto!',
-    partnerResponse:
-      'Obrigado pela visita, João! Ficamos felizes que tenha curtido a experiência. Volte sempre!',
-    partnerInitials: 'MG',
-  },
-  {
-    id: '3',
-    place: 'Miauteria Cat Café',
-    rating: 5,
-    date: 'Abr 2024',
-    text: 'Melhor café de Aracaju! Os gatinhos são um charme extra. Café de qualidade com uma causa social incrível.',
-    partnerResponse: null,
-    partnerInitials: null,
-  },
-];
-
-// Picks first 6 destinations as "favorites"
-const MOCK_FAVORITES = destinations.slice(0, 6);
 
 function categoryToFilter(category: string): FavFilter {
   const cat = category.toLowerCase();
@@ -107,10 +45,10 @@ function categoryToFilter(category: string): FavFilter {
 }
 
 // ─── Star row helper ───────────────────────────────────────────
-function Stars({ rating }: { rating: number }) {
+function Stars({ rating }: { rating: number }): JSX.Element {
   return (
     <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((n) => (
+      {[1, 2, 3, 4, 5].map((n: number): JSX.Element => (
         <Star
           key={n}
           size={14}
@@ -130,19 +68,19 @@ function Toggle({
 }: {
   active: boolean;
   onChange: () => void;
-}) {
+}): JSX.Element {
   return (
     <button
       role="switch"
       aria-checked={active}
       onClick={onChange}
-      className={`relative w-[48px] h-[26px] rounded-full flex-shrink-0 border-none cursor-pointer transition-colors duration-200 ${
-        active ? 'bg-[var(--primary)]' : 'bg-[var(--cinza-med)]'
+      className={`relative w-12 h-6.5 rounded-full shrink-0 border-none cursor-pointer transition-colors duration-200 ${
+        active ? 'bg-primary' : 'bg-(--cinza-med)'
       }`}
     >
       <span
-        className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
-          active ? 'left-[24px]' : 'left-[3px]'
+        className={`absolute top-0.75 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
+          active ? 'left-6' : 'left-0.75'
         }`}
       />
     </button>
@@ -151,19 +89,18 @@ function Toggle({
 
 // ─── Prop types ────────────────────────────────────────────────
 interface PerfilScreenProps {
-  onToast: (message: string) => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
 }
 
 // ─── Main component ────────────────────────────────────────────
 export function PerfilScreen({
-  onToast,
   language,
   userProfile,
   onUpdateProfile,
-}: PerfilScreenProps) {
+}: PerfilScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language] as typeof translations['pt'] & {
     notifNewsletter: string;
     tabDados: string;
@@ -199,15 +136,30 @@ export function PerfilScreen({
   };
 
   // ── Form state ──
-  const [fullName, setFullName] = useState(userProfile.name);
-  const [email, setEmail] = useState(userProfile.email);
-  const [phone, setPhone] = useState(userProfile.phone || '(79) 98765-4321');
+  const isEstabelecimento =
+    (userProfile as UserProfile & { role?: string }).role === 'estabelecimento' ||
+    userProfile.userType === 'estabelecimento';
+
+  const [fullName, setFullName] = useState<string>(
+    isEstabelecimento ? 'Miauteria Cat Café' : userProfile.name
+  );
+  const [email, setEmail] = useState<string>(
+    isEstabelecimento ? 'contato@miauteriacafe.com.br' : userProfile.email
+  );
+  const [phone, setPhone] = useState<string>(
+    isEstabelecimento
+      ? '(79) 98765-4321'
+      : userProfile.phone || '(79) 98765-4321'
+  );
+  const [cnpj, setCnpj] = useState<string>(
+    isEstabelecimento ? '12.345.678/0001-95' : ''
+  );
 
   // ── Password change ──
-  const [showPassword, setShowPassword] = useState(false);
-  const [currentPwd, setCurrentPwd] = useState('');
-  const [newPwd, setNewPwd] = useState('');
-  const [confirmPwd, setConfirmPwd] = useState('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [currentPwd, setCurrentPwd] = useState<string>('');
+  const [newPwd, setNewPwd] = useState<string>('');
+  const [confirmPwd, setConfirmPwd] = useState<string>('');
 
   // ── Notifications ──
   const [notifs, setNotifs] = useState({
@@ -225,13 +177,25 @@ export function PerfilScreen({
   const [favFilter, setFavFilter] = useState<FavFilter>('all');
 
   // ── Itineraries ──
-  const [itineraries, setItineraries] = useState(MOCK_ITINERARIES);
+  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
 
   // ── Reviews ──
-  const [reviews, setReviews] = useState(MOCK_REVIEWS);
+  const [reviews, setReviews] = useState<UserReview[]>([]);
+
+  // ── Favorites ──
+  const [favorites, setFavorites] = useState<typeof destinations>([]);
+
+  const [isDocsOpen, setIsDocsOpen] = useState(false);
+  const [docsTab, setDocsTab] = useState<'termos' | 'privacidade'>('termos');
+
+  useEffect(() => {
+    mockService.itineraries.getItineraries().then(setItineraries);
+    mockService.reviews.getUserReviews().then(setReviews);
+    mockService.favorites.getFavorites().then(setFavorites);
+  }, []);
 
   // ── Handlers ──
-  const handleSaveData = () => {
+  const handleSaveData = (): void => {
     onUpdateProfile({
       ...userProfile,
       name: fullName,
@@ -247,7 +211,7 @@ export function PerfilScreen({
     onToast(t.dataSaved);
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = (): void => {
     if (!currentPwd || !newPwd || !confirmPwd) return;
     if (newPwd !== confirmPwd) {
       onToast(t.passwordsDontMatch);
@@ -260,8 +224,8 @@ export function PerfilScreen({
     setShowPassword(false);
   };
 
-  const handleDownloadData = () => {
-    const data = JSON.stringify({ fullName, email, phone }, null, 2);
+  const handleDownloadData = (): void => {
+    const data = JSON.stringify({ fullName, email, phone, cnpj }, null, 2);
     const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
     const a = document.createElement('a');
     a.href = url;
@@ -271,7 +235,7 @@ export function PerfilScreen({
     onToast(t.downloadDataToast);
   };
 
-  const toggleNotif = (key: keyof typeof notifs) => {
+  const toggleNotif = (key: keyof typeof notifs): void => {
     const next = !notifs[key];
     setNotifs((p) => ({ ...p, [key]: next }));
     onToast(
@@ -292,13 +256,11 @@ export function PerfilScreen({
   // ── Badge config ──
   const badgeMap: Record<string, string> = {
     turista: 'TURISTA',
-    morador: 'MORADOR',
     estabelecimento: 'PARCEIRO',
   };
 
   const badgeBg: Record<string, string> = {
     turista: 'var(--primary)',
-    morador: '#16A34A',
     estabelecimento: '#7C3AED',
   };
 
@@ -308,10 +270,11 @@ export function PerfilScreen({
   // ── Tab config ──
   const TABS: { id: Tab; label: string; Icon: typeof User }[] = [
     { id: 'dados', label: t.tabDados || 'Dados', Icon: User },
-    { id: 'notificacoes', label: t.tabNotificacoes || 'Notificações', Icon: Bell },
-    { id: 'roteiros', label: t.tabRoteiros || 'Roteiros', Icon: Route },
-    { id: 'favoritos', label: t.tabFavoritos || 'Favoritos', Icon: Heart },
-    { id: 'avaliacoes', label: t.tabAvaliacoes || 'Avaliações', Icon: Star },
+    ...(!isEstabelecimento ? [
+      { id: 'notificacoes' as Tab, label: t.tabNotificacoes || 'Notificações', Icon: Bell },
+      { id: 'favoritos' as Tab, label: t.tabFavoritos || 'Favoritos', Icon: Heart },
+      { id: 'avaliacoes' as Tab, label: t.tabAvaliacoes || 'Avaliações', Icon: Star },
+    ] : []),
   ];
 
   const notifItems = [
@@ -324,13 +287,14 @@ export function PerfilScreen({
 
   const filteredFavs =
     favFilter === 'all'
-      ? MOCK_FAVORITES
-      : MOCK_FAVORITES.filter((d) => categoryToFilter(d.category) === favFilter);
+      ? favorites
+      : favorites.filter((d) => categoryToFilter(d.category) === favFilter);
 
+  // ──────────────────────────────────────────────────────────────
   // ──────────────────────────────────────────────────────────────
   return (
     <div
-      className="bg-[var(--cinza-leve)] min-h-screen"
+      className="bg-(--cinza-leve) min-h-screen"
       style={{
         paddingTop: 'calc(56px + env(safe-area-inset-top))',
         paddingBottom: 'calc(72px + env(safe-area-inset-bottom))',
@@ -339,12 +303,13 @@ export function PerfilScreen({
       {/* ── PROFILE HEADER ── */}
       <div
         className="px-4 sm:px-8 py-10"
-        style={{ backgroundColor: '#111111' }}
+        style={{ background: 'linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)' }}
       >
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-5">
           {/* Avatar */}
           <UserAvatar
             name={userProfile.name}
+            photoUrl={userProfile.photo}
             size={72}
             bgColor="var(--primary)"
           />
@@ -353,13 +318,13 @@ export function PerfilScreen({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap mb-1.5">
               <h1
-                className="font-['Fjalla_One'] text-white tracking-wide"
+                className="font-semibold font-display text-white tracking-tight"
                 style={{ fontSize: '28px', lineHeight: 1.1 }}
               >
                 {userProfile.name}
               </h1>
               <span
-                className="px-2.5 py-0.5 rounded-full text-white font-['Fjalla_One'] tracking-wider"
+                className="px-2.5 py-0.5 rounded-full text-white font-bold tracking-wider"
                 style={{ fontSize: '11px', backgroundColor: profileBadgeBg }}
               >
                 {profileBadge}
@@ -367,11 +332,7 @@ export function PerfilScreen({
             </div>
             <p className="text-white/50" style={{ fontSize: '14px' }}>
               {userProfile.email}&nbsp;·&nbsp;
-              {userProfile.userType === 'turista'
-                ? t.touristLabel
-                : userProfile.userType === 'morador'
-                ? t.residentLabel
-                : t.establishmentLabel}
+              {userProfile.userType === 'turista' ? t.touristLabel : t.establishmentLabel}
               &nbsp;·&nbsp;
               {t.memberSince} Jan 2024
             </p>
@@ -383,10 +344,10 @@ export function PerfilScreen({
               { value: '2', label: 'Roteiros' },
               { value: '6', label: 'Favoritos' },
               { value: '3', label: 'Avaliações' },
-            ].map((stat) => (
+            ].map((stat: { value: string; label: string }): JSX.Element => (
               <div key={stat.label} className="text-center">
                 <div
-                  className="font-['Fjalla_One'] text-white"
+                  className="font-semibold font-display text-white"
                   style={{ fontSize: '22px' }}
                 >
                   {stat.value}
@@ -402,26 +363,26 @@ export function PerfilScreen({
 
       {/* ── STICKY TABS ── */}
       <div
-        className="sticky z-[80] bg-white border-b border-[var(--cinza-med)] shadow-sm overflow-x-auto"
+        className="sticky z-80 bg-white border-b border-(--cinza-med) shadow-sm overflow-x-auto"
         style={{ top: 'calc(56px + env(safe-area-inset-top))' }}
       >
         <div className="flex max-w-4xl mx-auto px-4 sm:px-8">
-          {TABS.map(({ id, label, Icon }) => {
+          {TABS.map(({ id, label, Icon }: { id: Tab; label: string; Icon: typeof User }): JSX.Element => {
             const isActive = activeTab === id;
             return (
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
                 className={`relative flex items-center gap-1.5 px-3 sm:px-4 py-3.5 whitespace-nowrap
-                             bg-transparent border-none cursor-pointer min-h-[44px] transition-colors
-                             ${isActive ? 'text-[var(--primary)]' : 'text-[var(--cinza-txt)] hover:text-[var(--preto)]'}`}
+                             bg-transparent border-none cursor-pointer min-h-11 transition-colors
+                             ${isActive ? 'text-primary' : 'text-(--cinza-txt) hover:text-(--preto)'}`}
                 style={{ fontSize: '13px', fontWeight: isActive ? 600 : 400 }}
               >
                 <Icon size={15} strokeWidth={isActive ? 2.5 : 1.8} />
                 <span className="hidden sm:inline">{label}</span>
                 <span className="sm:hidden">{label.split(' ')[0]}</span>
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-t-full bg-[var(--primary)]" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-t-full bg-primary" />
                 )}
               </button>
             );
@@ -434,9 +395,9 @@ export function PerfilScreen({
         {/* ────── ABA DADOS ────── */}
         {activeTab === 'dados' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-[var(--radius)] p-6 shadow-[var(--sombra-sm)]">
+            <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
               <h2
-                className="font-['Fjalla_One'] text-[var(--preto)] mb-5"
+                className="font-semibold font-display text-(--preto) mb-5"
                 style={{ fontSize: '20px' }}
               >
                 {t.profileData}
@@ -447,10 +408,10 @@ export function PerfilScreen({
                 {[
                   { label: t.fullName, value: fullName, setter: setFullName, type: 'text' },
                   { label: t.email, value: email, setter: setEmail, type: 'email' },
-                ].map(({ label, value, setter, type }) => (
+                ].map(({ label, value, setter, type }: { label: string; value: string; setter: (v: string) => void; type: string }): JSX.Element => (
                   <div key={label}>
                     <label
-                      className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
+                      className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
                       style={{ fontSize: '11px', fontWeight: 700 }}
                     >
                       {label}
@@ -459,39 +420,59 @@ export function PerfilScreen({
                       type={type}
                       value={value}
                       onChange={(e) => setter(e.target.value)}
-                      className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                                 bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
-                                 focus:border-[var(--primary)] focus:bg-white transition-all"
+                      className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
+                                 bg-(--cinza-leve) outline-none text-(--preto)
+                                 focus:border-primary focus:bg-white transition-all"
                       style={{ fontSize: '14px' }}
                     />
                   </div>
                 ))}
               </div>
 
-              {/* Phone — half width */}
-              <div className="sm:w-1/2 mb-5">
-                <label
-                  className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
-                  style={{ fontSize: '11px', fontWeight: 700 }}
-                >
-                  {t.phone}
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                             bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
-                             focus:border-[var(--primary)] focus:bg-white transition-all"
-                  style={{ fontSize: '14px' }}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                  <label
+                    className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
+                    style={{ fontSize: '11px', fontWeight: 700 }}
+                  >
+                    {t.phone}
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
+                               bg-(--cinza-leve) outline-none text-(--preto)
+                               focus:border-primary focus:bg-white transition-all"
+                    style={{ fontSize: '14px' }}
+                  />
+                </div>
+                {isEstabelecimento && (
+                  <div>
+                    <label
+                      className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
+                      style={{ fontSize: '11px', fontWeight: 700 }}
+                    >
+                      CNPJ
+                    </label>
+                    <input
+                      type="text"
+                      value={cnpj}
+                      onChange={(e) => setCnpj(e.target.value)}
+                      className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
+                                 bg-(--cinza-leve) outline-none text-(--preto)
+                                 focus:border-primary focus:bg-white transition-all"
+                      style={{ fontSize: '14px' }}
+                    />
+                  </div>
+                )}
               </div>
 
               <button
                 onClick={handleSaveData}
-                className="min-h-[48px] px-8 rounded-[var(--radius-sm)] bg-[var(--primary)] text-white
-                           border-none cursor-pointer font-['Fjalla_One'] tracking-wider
-                           hover:bg-[#D04820] transition-colors"
+                 className="min-h-12 px-8 rounded-sm bg-primary text-white
+                            border-none cursor-pointer font-bold tracking-wider
+                            hover:bg-[#D04820] transition-colors"
                 style={{ fontSize: '14px' }}
               >
                 {t.saveData}
@@ -499,18 +480,18 @@ export function PerfilScreen({
             </div>
 
             {/* Password change collapsible */}
-            <div className="bg-white rounded-[var(--radius)] shadow-[var(--sombra-sm)] overflow-hidden">
+            <div className="bg-white rounded-lg shadow-(--sombra-sm) overflow-hidden">
               <button
                 onClick={() => setShowPassword((v) => !v)}
                 className="w-full flex items-center justify-between px-6 py-4 bg-transparent border-none
-                           cursor-pointer min-h-[56px] text-left hover:bg-[var(--cinza-leve)] transition-colors"
+                           cursor-pointer min-h-14 text-left hover:bg-(--cinza-leve) transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[var(--cinza-leve)] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-full bg-(--cinza-leve) flex items-center justify-center">
                     <Lock size={16} color="var(--cinza-txt)" />
                   </div>
                   <span
-                    className="font-semibold text-[var(--preto)]"
+                    className="font-semibold text-(--preto)"
                     style={{ fontSize: '15px' }}
                   >
                     {t.changePasswordTitle || 'Alterar Senha'}
@@ -524,7 +505,7 @@ export function PerfilScreen({
               </button>
 
               {showPassword && (
-                <div className="px-6 pb-6 pt-2 border-t border-[var(--cinza-med)]">
+                <div className="px-6 pb-6 pt-2 border-t border-(--cinza-med)">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     {[
                       {
@@ -542,10 +523,10 @@ export function PerfilScreen({
                         value: confirmPwd,
                         setter: setConfirmPwd,
                       },
-                    ].map(({ label, value, setter }) => (
+                    ].map(({ label, value, setter }: { label: string; value: string; setter: (v: string) => void }): JSX.Element => (
                       <div key={label}>
                         <label
-                          className="block mb-1.5 text-[var(--cinza-txt)] uppercase tracking-widest"
+                          className="block mb-1.5 text-(--cinza-txt) uppercase tracking-widest"
                           style={{ fontSize: '11px', fontWeight: 700 }}
                         >
                           {label}
@@ -554,9 +535,9 @@ export function PerfilScreen({
                           type="password"
                           value={value}
                           onChange={(e) => setter(e.target.value)}
-                          className="w-full px-4 py-3 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                                     bg-[var(--cinza-leve)] outline-none text-[var(--preto)]
-                                     focus:border-[var(--primary)] focus:bg-white transition-all"
+                          className="w-full px-4 py-3 border-[1.5px] border-(--cinza-med) rounded-sm
+                                     bg-(--cinza-leve) outline-none text-(--preto)
+                                     focus:border-primary focus:bg-white transition-all"
                           style={{ fontSize: '14px' }}
                         />
                       </div>
@@ -565,7 +546,7 @@ export function PerfilScreen({
                   <button
                     onClick={handleChangePassword}
                     disabled={!currentPwd || !newPwd || !confirmPwd}
-                    className="px-6 py-2.5 rounded-[var(--radius-sm)] bg-[var(--preto)] text-white
+                    className="px-6 py-2.5 rounded-sm bg-(--preto) text-white
                                border-none cursor-pointer font-semibold
                                hover:bg-[#333] transition-colors
                                disabled:opacity-40 disabled:cursor-not-allowed"
@@ -578,48 +559,48 @@ export function PerfilScreen({
             </div>
 
             {/* LGPD */}
-            <div className="bg-white rounded-[var(--radius)] p-6 shadow-[var(--sombra-sm)]">
+            <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
               <div className="flex items-center gap-3 mb-3">
                 <Shield size={18} color="var(--cinza-txt)" />
-                <h2 className="font-semibold text-[var(--preto)]" style={{ fontSize: '15px' }}>
+                <h2 className="font-semibold text-(--preto)" style={{ fontSize: '15px' }}>
                   {t.privacyCenter}
                 </h2>
               </div>
-              <p className="text-[var(--cinza-txt)] leading-relaxed mb-4" style={{ fontSize: '13px' }}>
+              <p className="text-(--cinza-txt) leading-relaxed mb-4" style={{ fontSize: '13px' }}>
                 {t.lgpdMessage}{' '}
-                <strong className="text-[var(--preto)]">{t.lgpdFullName}</strong>
+                <strong className="text-(--preto)">{t.lgpdFullName}</strong>
                 {t.lgpdRights}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={handleDownloadData}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-sm)] border border-[var(--cinza-med)]
-                             bg-white text-[var(--preto)] cursor-pointer hover:border-[var(--preto)] transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-sm border border-(--cinza-med)
+                             bg-white text-(--preto) cursor-pointer hover:border-(--preto) transition-colors"
                   style={{ fontSize: '13px' }}
                 >
                   <Download size={14} />
                   {t.downloadData}
                 </button>
                 <button
-                  onClick={() => onToast(t.termsOpened)}
-                  className="px-4 py-2 rounded-[var(--radius-sm)] border border-[var(--cinza-med)]
-                             bg-white text-[var(--preto)] cursor-pointer hover:border-[var(--preto)] transition-colors"
+                  onClick={() => { setDocsTab('termos'); setIsDocsOpen(true); }}
+                  className="px-4 py-2 rounded-sm border border-(--cinza-med)
+                             bg-white text-(--preto) cursor-pointer hover:border-(--preto) transition-colors"
                   style={{ fontSize: '13px' }}
                 >
                   {t.termsOfUse}
                 </button>
                 <button
-                  onClick={() => onToast(t.privacyOpened)}
-                  className="px-4 py-2 rounded-[var(--radius-sm)] border border-[var(--cinza-med)]
-                             bg-white text-[var(--preto)] cursor-pointer hover:border-[var(--preto)] transition-colors"
+                  onClick={() => { setDocsTab('privacidade'); setIsDocsOpen(true); }}
+                  className="px-4 py-2 rounded-sm border border-(--cinza-med)
+                             bg-white text-(--preto) cursor-pointer hover:border-(--preto) transition-colors"
                   style={{ fontSize: '13px' }}
                 >
                   {t.privacyPolicy}
                 </button>
                 <button
                   onClick={() => onToast(t.deleteAccountToast)}
-                  className="px-4 py-2 rounded-[var(--radius-sm)] border border-[var(--vermelho)]
-                             bg-white text-[var(--vermelho)] cursor-pointer hover:bg-red-50 transition-colors"
+                  className="px-4 py-2 rounded-sm border border-(--vermelho)
+                             bg-white text-(--vermelho) cursor-pointer hover:bg-red-55 transition-colors"
                   style={{ fontSize: '13px' }}
                 >
                   {t.deleteAccount}
@@ -631,25 +612,25 @@ export function PerfilScreen({
 
         {/* ────── ABA NOTIFICAÇÕES ────── */}
         {activeTab === 'notificacoes' && (
-          <div className="bg-white rounded-[var(--radius)] p-6 shadow-[var(--sombra-sm)]">
+          <div className="bg-white rounded-lg p-6 shadow-(--sombra-sm)">
             <h2
-              className="font-['Fjalla_One'] text-[var(--preto)] mb-5"
+              className="font-semibold font-display text-(--preto) mb-5"
               style={{ fontSize: '20px' }}
             >
               {t.notifications}
             </h2>
             <div className="space-y-1">
-              {notifItems.map(({ key, label }) => (
+              {notifItems.map(({ key, label }: { key: keyof typeof notifs; label: string }): JSX.Element => (
                 <div
                   key={key}
-                  className="flex items-center justify-between px-4 py-3.5 rounded-[var(--radius-sm)]
-                             hover:bg-[var(--cinza-leve)] transition-colors"
+                  className="flex items-center justify-between px-4 py-3.5 rounded-sm
+                             hover:bg-(--cinza-leve) transition-colors"
                 >
                   <div>
-                    <p className="text-[var(--preto)] font-medium" style={{ fontSize: '14px' }}>
+                    <p className="text-(--preto) font-medium" style={{ fontSize: '14px' }}>
                       {label}
                     </p>
-                    <p className="text-[var(--cinza-txt)]" style={{ fontSize: '12px' }}>
+                    <p className="text-(--cinza-txt)" style={{ fontSize: '12px' }}>
                       {notifs[key] ? 'Ativo' : 'Inativo'}
                     </p>
                   </div>
@@ -657,112 +638,12 @@ export function PerfilScreen({
                 </div>
               ))}
             </div>
-            <p className="text-[var(--cinza-txt)] mt-4 px-4" style={{ fontSize: '12px' }}>
+            <p className="text-(--cinza-txt) mt-4 px-4" style={{ fontSize: '12px' }}>
               {t.notificationsSavedAutomatically}
             </p>
           </div>
         )}
 
-        {/* ────── ABA ROTEIROS SALVOS ────── */}
-        {activeTab === 'roteiros' && (
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {itineraries.map((itin) => (
-                <div
-                  key={itin.id}
-                  className="bg-white rounded-[var(--radius)] shadow-[var(--sombra-sm)] overflow-hidden"
-                >
-                  {/* Thumbnail */}
-                  <div className="relative h-[140px] overflow-hidden">
-                    <ImageWithFallback
-                      src={itin.img}
-                      alt={itin.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-3 left-3">
-                      <p
-                        className="font-['Fjalla_One'] text-white tracking-wide"
-                        style={{ fontSize: '16px' }}
-                      >
-                        {itin.title}
-                      </p>
-                      <div className="flex items-center gap-2 text-white/70" style={{ fontSize: '12px' }}>
-                        <Calendar size={11} />
-                        <span>{itin.days} dias</span>
-                        <span>·</span>
-                        <span>{itin.type}</span>
-                        <span>·</span>
-                        <MapPin size={11} />
-                        <span>{itin.stops} paradas</span>
-                      </div>
-                    </div>
-                    <div
-                      className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/50 text-white"
-                      style={{ fontSize: '10px' }}
-                    >
-                      {itin.date}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 px-3 py-3 border-t border-[var(--cinza-med)]">
-                    {[
-                      { label: 'Ver', Icon: Eye },
-                      { label: 'Editar', Icon: Edit3 },
-                      { label: t.exportPDF || 'PDF', Icon: FileDown },
-                    ].map(({ label, Icon }) => (
-                      <button
-                        key={label}
-                        onClick={() => onToast(`📄 ${label}: ${itin.title}`)}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)]
-                                   border border-[var(--cinza-med)] bg-white text-[var(--preto)]
-                                   cursor-pointer hover:border-[var(--primary)] hover:text-[var(--primary)]
-                                   transition-colors min-h-[36px]"
-                        style={{ fontSize: '12px' }}
-                      >
-                        <Icon size={12} />
-                        {label}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => {
-                        setItineraries((p) => p.filter((it) => it.id !== itin.id));
-                        onToast(t.itineraryDeleted || '🗑️ Roteiro excluído');
-                      }}
-                      className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-[var(--radius-sm)]
-                                 border border-red-200 bg-white text-red-500
-                                 cursor-pointer hover:bg-red-50 transition-colors min-h-[36px]"
-                      style={{ fontSize: '12px' }}
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              {/* Create new */}
-              <button
-                onClick={() => onToast('🗺️ Abrindo wizard de roteiro…')}
-                className="min-h-[200px] rounded-[var(--radius)] border-2 border-dashed border-[var(--cinza-med)]
-                           bg-white flex flex-col items-center justify-center gap-3
-                           cursor-pointer hover:border-[var(--primary)] hover:bg-[var(--laranja-leve)]
-                           transition-all group"
-              >
-                <div className="w-12 h-12 rounded-full bg-[var(--cinza-leve)] group-hover:bg-[var(--primary)]/10
-                                flex items-center justify-center transition-colors">
-                  <Plus size={22} color="var(--primary)" />
-                </div>
-                <p
-                  className="text-[var(--cinza-txt)] group-hover:text-[var(--primary)] font-medium transition-colors"
-                  style={{ fontSize: '14px' }}
-                >
-                  {t.createNewItinerary || 'Criar novo roteiro'}
-                </p>
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* ────── ABA FAVORITOS ────── */}
         {activeTab === 'favoritos' && (
@@ -774,15 +655,15 @@ export function PerfilScreen({
                 { id: 'atracoes' as const, label: t.filterAtracoes || 'Atrações' },
                 { id: 'restaurantes' as const, label: t.filterRestaurantes || 'Restaurantes' },
                 { id: 'hoteis' as const, label: t.filterHoteis || 'Hotéis' },
-              ].map(({ id, label }) => (
+              ].map(({ id, label }: { id: FavFilter; label: string }): JSX.Element => (
                 <button
                   key={id}
                   onClick={() => setFavFilter(id)}
-                  className={`px-4 py-2 rounded-full border whitespace-nowrap cursor-pointer transition-all min-h-[36px]
+                  className={`px-4 py-2 rounded-full border whitespace-nowrap cursor-pointer transition-all min-h-9
                                ${
                                  favFilter === id
-                                   ? 'bg-[var(--primary)] border-[var(--primary)] text-white'
-                                   : 'bg-white border-[var(--cinza-med)] text-[var(--cinza-txt)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
+                                   ? 'bg-primary border-primary text-white'
+                                   : 'bg-white border-(--cinza-med) text-(--cinza-txt) hover:border-primary hover:text-primary'
                                }`}
                   style={{ fontSize: '13px' }}
                 >
@@ -792,19 +673,19 @@ export function PerfilScreen({
             </div>
 
             {filteredFavs.length === 0 ? (
-              <div className="text-center py-16 text-[var(--cinza-txt)]">
+              <div className="text-center py-16 text-(--cinza-txt)">
                 <Heart size={40} className="mx-auto mb-3 opacity-30" />
                 <p style={{ fontSize: '15px' }}>{t.noFavorites || 'Nenhum favorito salvo ainda'}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {filteredFavs.map((dest) => (
+                {filteredFavs.map((dest: typeof destinations[0]): JSX.Element => (
                   <div
                     key={dest.id}
-                    className="bg-white rounded-[var(--radius)] overflow-hidden shadow-[var(--sombra-sm)]
-                               hover:shadow-[var(--sombra-md)] transition-shadow cursor-pointer group"
+                    className="bg-white rounded-lg overflow-hidden shadow-(--sombra-sm)
+                               hover:shadow-(--sombra-md) transition-shadow cursor-pointer group"
                   >
-                    <div className="relative h-[110px] overflow-hidden">
+                    <div className="relative h-27.5 overflow-hidden">
                       <ImageWithFallback
                         src={dest.image}
                         alt={dest.name}
@@ -814,7 +695,10 @@ export function PerfilScreen({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onToast(t.favoriteRemoved || '💔 Removido dos favoritos');
+                          mockService.favorites.removeFavorite(dest.id).then(() => {
+                            setFavorites((prev) => prev.filter((f) => f.id !== dest.id));
+                            onToast(t.favoriteRemoved || '💔 Removido dos favoritos');
+                          });
                         }}
                         className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90
                                    flex items-center justify-center border-none cursor-pointer
@@ -825,12 +709,12 @@ export function PerfilScreen({
                     </div>
                     <div className="px-3 py-2">
                       <p
-                        className="font-semibold text-[var(--preto)] truncate"
+                        className="font-semibold text-(--preto) truncate"
                         style={{ fontSize: '13px' }}
                       >
                         {dest.name}
                       </p>
-                      <p className="text-[var(--cinza-txt)] truncate" style={{ fontSize: '11px' }}>
+                      <p className="text-(--cinza-txt) truncate" style={{ fontSize: '11px' }}>
                         {dest.category} · {dest.region}
                       </p>
                     </div>
@@ -845,39 +729,39 @@ export function PerfilScreen({
         {activeTab === 'avaliacoes' && (
           <div className="space-y-4">
             {reviews.length === 0 && (
-              <div className="text-center py-16 text-[var(--cinza-txt)]">
+              <div className="text-center py-16 text-(--cinza-txt)">
                 <Star size={40} className="mx-auto mb-3 opacity-30" />
                 <p style={{ fontSize: '15px' }}>{t.noReviews || 'Nenhuma avaliação feita ainda'}</p>
               </div>
             )}
-            {reviews.map((rev) => (
+            {reviews.map((rev: UserReview): JSX.Element => (
               <div
                 key={rev.id}
-                className="bg-white rounded-[var(--radius)] p-5 shadow-[var(--sombra-sm)]"
+                className="bg-white rounded-lg p-5 shadow-(--sombra-sm)"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
                     <p
-                      className="font-semibold text-[var(--preto)]"
+                      className="font-semibold text-(--preto)"
                       style={{ fontSize: '15px' }}
                     >
                       {rev.place}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <Stars rating={rev.rating} />
-                      <span className="text-[var(--cinza-txt)]" style={{ fontSize: '12px' }}>
+                      <span className="text-(--cinza-txt)" style={{ fontSize: '12px' }}>
                         {rev.date}
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 shrink-0">
                     <button
                       onClick={() => onToast('✏️ Editar avaliação')}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)]
-                                 border border-[var(--cinza-med)] bg-white text-[var(--cinza-txt)]
-                                 cursor-pointer hover:text-[var(--preto)] hover:border-[var(--preto)]
-                                 transition-colors min-h-[36px]"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-sm
+                                 border border-(--cinza-med) bg-white text-(--cinza-txt)
+                                 cursor-pointer hover:text-(--preto) hover:border-(--preto)
+                                 transition-colors min-h-9"
                       style={{ fontSize: '12px' }}
                     >
                       <Edit3 size={12} />
@@ -885,12 +769,14 @@ export function PerfilScreen({
                     </button>
                     <button
                       onClick={() => {
-                        setReviews((p) => p.filter((r) => r.id !== rev.id));
-                        onToast(t.reviewDeleted || '🗑️ Avaliação excluída');
+                        mockService.reviews.deleteUserReview(rev.id).then(() => {
+                          setReviews((p: UserReview[]): UserReview[] => p.filter((r: UserReview): boolean => r.id !== rev.id));
+                          onToast(t.reviewDeleted || '🗑️ Avaliação excluída');
+                        });
                       }}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-[var(--radius-sm)]
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm
                                  border border-red-200 bg-white text-red-500
-                                 cursor-pointer hover:bg-red-50 transition-colors min-h-[36px]"
+                                 cursor-pointer hover:bg-red-55 transition-colors min-h-9"
                       style={{ fontSize: '12px' }}
                     >
                       <Trash2 size={12} />
@@ -900,7 +786,7 @@ export function PerfilScreen({
 
                 {/* Comment */}
                 <p
-                  className="text-[var(--cinza-txt)] leading-relaxed mb-3"
+                  className="text-(--cinza-txt) leading-relaxed mb-3"
                   style={{ fontSize: '14px' }}
                 >
                   {rev.text}
@@ -908,22 +794,22 @@ export function PerfilScreen({
 
                 {/* Partner response */}
                 {rev.partnerResponse && (
-                  <div className="ml-4 pl-4 border-l-2 border-[var(--primary)]/30 bg-[var(--laranja-leve)] rounded-r-[var(--radius-sm)] px-3 py-3">
+                  <div className="ml-4 pl-4 border-l-2 border-primary/30 bg-(--laranja-leve) rounded-r-sm px-3 py-3">
                     <div className="flex items-center gap-2 mb-1.5">
                       <div
-                        className="w-7 h-7 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0"
+                        className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0"
                         style={{ fontSize: '10px', color: 'white', fontWeight: 700 }}
                       >
                         {rev.partnerInitials}
                       </div>
                       <p
-                        className="font-semibold text-[var(--preto)]"
+                        className="font-semibold text-(--preto)"
                         style={{ fontSize: '12px' }}
                       >
                         {t.partnerResponseLabel || 'Resposta do estabelecimento:'}
                       </p>
                     </div>
-                    <p className="text-[var(--cinza-txt)] leading-relaxed" style={{ fontSize: '13px' }}>
+                    <p className="text-(--cinza-txt) leading-relaxed" style={{ fontSize: '13px' }}>
                       {rev.partnerResponse}
                     </p>
                   </div>
@@ -934,6 +820,10 @@ export function PerfilScreen({
         )}
 
       </div>
+      
+      <Suspense fallback={null}>
+        <LazyDocumentosModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} defaultTab={docsTab} />
+      </Suspense>
     </div>
   );
 }

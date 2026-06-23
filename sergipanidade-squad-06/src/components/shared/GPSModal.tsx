@@ -1,11 +1,12 @@
 import { translations } from "@/constants/translations";
 import { Map } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface GPSModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   destinationName?: string;
   lat?: number;
   lon?: number;
@@ -19,19 +20,33 @@ export function GPSModal({ isOpen, onClose, onConfirm, language, destinationName
   const handleOpenMaps = () => {
     if (lat && lon) {
       const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
-      window.open(googleMapsUrl, '_blank');
+      window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
     }
     onConfirm();
     onClose();
   };
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 bg-[rgba(14,14,17,0.65)] z-[1500] flex items-center justify-center">
-      <div className="bg-[var(--branco)] rounded-[var(--radius)] p-8 max-w-[380px] w-[90%] text-center">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gps-title"
+      className="fixed inset-0 bg-[rgba(14,14,17,0.65)] z-[1500] flex items-center justify-center"
+      onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div id="gps-title" className="bg-[var(--branco)] rounded-[var(--radius)] p-8 max-w-[380px] w-[90%] text-center">
         <div className="flex justify-center mb-3 text-[var(--teal)]">
           <Map size={48} />
         </div>
-        <h3 className="font-['Fjalla_One'] text-lg md:text-[22px] text-[var(--preto)] mb-2">{t.openInGPS}</h3>
+        <h3 className="font-semibold font-display tracking-tight text-lg md:text-[22px] text-[var(--preto)] mb-2">{t.openInGPS}</h3>
         <p className="text-sm text-[#777] mb-6 leading-relaxed">
           {t.gpsRedirectMessage}
           {destinationName && (
