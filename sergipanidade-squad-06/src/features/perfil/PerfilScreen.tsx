@@ -695,7 +695,10 @@ export function PerfilScreen({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onToast(t.favoriteRemoved || '💔 Removido dos favoritos');
+                          mockService.favorites.removeFavorite(dest.id).then(() => {
+                            setFavorites((prev) => prev.filter((f) => f.id !== dest.id));
+                            onToast(t.favoriteRemoved || '💔 Removido dos favoritos');
+                          });
                         }}
                         className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90
                                    flex items-center justify-center border-none cursor-pointer
@@ -766,8 +769,10 @@ export function PerfilScreen({
                     </button>
                     <button
                       onClick={() => {
-                        setReviews((p: UserReview[]): UserReview[] => p.filter((r: UserReview): boolean => r.id !== rev.id));
-                        onToast(t.reviewDeleted || '🗑️ Avaliação excluída');
+                        mockService.reviews.deleteUserReview(rev.id).then(() => {
+                          setReviews((p: UserReview[]): UserReview[] => p.filter((r: UserReview): boolean => r.id !== rev.id));
+                          onToast(t.reviewDeleted || '🗑️ Avaliação excluída');
+                        });
                       }}
                       className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm
                                  border border-red-200 bg-white text-red-500

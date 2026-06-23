@@ -328,10 +328,18 @@ export function ParceiroScreen({ language }: ParceiroScreenProps): JSX.Element {
       onToast(t.writeReplyFirst);
       return;
     }
-    setSentReplies((prev) => ({ ...prev, [reviewId]: text.trim() }));
-    setReplyText((prev) => ({ ...prev, [reviewId]: "" }));
-    setReplyingTo(null);
-    onToast(t.responseSent);
+    mockService.reviews.addPartnerResponse(reviewId, text.trim()).then(() => {
+      setSentReplies((prev) => ({ ...prev, [reviewId]: text.trim() }));
+      setReplyText((prev) => ({ ...prev, [reviewId]: "" }));
+      setReplyingTo(null);
+      onToast(t.responseSent);
+      
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId ? { ...r, replied: true, existingResponse: text.trim() } : r
+        )
+      );
+    });
   };
 
   /* ═══════════════════════════════════════════════════

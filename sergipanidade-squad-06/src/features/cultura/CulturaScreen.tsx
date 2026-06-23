@@ -431,11 +431,7 @@ export function CulturaScreen({ language = 'pt' }: CulturaScreenProps): JSX.Elem
 
   // ── Story Detail ───────────────────────────────────────────
   if (selectedStory) {
-<<<<<<< HEAD
-    const related = stories.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
-=======
     const related = translatedStories.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
->>>>>>> origin/dev
     const catColor = '#0D7377';
     return (
       <div
