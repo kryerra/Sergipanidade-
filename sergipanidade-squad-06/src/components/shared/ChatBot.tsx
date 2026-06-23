@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { translations } from "@/constants/translations";
+import { fetchChatBotReply } from "@/services/chatbot.service";
+import serginhoImg from '@/assets/images/serginho.png';
 
 interface ChatBotProps {
   isVisible: boolean;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 interface Message {
@@ -20,7 +22,9 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
     { text: t.chatBotSuggestion, isBot: true },
   ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     setMessages([
@@ -33,24 +37,45 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
   if (!isVisible) return null;
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    const userMessage: Message = { text: input, isBot: false };
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    const userText = input.trim();
+    const userMessage: Message = { text: userText, isBot: false };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
-    const keyword =
-      Object.keys(t.chatResponses).find((k) => input.toLowerCase().includes(k)) || 'default';
+    setIsLoading(true);
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
-    setTimeout(() => {
-      const botMessage: Message = {
-        text: t.chatResponses[keyword as keyof typeof t.chatResponses],
-        isBot: true,
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 600);
+    let botText: string;
+    try {
+      const result = await fetchChatBotReply(userText, controller.signal);
+      if (result.ok) {
+        botText = result.data;
+      } else {
+        botText = result.error.code === 'NO_API_KEY'
+          ? t.chatBotApiKeyMissing
+          : t.chatBotConnectionError;
+        console.error('ChatBot service error:', result.error);
+      }
+    } catch (error) {
+      console.error('ChatBot unexpected error:', error);
+      botText = t.chatBotConnectionError;
+    } finally {
+      setIsLoading(false);
+    }
+
+    setMessages((prev) => [...prev, { text: botText, isBot: true }]);
   };
 
   return (
@@ -60,23 +85,23 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Fechar chat' : 'Abrir chat de ajuda'}
         className="fixed right-6 z-[800] w-[56px] h-[56px] rounded-full border-none cursor-pointer
-                   bg-[var(--primary)] flex items-center justify-center
-                   shadow-[0_4px_20px_rgba(0,0,128,0.50)]
-                   transition-all duration-200 hover:scale-110
-                   hover:shadow-[0_8px_32px_rgba(0,0,128,0.65)]"
-        style={{ bottom: 'calc(1.75rem + env(safe-area-inset-bottom))' }}
+                  bg-[var(--primary)] flex items-center justify-center
+                  shadow-[0_4px_20px_rgba(0,0,128,0.50)]
+                  transition-all duration-200 hover:scale-110
+                  hover:shadow-[0_8px_32px_rgba(0,0,128,0.65)]"
+        style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
       >
         {isOpen ? (
           <X size={22} color="#FFFFFF" strokeWidth={2.5} />
         ) : (
-          <MessageCircle size={22} color="#FFFFFF" strokeWidth={2} fill="rgba(255,255,255,0.15)" />
+          <img src={serginhoImg} alt="Serginho" className="w-[38px] h-[38px] object-contain" />
         )}
 
         {/* Pulse indicator when closed */}
         {!isOpen && (
           <span
             className="absolute top-0 right-0 w-3 h-3 rounded-full bg-[var(--amarelo)]
-                       border-2 border-[var(--branco)]"
+                      border-2 border-[var(--branco)]"
           />
         )}
       </button>
@@ -85,8 +110,8 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
       {isOpen && (
         <div
           className="fixed right-6 z-[801] w-[320px] bg-[var(--branco)] rounded-[var(--radius)]
-                     shadow-[var(--sombra-lg)] flex flex-col overflow-hidden
-                     border border-[var(--cinza-med)]"
+                    shadow-[var(--sombra-lg)] flex flex-col overflow-hidden
+                    border border-[var(--cinza-med)]"
           style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
         >
           {/* Header */}
@@ -96,12 +121,12 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
           >
             {/* Avatar com ícone de chat */}
             <div
-              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0 overflow-hidden"
             >
-              <MessageCircle size={18} color="#FFFFFF" strokeWidth={2} />
+              <img src={serginhoImg} alt="Serginho" className="w-[28px] h-[28px] object-contain" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-['Fjalla_One'] text-[15px] tracking-wide text-white truncate">
+              <div className="font-semibold font-display text-[15px] tracking-tight text-white truncate">
                 {t.chatBotName}
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -112,8 +137,8 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
             <button
               onClick={() => setIsOpen(false)}
               className="bg-transparent border-none text-white/60 cursor-pointer
-                         hover:text-white transition-colors p-1 rounded-full
-                         hover:bg-white/10 min-w-[32px] min-h-[32px] flex items-center justify-center"
+                        hover:text-white transition-colors p-1 rounded-full
+                        hover:bg-white/10 min-w-[32px] min-h-[32px] flex items-center justify-center"
               aria-label="Fechar chat"
             >
               <X size={16} strokeWidth={2.5} />
@@ -121,7 +146,12 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 max-h-[240px] overflow-y-auto px-3.5 py-3.5 flex flex-col gap-2.5 bg-[var(--cinza-leve)]">
+          <div
+            className="flex-1 max-h-[240px] overflow-y-auto px-3.5 py-3.5 flex flex-col gap-2.5 bg-[var(--cinza-leve)]"
+            role="log"
+            aria-live="polite"
+            aria-label={t.chatBotMessagesLabel}
+          >
             {messages.map((msg, i) => (
               <div
                 key={i}
@@ -146,19 +176,19 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder={t.chatInputPlaceholder}
               className="flex-1 px-3 py-2 border-[1.5px] border-[var(--cinza-med)] rounded-[var(--radius-sm)]
-                         text-[13px] outline-none text-[var(--preto)] bg-[var(--cinza-leve)]
-                         focus:border-[var(--azul)] focus:bg-white transition-colors"
+                        text-[13px] outline-none text-[var(--preto)] bg-[var(--cinza-leve)]
+                        focus:border-[var(--azul)] focus:bg-white transition-colors"
             />
             <button
               onClick={handleSend}
-              disabled={!input.trim()}
+              disabled={isLoading || !input.trim()}
               className="w-10 h-10 flex items-center justify-center
-                         bg-[var(--primary)] text-white border-none rounded-[var(--radius-sm)]
-                         cursor-pointer hover:bg-[#000060] transition-colors
-                         disabled:bg-[var(--cinza-med)] disabled:cursor-not-allowed flex-shrink-0"
+                        bg-[var(--primary)] text-white border-none rounded-[var(--radius-sm)]
+                        cursor-pointer hover:bg-[#000060] transition-colors
+                        disabled:bg-[var(--cinza-med)] disabled:cursor-not-allowed flex-shrink-0"
               aria-label="Enviar mensagem"
             >
-              <Send size={16} strokeWidth={2} />
+              {isLoading ? <span className="text-[12px]">...</span> : <Send size={16} strokeWidth={2} />}
             </button>
           </div>
         </div>

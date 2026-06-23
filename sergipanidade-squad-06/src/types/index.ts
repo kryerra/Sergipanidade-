@@ -21,7 +21,8 @@ export interface Review {
 export interface UserProfile {
   name: string;
   email: string;
-  userType: 'turista' | 'morador' | 'estabelecimento';
+  userType: 'turista' | 'estabelecimento';
+  photo?: string;
   phone?: string;
   notifications?: {
     nearby: boolean;
@@ -29,4 +30,20 @@ export interface UserProfile {
     reminders: boolean;
     events: boolean;
   };
+}
+
+export interface ParadaGerada {
+  destinationId: string;
+  dia: number;
+  periodo: string;
+  dica: string;
+}
+
+export interface WizardData {
+  who: string;
+  days: number;
+  startDate: string;
+  interests: string[];
+  budget: string;
+  stopsPerDay?: number; // Tarefa 7: quantidade de paradas por dia (1-4), padrão 3
 }

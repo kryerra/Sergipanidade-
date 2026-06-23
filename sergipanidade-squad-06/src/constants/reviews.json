@@ -1,0 +1,83 @@
+{
+  "partnerReviews": [
+    {
+      "id": 1,
+      "name": "Maria Silva",
+      "initials": "MS",
+      "rating": 5,
+      "comment": "Espaço extraordinário! A harmonia entre os gatinhos acolhidos e o cardápio de cafés é impecável. É perceptível o respeito e carinho com os animais, além do atendimento ser atencioso.",
+      "date": "2 dias atrás",
+      "replied": false,
+      "existingResponse": null
+    },
+    {
+      "id": 2,
+      "name": "João Santos",
+      "initials": "JS",
+      "rating": 5,
+      "comment": "Ambiente extremamente aconchegante, ideal para leitura ou reuniões casuais na presença dos felinos. A proposta social do cat café merece todo o reconhecimento em Aracaju.",
+      "date": "5 dias atrás",
+      "replied": true,
+      "existingResponse": "Agradecemos imensamente o prestígio e o feedback positivo, João! A sua presença e apoio fortalecem a nossa causa. Esperamos revê-lo em breve na Miauteria!"
+    },
+    {
+      "id": 3,
+      "name": "Ana Costa",
+      "initials": "AC",
+      "rating": 4,
+      "comment": "A proposta do café é maravilhosa e os doces são deliciosos. Contudo, aos finais de semana o local costuma atingir a capacidade máxima rapidamente, sendo prudente planejar a visita com antecedência.",
+      "date": "1 semana atrás",
+      "replied": false,
+      "existingResponse": null
+    },
+    {
+      "id": 4,
+      "name": "Pedro Oliveira",
+      "initials": "PO",
+      "rating": 5,
+      "comment": "A iniciativa de integrar o consumo de cafés de especialidade com a adoção responsável de felinos resgatados é exemplar. Parabéns à equipe pelo cuidado com a higiene e bem-estar de todos.",
+      "date": "10 dias atrás",
+      "replied": false,
+      "existingResponse": null
+    },
+    {
+      "id": 5,
+      "name": "Carla Ferreira",
+      "initials": "CF",
+      "rating": 5,
+      "comment": "Visitei para conhecer o projeto e acabei adotando uma linda gatinha. O processo de triagem é muito sério e o café servido é de primeiríssima qualidade. Recomendo fortemente a visita!",
+      "date": "2 semanas atrás",
+      "replied": true,
+      "existingResponse": "Ficamos imensamente felizes com a adoção, Carla! Desejamos muitas alegrias nessa nova jornada com a sua companheira felina. Um grande abraço de toda a nossa equipe!"
+    }
+  ],
+  "userReviews": [
+    {
+      "id": "1",
+      "place": "Orla de Atalaia",
+      "rating": 5,
+      "date": "Fev 2024",
+      "text": "Infraestrutura impecável e ideal para atividades ao ar livre. A caminhada ao longo dos lagos artificiais e o pôr do sol na Passarela do Caranguejo são experiências indispensáveis na capital.",
+      "partnerResponse": null,
+      "partnerInitials": null
+    },
+    {
+      "id": "2",
+      "place": "Museu da Gente Sergipana",
+      "rating": 5,
+      "date": "Mar 2024",
+      "text": "Uma verdadeira imersão na identidade cultural e histórica de Sergipe através de recursos tecnológicos e interativos excelentes. O atendimento é extremamente prestativo.",
+      "partnerResponse": "Muito obrigado pela sua visita e pelo excelente comentário! É uma honra compartilhar a riqueza de nossa cultura. Seja sempre bem-vindo ao nosso espaço!",
+      "partnerInitials": "MS"
+    },
+    {
+      "id": "3",
+      "place": "Miauteria Cat Café",
+      "rating": 5,
+      "date": "Abr 2024",
+      "text": "Excelente seleção de grãos de café especiais combinada a uma atmosfera acolhedora e pacífica com os gatinhos livres pelo espaço. Um exemplo admirável de empreendedorismo social.",
+      "partnerResponse": null,
+      "partnerInitials": null
+    }
+  ]
+}

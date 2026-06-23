@@ -5,6 +5,7 @@
 import { Clock, MapPin, Utensils, Star } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
 import { StarRating } from "@/components/ui/StarRating";
+import { useToast } from "@/context/AppContext";
 
 interface RestauranteCardProps {
   id: string;
@@ -21,7 +22,6 @@ interface RestauranteCardProps {
   verCardapioLabel: string;
   horarioAbertoLabel: string;
   reservarMesaLabel: string;
-  onToast: (msg: string) => void;
 }
 
 export function RestauranteCard({
@@ -38,8 +38,8 @@ export function RestauranteCard({
   verCardapioLabel,
   horarioAbertoLabel,
   reservarMesaLabel,
-  onToast,
 }: RestauranteCardProps) {
+  const { toast: onToast } = useToast();
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden flex flex-col
@@ -103,7 +103,7 @@ export function RestauranteCard({
       <div className="p-4 flex flex-col flex-1">
         {/* Nome */}
         <h3
-          className="font-['Fjalla_One'] text-[var(--preto)] tracking-wide leading-tight mb-1"
+          className="font-semibold font-display text-[var(--preto)] tracking-tight leading-tight mb-1"
           style={{ fontSize: '17px' }}
         >
           {name}
@@ -133,29 +133,13 @@ export function RestauranteCard({
         <div className="mt-auto flex gap-2">
           <button
             onClick={() => onToast(`Abrindo cardápio de ${name}...`)}
-            className="flex-1 py-2.5 rounded-[10px] border-[1.5px] text-[12px] font-bold
-                       cursor-pointer transition-all min-h-[44px]"
-            style={{
-              borderColor: 'var(--vermelho)',
-              color: 'var(--vermelho)',
-              backgroundColor: 'transparent',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--vermelho)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'white';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--vermelho)';
-            }}
+            className="flex-1 py-2.5 rounded-[10px] border-[1.5px] text-[12px] font-bold cursor-pointer transition-all min-h-[44px] border-[var(--vermelho)] text-[var(--vermelho)] hover:bg-[var(--vermelho)] hover:text-white"
           >
             {verCardapioLabel}
           </button>
           <button
             onClick={() => onToast(`Reservando mesa em ${name}...`)}
-            className="flex-1 py-2.5 rounded-[10px] text-white text-[12px] font-bold border-none
-                       cursor-pointer transition-all min-h-[44px] hover:opacity-90 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--vermelho)' }}
+            className="flex-1 py-2.5 rounded-[10px] text-white text-[12px] font-bold border-none cursor-pointer transition-all min-h-[44px] hover:opacity-90 active:scale-[0.98] bg-[var(--vermelho)]"
           >
             {reservarMesaLabel}
           </button>
