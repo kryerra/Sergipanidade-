@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { UserProfile, RoteiroItem, Review } from '../App';
+import { UserProfile, RoteiroItem, Review } from '@/types'; // Fix 6: fonte única de tipos
+import { translations } from '@/constants/translations';
+import { mockService } from '@/services/mock.service';
+import { getDestinationById } from '@/constants/destinations';
 
 interface AppContextType {
-  language: 'pt' | 'en' | 'es';
-  setLanguage: (lang: 'pt' | 'en' | 'es') => void;
+  language: 'pt' | 'en' | 'es' | 'sp';
+  setLanguage: (lang: 'pt' | 'en' | 'es' | 'sp') => void;
   userProfile: UserProfile;
   setUserProfile: (profile: UserProfile) => void;
   roteiro: RoteiroItem[];
@@ -24,21 +27,39 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<'pt' | 'en' | 'es'>('pt');
-  const [roteiro, setRoteiro] = useState<RoteiroItem[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  
-  const [toastMessage, setToastMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  
-  const [showGPSModal, setShowGPSModal] = useState(false);
-  const [gpsDestinationId, setGpsDestinationId] = useState<string | undefined>();
+const PROFILE_STORAGE_KEY = 'sergipanidade_currentProfile';
 
-  const [userProfile, setUserProfile] = useState<UserProfile>({
+const getInitialUserProfile = (): UserProfile => {
+  if (typeof window === 'undefined') {
+    return {
+      name: 'Marina Andrade',
+      email: 'marina.andrade@email.com',
+      userType: 'turista',
+      photo: '',
+      phone: '(79) 98765-4321',
+      notifications: {
+        nearby: true,
+        promotions: true,
+        reminders: false,
+        events: false,
+      },
+    };
+  }
+
+  try {
+    const stored = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored) as UserProfile;
+    }
+  } catch (error) {
+    console.error('Failed to load user profile from localStorage:', error);
+  }
+
+  return {
     name: 'Marina Andrade',
     email: 'marina.andrade@email.com',
     userType: 'turista',
+    photo: '',
     phone: '(79) 98765-4321',
     notifications: {
       nearby: true,
@@ -46,7 +67,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       reminders: false,
       events: false,
     },
-  });
+  };
+};
+
+export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguage] = useState<'pt' | 'en' | 'es' | 'sp'>('pt');
+  const [roteiro, setRoteiro] = useState<RoteiroItem[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
+  const [showGPSModal, setShowGPSModal] = useState(false);
+  const [gpsDestinationId, setGpsDestinationId] = useState<string | undefined>();
+
+  const [userProfile, setUserProfile] = useState<UserProfile>(getInitialUserProfile);
 
   const handleToast = (message: string) => {
     setToastMessage(message);
@@ -54,6 +89,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const hideToast = () => setShowToast(false);
+
+  React.useEffect(() => {
+    try {
+      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(userProfile));
+    } catch (error) {
+      console.error('Failed to save user profile to localStorage:', error);
+    }
+  }, [userProfile]);
 
   const openGPS = (destinationId?: string) => {
     setGpsDestinationId(destinationId);
@@ -63,20 +106,27 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const closeGPS = () => setShowGPSModal(false);
 
   const addToRoteiro = (destinationId: string, note?: string) => {
+    // Fix 3: usa translations[language] — nunca mais hardcoded em PT
+    const t = translations[language];
+
     if (roteiro.find(item => item.destinationId === destinationId)) {
-      handleToast("Já está no seu roteiro!"); // ideal use translations based on language
+      handleToast(t.alreadyInItineraryToast);
       return;
     }
     setRoteiro(prev => [...prev, { destinationId, note }]);
-    handleToast("Adicionado ao roteiro!");
+    handleToast(t.addedToItinerary);
   };
 
   const removeFromRoteiro = (destinationId: string) => {
+    const t = translations[language];
     setRoteiro(roteiro.filter(item => item.destinationId !== destinationId));
-    handleToast("Removido do roteiro!");
+    handleToast(t.removedFromItinerary);
   };
 
   const addReview = (destinationId: string, rating: number, comment: string, userName: string) => {
+    const dest = getDestinationById(destinationId);
+    const placeName = dest ? dest.name : 'Destino';
+
     const newReview: Review = {
       id: Date.now().toString(),
       destinationId,
@@ -86,6 +136,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       date: new Date().toISOString(),
     };
     setReviews(prev => [...prev, newReview]);
+
+    // Persist user review in mock service
+    mockService.reviews.addUserReview({
+      id: newReview.id,
+      place: placeName,
+      rating,
+      date: new Date().toLocaleDateString('pt-BR'),
+      text: comment,
+      partnerResponse: null,
+      partnerInitials: null,
+    });
   };
 
   return (
@@ -123,3 +184,10 @@ export const useAppContext = () => {
   }
   return context;
 };
+
+export function useToast() {
+  const { handleToast } = useAppContext();
+  return {
+    toast: handleToast
+  };
+}
