@@ -37,10 +37,7 @@ interface Review {
   replied: boolean;
 }
 
-import reviewsData from "@/constants/reviews.json";
-
-/* ─────────── Mock data ─────────── */
-const REVIEWS_DATA: Review[] = reviewsData.partnerReviews as Review[];
+import { mockService } from "@/services/mock.service";
 
 /* ─────────── Avatar colorido por iniciais ─────────── */
 const AVATAR_COLORS: string[] = [
@@ -164,6 +161,12 @@ function EvolutionChart({
 /* ─────────── Componente ─────────── */
 export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.Element {
   const t = translations[language];
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    mockService.reviews.getPartnerReviews().then((data) => setReviews(data as Review[]));
+  }, []);
 
   /* Modal state */
   const [showEditModal, setShowEditModal] = useState(false);
@@ -571,7 +574,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
             {/* Responder */}
             <button
               onClick={() => {
-                const firstUnreplied = REVIEWS_DATA.find(
+                const firstUnreplied = reviews.find(
                   (r) => !r.replied && !sentReplies[r.id]
                 );
                 if (firstUnreplied) {
@@ -595,7 +598,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                   {t.respondReviews}
                 </p>
                 <p className="text-white/70 text-xs mt-0.5">
-                  {REVIEWS_DATA.filter((r) => !r.replied && !sentReplies[r.id]).length} pendente(s)
+                  {reviews.filter((r) => !r.replied && !sentReplies[r.id]).length} pendente(s)
                 </p>
               </div>
             </button>
@@ -643,12 +646,12 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               className="text-xs px-2 py-1 rounded-full"
               style={{ color: '#64748B', backgroundColor: '#F1F5F9' }}
             >
-              {REVIEWS_DATA.length} {t.reviews}
+              {reviews.length} {t.reviews}
             </span>
           </div>
 
           <div className="divide-y divide-(--cinza-med)">
-            {REVIEWS_DATA.map((review, idx) => {
+            {reviews.map((review, idx) => {
               const isReplying = replyingTo === review.id;
               const hasSentReply = !!sentReplies[review.id];
               const displayReply = hasSentReply

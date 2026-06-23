@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   User,
   Bell,
@@ -25,6 +25,8 @@ import type { UserProfile } from '@/types';
 import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
 import { DocumentosModal } from '@/components/shared/DocumentosModal';
 
+import { mockService, UserReview, Itinerary } from '@/services/mock.service';
+
 // ─── Types ────────────────────────────────────────────────────
 type Tab =
   | 'dados'
@@ -33,55 +35,6 @@ type Tab =
   | 'favoritos'
   | 'avaliacoes';
 type FavFilter = 'all' | 'atracoes' | 'restaurantes' | 'hoteis';
-
-interface UserReview {
-  id: string;
-  place: string;
-  rating: number;
-  date: string;
-  text: string;
-  partnerResponse: string | null;
-  partnerInitials: string | null;
-}
-
-interface Itinerary {
-  id: string;
-  title: string;
-  days: number;
-  type: string;
-  date: string;
-  stops: number;
-  img: string;
-}
-
-// ─── Mock Data ────────────────────────────────────────────────
-const MOCK_ITINERARIES: Itinerary[] = [
-  {
-    id: '1',
-    title: 'Aracaju',
-    days: 3,
-    type: 'Casal',
-    date: 'Jan 2024',
-    stops: 6,
-    img: 'https://images.unsplash.com/photo-1709133108199-424031785704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
-  },
-  {
-    id: '2',
-    title: 'Litoral Norte',
-    days: 1,
-    type: 'Solo',
-    date: 'Mar 2024',
-    stops: 4,
-    img: 'https://images.unsplash.com/photo-1773407060124-c093ab4ff969?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
-  },
-];
-
-import reviewsData from "@/constants/reviews.json";
-
-const MOCK_REVIEWS: UserReview[] = reviewsData.userReviews;
-
-// Picks first 6 destinations as "favorites"
-const MOCK_FAVORITES = destinations.slice(0, 6);
 
 function categoryToFilter(category: string): FavFilter {
   const cat = category.toLowerCase();
@@ -231,13 +184,22 @@ export function PerfilScreen({
   const [favFilter, setFavFilter] = useState<FavFilter>('all');
 
   // ── Itineraries ──
-  const [itineraries, setItineraries] = useState<Itinerary[]>(MOCK_ITINERARIES);
+  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
 
   // ── Reviews ──
-  const [reviews, setReviews] = useState<UserReview[]>(MOCK_REVIEWS);
+  const [reviews, setReviews] = useState<UserReview[]>([]);
+
+  // ── Favorites ──
+  const [favorites, setFavorites] = useState<typeof destinations>([]);
 
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [docsTab, setDocsTab] = useState<'termos' | 'privacidade'>('termos');
+
+  useEffect(() => {
+    mockService.itineraries.getItineraries().then(setItineraries);
+    mockService.reviews.getUserReviews().then(setReviews);
+    mockService.favorites.getFavorites().then(setFavorites);
+  }, []);
 
   // ── Handlers ──
   const handleSaveData = (): void => {
@@ -331,8 +293,8 @@ export function PerfilScreen({
 
   const filteredFavs =
     favFilter === 'all'
-      ? MOCK_FAVORITES
-      : MOCK_FAVORITES.filter((d) => categoryToFilter(d.category) === favFilter);
+      ? favorites
+      : favorites.filter((d) => categoryToFilter(d.category) === favFilter);
 
   // ──────────────────────────────────────────────────────────────
   // ──────────────────────────────────────────────────────────────

@@ -55,13 +55,7 @@ interface CulturaEvent {
   thisWeek: boolean;
 }
 
-import artistsData from "@/constants/artists.json";
-import storiesData from "@/constants/stories.json";
-import eventsData from "@/constants/events.json";
-
-const ARTISTS: Artist[] = artistsData as Artist[];
-const STORIES: Story[] = storiesData as unknown as Story[];
-const EVENTS: CulturaEvent[] = eventsData as CulturaEvent[];
+import { mockService } from "@/services/mock.service";
 
 
 
@@ -77,8 +71,17 @@ interface CulturaScreenProps {
 }
 
 export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
-  const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [events, setEvents] = useState<CulturaEvent[]>([]);
 
+  useEffect(() => {
+    mockService.cultura.getArtists().then(setArtists);
+    mockService.cultura.getStories().then(setStories);
+    mockService.cultura.getEvents().then(setEvents);
+  }, []);
+
+  const [activeTab, setActiveTab] = useState<CulturaTab>('artistas');
 
   const [eventsView, setEventsView] = useState<'lista' | 'calendario'>('lista');
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,23 +94,23 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedArtist, selectedStory]);
 
-  const filteredArtists = ARTISTS.filter((a: Artist): boolean => {
+  const filteredArtists = artists.filter((a: Artist): boolean => {
     const matchSearch = !searchTerm || a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.city.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredEvents = EVENTS.filter((e: CulturaEvent): boolean => {
+  const filteredEvents = events.filter((e: CulturaEvent): boolean => {
     const matchSearch = !searchTerm || e.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchSearch;
   });
 
-  const filteredStories = STORIES.filter((s: Story): boolean =>
+  const filteredStories = stories.filter((s: Story): boolean =>
     !searchTerm || s.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // ── Artist Detail ──────────────────────────────────────────
   if (selectedArtist) {
-    const related = ARTISTS.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
+    const related = artists.filter((a: Artist): boolean => a.id !== selectedArtist.id).slice(0, 3);
     return (
       <div
         className="min-h-screen"
@@ -292,7 +295,7 @@ export function CulturaScreen({ onToast }: CulturaScreenProps): JSX.Element {
 
   // ── Story Detail ───────────────────────────────────────────
   if (selectedStory) {
-    const related = STORIES.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
+    const related = stories.filter((s: Story): boolean => s.id !== selectedStory.id).slice(0, 3);
     const catColor = '#0D7377';
     return (
       <div
