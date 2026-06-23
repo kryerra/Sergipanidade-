@@ -22,6 +22,7 @@ export interface UserProfile {
   name: string;
   email: string;
   userType: 'turista' | 'estabelecimento';
+  photo?: string;
   phone?: string;
   notifications?: {
     nearby: boolean;
@@ -44,4 +45,5 @@ export interface WizardData {
   startDate: string;
   interests: string[];
   budget: string;
+  stopsPerDay?: number; // Tarefa 7: quantidade de paradas por dia (1-4), padrão 3
 }

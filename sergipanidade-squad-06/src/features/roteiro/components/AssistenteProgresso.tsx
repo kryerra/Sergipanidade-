@@ -54,12 +54,12 @@ export function AssistenteProgresso({ step, total, language = "pt" }: Assistente
               
               {/* Step Label underneath */}
               <span
-                className={`text-[9px] sm:text-[11px] font-bold mt-2.5 transition-all duration-300 text-center tracking-tight leading-none ${
+                className={`font-sans-ui text-[9px] sm:text-[11px] font-bold mt-2.5 transition-all duration-300 text-center tracking-tight leading-none ${
                   isActive
                     ? "text-[var(--primary)] scale-105"
                     : isCompleted
                     ? "text-[var(--preto)] opacity-95"
-                    : "text-[var(--cinza-txt)] opacity-60"
+                    : "text-[var(--texto-secundario)]"
                 }`}
               >
                 {labels[i]}

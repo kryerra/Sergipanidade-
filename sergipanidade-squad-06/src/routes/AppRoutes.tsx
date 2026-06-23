@@ -3,31 +3,24 @@
  * Extracted from App.tsx to separate concerns
  */
 import React, { Suspense } from 'react';
-import { Routes, Route, useNavigate, useLocation, useParams } from 'react-router';
+import { Routes, Route, useNavigate, useParams } from 'react-router';
 import { useAppContext } from "@/context/AppContext";
-import { translations } from "@/constants/translations";
-import { getDestinationById } from "@/constants/destinations";
 
 // Lazy loaded screens
 const LoginScreen = React.lazy(() => import("@/features/auth/LoginScreen").then(m => ({ default: m.LoginScreen })));
 const HomeScreen = React.lazy(() => import("@/features/home/HomeScreen").then(m => ({ default: m.HomeScreen })));
 const GuiaScreen = React.lazy(() => import("@/features/guia/GuiaScreen").then(m => ({ default: m.GuiaScreen })));
 const DetalheScreen = React.lazy(() => import("@/features/detalhe/DetalheScreen").then(m => ({ default: m.DetalheScreen })));
+
 const RoteiroScreen = React.lazy(() => import("@/features/roteiro/RoteiroScreen").then(m => ({ default: m.RoteiroScreen })));
 const ParceiroScreen = React.lazy(() => import("@/features/parceiro/ParceiroScreen").then(m => ({ default: m.ParceiroScreen })));
 const PerfilScreen = React.lazy(() => import("@/features/perfil/PerfilScreen").then(m => ({ default: m.PerfilScreen })));
 const CulturaScreen = React.lazy(() => import("@/features/cultura/CulturaScreen").then(m => ({ default: m.CulturaScreen })));
 
-export interface AppRoutesProps {
-  onNavigate: (screen: string, destinationId?: string) => void;
-  onToast: (msg: string) => void;
-  onChangeLanguage: (lang: 'pt' | 'en' | 'es') => void;
-  currentScreen: string;
-  language: 'pt' | 'en' | 'es';
-}
-
-export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: AppRoutesProps) {
+export function AppRoutes() {
   const {
+    language,
+    setLanguage,
     userProfile,
     setUserProfile,
     roteiro,
@@ -36,25 +29,66 @@ export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: A
     removeFromRoteiro,
     reviews,
     addReview,
-    gpsDestinationId,
     openGPS,
   } = useAppContext();
 
   const navigate = useNavigate();
-  const { id: destinationId } = useParams<{ id: string }>();
 
-  // Wrapper components for routes that need params or complex props
+  const cleanLanguage = language === 'sp' ? 'pt' : language;
+
+  const handleChangeLanguage = (lang: 'pt' | 'en' | 'es' | 'sp') => {
+    setLanguage(lang);
+  };
+
+  const handleNavigate = (screen: string, destinationId?: string) => {
+    switch (screen) {
+      case 'home':
+        navigate('/home');
+        break;
+      case 'guia':
+        navigate('/guia');
+        break;
+      case 'detalhe':
+        if (destinationId) {
+          navigate(`/detalhe/${destinationId}`);
+        }
+        break;
+      case 'roteiro':
+        navigate('/roteiro');
+        break;
+      case 'parceiro':
+        navigate('/parceiro');
+        break;
+      case 'perfil':
+        navigate('/perfil');
+        break;
+      case 'cultura':
+        navigate('/cultura');
+        break;
+      case 'playlist':
+        window.open(
+          'https://open.spotify.com/playlist/5WHu1dFKmpDCC90eD1Dkf6?si=mDnYttIqQPGmEBpCPhO6Kg&pi=FzmppWApTg23l',
+          '_blank',
+          'noopener,noreferrer',
+        );
+        break;
+      case 'login':
+      default:
+        navigate('/');
+        break;
+    }
+  };
+
   const DetalheWrapper = () => {
     const { id } = useParams<{ id: string }>();
     return (
       <DetalheScreen
         destinationId={id}
-        onNavigate={onNavigate}
-        onToast={onToast}
+        onNavigate={handleNavigate}
         onOpenGPS={openGPS}
         onAddToRoteiro={addToRoteiro}
         isInRoteiro={!!roteiro.find(item => item.destinationId === id)}
-        language={language}
+        language={cleanLanguage}
         reviews={reviews.filter(r => r.destinationId === id)}
         onAddReview={addReview}
         userProfile={userProfile}
@@ -62,66 +96,61 @@ export function AppRoutes({ onNavigate, onToast, onChangeLanguage, language }: A
     );
   };
 
-  // Simple loading state matching the app background
-  const LoadingFallback = () => <div className="min-h-screen" style={{ backgroundColor: 'var(--branco)' }}></div>;
+  const LoadingFallback = () => <div className="min-h-screen" style={{ backgroundColor: 'var(--branco)' }} />;
 
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
         <Route path="/" element={
-          <LoginScreen 
-            onNavigate={onNavigate} 
-            onToast={onToast} 
-            language={language} 
-            onChangeLanguage={onChangeLanguage}
+          <LoginScreen
+            onNavigate={handleNavigate}
+            language={cleanLanguage}
+            onChangeLanguage={handleChangeLanguage}
             onLogin={setUserProfile}
           />
         } />
         
         <Route path="/home" element={
           <HomeScreen
-            onNavigate={onNavigate}
-            onToast={onToast}
-            language={language}
-            onChangeLanguage={onChangeLanguage}
+            onNavigate={handleNavigate}
+            language={cleanLanguage}
+            onChangeLanguage={handleChangeLanguage}
             userProfile={userProfile}
           />
         } />
 
         <Route path="/guia" element={
-          <GuiaScreen onNavigate={onNavigate} onToast={onToast} onOpenGPS={openGPS} language={language} />
+          <GuiaScreen onNavigate={handleNavigate} onOpenGPS={openGPS} language={cleanLanguage} />
         } />
 
         <Route path="/detalhe/:id" element={<DetalheWrapper />} />
 
         <Route path="/roteiro" element={
           <RoteiroScreen
-            onNavigate={onNavigate}
-            onToast={onToast}
+            onNavigate={handleNavigate}
             roteiro={roteiro}
             onAddToRoteiro={addToRoteiro}
             onRemoveFromRoteiro={removeFromRoteiro}
             onSetRoteiro={setRoteiro}
             onOpenGPS={openGPS}
-            language={language}
+            language={cleanLanguage}
           />
         } />
 
         <Route path="/parceiro" element={
-          <ParceiroScreen onToast={onToast} language={language} />
+          <ParceiroScreen language={cleanLanguage} />
         } />
 
         <Route path="/perfil" element={
           <PerfilScreen 
-            onToast={onToast} 
-            language={language}
+            language={cleanLanguage}
             userProfile={userProfile}
             onUpdateProfile={setUserProfile}
           />
         } />
 
         <Route path="/cultura" element={
-          <CulturaScreen onToast={onToast} language={language} />
+          <CulturaScreen language={cleanLanguage} />
         } />
       </Routes>
     </Suspense>

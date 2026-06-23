@@ -43,11 +43,14 @@ export const PERIODO_DUR: Record<string, string> = {
  * Get period labels for a given language
  * Returns array of period names in the specified language
  */
-export function getPeriodLabels(language: "pt" | "en" | "es"): string[] {
-  const labels: Record<"pt" | "en" | "es", string[]> = {
+import { Language } from '@/constants/translations';
+
+export function getPeriodLabels(language: Language): string[] {
+  const labels: Record<string, string[]> = {
     pt: ["manhã", "tarde", "noite"],
     en: ["morning", "afternoon", "evening"],
     es: ["mañana", "tarde", "noche"],
+    sp: ["manhã", "tarde", "noite"],
   };
-  return labels[language];
+  return labels[language] || labels.pt;
 }

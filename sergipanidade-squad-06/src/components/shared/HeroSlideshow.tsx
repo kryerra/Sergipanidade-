@@ -6,12 +6,25 @@
  */
 import { useState, useEffect } from 'react';
 
+type HeroSlideImage =
+  | string
+  | {
+      src: string;
+      x?: number| string;
+      y?: number | string;
+    };
+
 interface HeroSlideshowProps {
-  images: string[];
+  images: HeroSlideImage[];
   children?: React.ReactNode;
   height?: string;
   overlayOpacity?: number;
   fit?: 'cover' | 'contain';
+}
+
+function resolvePosition(value?: number | string) {
+  if (value === undefined) return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 export function HeroSlideshow({
@@ -36,26 +49,35 @@ export function HeroSlideshow({
   return (
     <div className="relative overflow-hidden bg-black" style={{ height }}>
       {/* Slideshow de imagens */}
-      {images.map((img, index) => (
-        <div
-          key={index}
-          className="absolute inset-0 transition-opacity duration-1000 overflow-hidden"
-          style={{ opacity: index === currentIndex ? 1 : 0 }}
-        >
-          {fit === 'cover' ? (
-            <div
-              className="absolute inset-0 bg-top bg-no-repeat bg-cover"
-              style={{ backgroundImage: `url(${img})` }}
-            />
-          ) : (
-            <img
-              src={img}
-              alt=""
-              className="absolute inset-0 m-auto w-full h-full object-contain object-top"
-            />
-          )}
-        </div>
-      ))}
+      {images.map((img, index) => {
+        const isObject = typeof img !== 'string';
+        const src = isObject ? img.src : img;
+        const x = isObject ? resolvePosition(img.x) : undefined;
+        const y = isObject ? resolvePosition(img.y) : undefined;
+        const position = `${x ?? '50%'} ${y ?? '35%'}`;
+
+        return (
+          <div
+            key={index}
+            className="absolute inset-0 transition-opacity duration-1000 overflow-hidden"
+            style={{ opacity: index === currentIndex ? 1 : 0 }}
+          >
+            {fit === 'cover' ? (
+              <div
+                className="absolute inset-0 bg-no-repeat bg-cover"
+                style={{ backgroundImage: `url(${src})`, backgroundPosition: position }}
+              />
+            ) : (
+              <img
+                src={src}
+                alt=""
+                className="absolute inset-0 m-auto w-full h-full object-contain"
+                style={{ objectPosition: position }}
+              />
+            )}
+          </div>
+        );
+      })}
 
       {/* Overlay escuro semitransparente */}
       <div
@@ -78,13 +100,15 @@ export function HeroSlideshow({
           {images.map((_, index) => (
             <button
               key={index}
+              role="button"
+              tabIndex={0}
               onClick={() => setCurrentIndex(index)}
-              className="w-2 h-2 rounded-full transition-all duration-300"
-              style={{
-                backgroundColor: index === currentIndex ? '#FFFFFF' : 'rgba(255,255,255,0.4)',
-                width: index === currentIndex ? '24px' : '8px',
-              }}
-              aria-label={`Slide ${index + 1}`}
+              className={`h-2 transition-all duration-300 border-none cursor-pointer ${
+                index === currentIndex
+                  ? 'w-6 rounded bg-white'
+                  : 'w-2 rounded-full bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Ir para slide ${index + 1}`}
             />
           ))}
         </div>

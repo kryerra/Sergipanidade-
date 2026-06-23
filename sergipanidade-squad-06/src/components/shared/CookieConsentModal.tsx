@@ -8,7 +8,7 @@ import { CookiePreferences } from '@/services/cache.service';
 
 interface CookieConsentModalProps {
   isOpen: boolean;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
   defaultPreferences?: CookiePreferences | null;
   onSave: (consent: CookiePreferences) => void;
   onAcceptAll: () => void;
@@ -31,13 +31,20 @@ export function CookieConsentModal({
     setAnalytics(defaultPreferences?.analytics ?? false);
   }, [defaultPreferences, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onSave({ required: true, performance, analytics }); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onSave, performance, analytics]);
+
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
-      <div className="w-full max-w-3xl rounded-[28px] bg-white p-6 shadow-2xl">
+    <div role="dialog" aria-modal="true" aria-labelledby="cookie-title" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center" onMouseDown={(e) => { if (e.target === e.currentTarget) onSave({ required: true, performance, analytics }); }}>
+      <div id="cookie-title" className="w-full max-w-3xl rounded-[28px] bg-white p-6 shadow-2xl">
         <div className="mb-6 flex items-start gap-4">
           <ShieldCheck className="mt-1 h-7 w-7 shrink-0 text-[#0D7377]" aria-hidden="true" />
           <div>

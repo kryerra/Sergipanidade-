@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "test": "vitest",
+    "optimize-images": "node scripts/optimize-images.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -43,6 +45,7 @@
     "cmdk": "1.1.1",
     "date-fns": "3.6.0",
     "embla-carousel-react": "8.6.0",
+    "html2canvas": "^1.4.1",
     "input-otp": "1.4.2",
     "lucide-react": "0.577.0",
     "mapbox-gl": "^3.24.0",
@@ -72,6 +75,8 @@
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "4.7.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "jsdom": "^29.1.1",
     "tailwindcss": "4.2.4",
     "typescript": "^6.0.3",
     "vite": "6.4.2"

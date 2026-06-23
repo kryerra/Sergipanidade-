@@ -17,12 +17,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import defaultProfilePhoto from "../../assets/images/miauteriapf.jpeg";
-import partnerBackground from "../../assets/images/miaufundo2.jpeg";
+import partnerBackground from "../../assets/images/miauteria_nova.jpg";
 import { translations } from "@/constants/translations";
+import { useToast } from "@/context/AppContext";
 
 /* ─────────── Tipos ─────────── */
 interface ParceiroScreenProps {
-  onToast: (message: string) => void;
   language: "pt" | "en" | "es";
 }
 
@@ -52,9 +52,11 @@ const AVATAR_COLORS: string[] = [
 function EvolutionChart({
   values,
   labels,
+  ariaLabel,
 }: {
   values: number[];
   labels: string[];
+  ariaLabel?: string;
 }): JSX.Element {
   const W = 340;
   const H = 170;
@@ -90,7 +92,7 @@ function EvolutionChart({
       viewBox={`0 0 ${W} ${H}`}
       className="w-full"
       style={{ height: H, display: "block" }}
-      aria-label="Gráfico de evolução de visualizações"
+      aria-label={ariaLabel || "Gráfico de evolução de visualizações"}
     >
       {/* Horizontal grid lines */}
       {gridVals.map((gv: number, gi: number): JSX.Element => (
@@ -158,8 +160,88 @@ function EvolutionChart({
   );
 }
 
+// Helper to translate category pills
+const getCategoryLabel = (cat: string, lang: string): string => {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cat === 'Cafeteria') {
+    return cleanLang === 'en' ? 'Coffee Shop' : cleanLang === 'es' ? 'Cafetería' : 'Cafeteria';
+  }
+  if (cat === 'Adoção') {
+    return cleanLang === 'en' ? 'Adoption' : cleanLang === 'es' ? 'Adopción' : 'Adoção';
+  }
+  return cat; // "Pet Friendly"
+};
+
+// Helper to translate relative date strings
+const getDateTraduzida = (dateStr: string, lang: string): string => {
+  const cleanLang = lang === 'sp' ? 'pt' : lang;
+  if (cleanLang === 'pt') return dateStr;
+
+  let translated = dateStr;
+  if (cleanLang === 'en') {
+    translated = translated
+      .replace(/dias atrás/gi, "days ago")
+      .replace(/dia atrás/gi, "day ago")
+      .replace(/semana atrás/gi, "week ago")
+      .replace(/semanas atrás/gi, "weeks ago")
+      .replace(/mês atrás/gi, "month ago")
+      .replace(/meses atrás/gi, "months ago");
+  } else if (cleanLang === 'es') {
+    translated = translated
+      .replace(/dias atrás/gi, "días atrás")
+      .replace(/dia atrás/gi, "día atrás")
+      .replace(/semana atrás/gi, "semana atrás")
+      .replace(/semanas atrás/gi, "semanas atrás")
+      .replace(/mês atrás/gi, "mes atrás")
+      .replace(/meses atrás/gi, "meses atrás");
+  }
+  return translated;
+};
+
+const REVIEW_TRANSLATIONS: Record<number, { comment?: Record<string, string>; existingResponse?: Record<string, string> }> = {
+  1: {
+    comment: {
+      en: "Extraordinary space! The harmony between the sheltered kittens and the coffee menu is impeccable. The respect and love for the animals is noticeable, and the service is very attentive.",
+      es: "¡Espacio extraordinario! La armonía entre los gatitos acogidos y el menú de cafés es impecable. Se percibe el respeto y cariño por los animales, además de una atención muy atenta."
+    }
+  },
+  2: {
+    comment: {
+      en: "Extremely cozy environment, ideal for reading or casual meetings in the presence of felines. The social proposal of the cat café deserves all the recognition in Aracaju.",
+      es: "Ambiente extremadamente acogedor, ideal para lectura o reuniones casuales en presencia de los felinos. La propuesta social del cat café merece todo el reconocimiento en Aracaju."
+    },
+    existingResponse: {
+      en: "Thank you so much for the prestige and positive feedback, João! Your presence and support strengthen our cause. We hope to see you again soon at Miauteria!",
+      es: "¡Muchísimas gracias por el prestigio y el comentario positivo, João! Tu presencia y apoyo fortalecen nuestra causa. ¡Esperamos verte pronto en la Miauteria!"
+    }
+  },
+  3: {
+    comment: {
+      en: "The cafe's proposal is wonderful and the sweets are delicious. However, on weekends the place usually reaches maximum capacity quickly, so it is wise to plan your visit in advance.",
+      es: "La propuesta del café es maravillosa y los dulces son deliciosos. Sin embargo, los fines de semana el local suele alcanzar su capacidad máxima rápidamente, por lo que es prudente planificar la visita con anticipación."
+    }
+  },
+  4: {
+    comment: {
+      en: "The initiative of integrating specialty coffee consumption with the responsible adoption of rescued felines is exemplary. Congratulations to the team for the care with hygiene and well-being of all.",
+      es: "La iniciativa de integrar el consumo de cafés de especialidad con la adopción responsable de felinos rescatados es ejemplar. Felicitaciones al equipo por el cuidado con la higiene y el bienestar de todos."
+    }
+  },
+  5: {
+    comment: {
+      en: "I visited to learn about the project and ended up adopting a beautiful kitten. The screening process is very serious and the coffee served is of top quality. Highly recommend the visit!",
+      es: "Visité para conocer el proyecto y terminó adoptando una hermosa gatita. El proceso de selección es muy serio y el café servido es de primerísima calidad. ¡Recomiendo mucho la visita!"
+    },
+    existingResponse: {
+      en: "We are immensely happy with the adoption, Carla! We wish you many joys in this new journey with your feline companion. A big hug from our entire team!",
+      es: "¡Estamos inmensamente felices con la adopción, Carla! Te deseamos muchas alegrías en este nuevo viaje con tu compañera felina. ¡Un gran abrazo de todo nuestro equipo!"
+    }
+  }
+};
+
 /* ─────────── Componente ─────────── */
-export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.Element {
+export function ParceiroScreen({ language }: ParceiroScreenProps): JSX.Element {
+  const { toast: onToast } = useToast();
   const t = translations[language];
 
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -223,7 +305,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
 
   const handleUploadPhotos = (): void => {
     if (selectedFiles.length === 0) {
-      onToast("📸 Selecione fotos primeiro");
+      onToast(t.selectPhotosFirst);
       return;
     }
 
@@ -243,7 +325,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
   const handleSendReply = (reviewId: number): void => {
     const text = replyText[reviewId];
     if (!text?.trim()) {
-      onToast("✏️ Escreva uma resposta antes de publicar");
+      onToast(t.writeReplyFirst);
       return;
     }
     setSentReplies((prev) => ({ ...prev, [reviewId]: text.trim() }));
@@ -256,30 +338,33 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
      JSX
   ═══════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--cinza-leve)', paddingTop: 'var(--navbar-height)' }}>
 
       {/* ══════ HEADER BRANCO COM IMAGEM DE FUNDO ══════ */}
       <div
         className="relative overflow-hidden"
-        style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #E5E7EB' }}
+        style={{
+          background: "linear-gradient(135deg, #0D2B2E 0%, #0D7377 60%, #14544A 100%)",
+          borderBottom: '1px solid #E5E7EB',
+        }}
       >
         <img
           src={partnerBackground}
           alt="Portal background"
-          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-80"
-          style={{ zIndex: 0 }}
+          className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-40"
+          style={{ zIndex: 0, objectPosition: 'center center' }}
         />
-        <div className="absolute inset-0 bg-white/70" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-20 relative z-10">
+        <div className="absolute inset-0 bg-black/15" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-36 pb-10 relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <div>
               <h1
-                className="font-bold tracking-tight leading-tight"
-                style={{ fontSize: "36px", color: '#1E293B', fontFamily: 'Inter, sans-serif' }}
+                className="font-semibold tracking-tight leading-tight"
+                style={{ fontSize: "36px", color: '#FFFFFF', fontFamily: "var(--font-display)" }}
               >
                 {t.partnerPortal}
               </h1>
-              <p className="text-sm mt-0.5" style={{ color: '#64748B' }}>{t.manageEstablishment}</p>
+              <p className="text-sm mt-0.5 font-medium" style={{ color: '#FFFFFF' }}>{t.manageEstablishment}</p>
             </div>
           </div>
         </div>
@@ -302,7 +387,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               {profilePhoto ? (
                 <img
                   src={profilePhoto}
-                  alt="Foto da Miauteria"
+                  alt={t.establishmentPhotoAlt || "Foto do estabelecimento"}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -332,7 +417,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                         className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                         style={{ backgroundColor: '#F1F5F9', color: '#64748B' }}
                       >
-                        {cat}
+                        {getCategoryLabel(cat, language)}
                       </span>
                     ))}
                     {/* Verificado badge */}
@@ -518,7 +603,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                       className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
                       style={{ color: '#F59E0B', backgroundColor: '#FEF3C7' }}
                     >
-                      Em progresso
+                      {t.inProgress || "Em progresso"}
                     </span>
                   )}
                 </div>
@@ -541,7 +626,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
             </div>
             <p className="text-xs mb-4" style={{ color: '#64748B' }}>{t.evolutionChartDesc}</p>
 
-            <EvolutionChart values={CHART_VALUES} labels={months} />
+            <EvolutionChart values={CHART_VALUES} labels={months} ariaLabel={t.evolutionChartAria} />
           </div>
         </div>
 
@@ -567,7 +652,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                 <p className="font-bold text-white text-sm">
                   {t.addPhotos}
                 </p>
-                <p className="text-white/70 text-xs mt-0.5">Galeria · fotos do local</p>
+                <p className="text-white/70 text-xs mt-0.5">{t.quickActionsGalleryDesc}</p>
               </div>
             </button>
 
@@ -598,7 +683,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                   {t.respondReviews}
                 </p>
                 <p className="text-white/70 text-xs mt-0.5">
-                  {reviews.filter((r) => !r.replied && !sentReplies[r.id]).length} pendente(s)
+                  {reviews.filter((r) => !r.replied && !sentReplies[r.id]).length} {t.pendingReviews}
                 </p>
               </div>
             </button>
@@ -617,9 +702,9 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               </div>
               <div>
                 <p className="font-bold text-white text-sm">
-                  PROMOVER
+                  {t.promote}
                 </p>
-                <p className="text-white/70 text-xs mt-0.5">Planos · destaque · visibilidade</p>
+                <p className="text-white/70 text-xs mt-0.5">{t.quickActionsPromoteDesc}</p>
               </div>
             </button>
           </div>
@@ -677,7 +762,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-1.5">
                         <div>
                           <span className="font-bold text-sm text-(--preto)">{review.name}</span>
-                          <span className="ml-2 text-xs text-(--cinza-txt)">{review.date}</span>
+                          <span className="ml-2 text-xs text-(--cinza-txt)">{getDateTraduzida(review.date, language)}</span>
                         </div>
                         {/* Stars */}
                         <div className="flex">
@@ -696,7 +781,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                       </div>
 
                       <p className="text-sm text-(--cinza-txt) leading-relaxed mb-3">
-                        {review.comment}
+                        {REVIEW_TRANSLATIONS[review.id]?.comment?.[language] || review.comment}
                       </p>
 
                       {/* Existing / sent reply */}
@@ -715,7 +800,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                             {t.yourResponse}
                           </p>
                           <p className="text-xs text-gray-500 leading-relaxed">
-                            {displayReply}
+                            {hasSentReply ? sentReplies[review.id] : (REVIEW_TRANSLATIONS[review.id]?.existingResponse?.[language] || review.existingResponse)}
                           </p>
                         </div>
                       )}
@@ -772,11 +857,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                       {isReplied && !isReplying && (
                         <span className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
                           <CheckCircle2 size={13} />
-                          {language === "pt"
-                            ? "Respondido"
-                            : language === "en"
-                            ? "Replied"
-                            : "Respondido"}
+                          {t.replied}
                         </span>
                       )}
                     </div>
@@ -797,7 +878,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-gray-900">
+              <h3 className="font-semibold font-display tracking-tight text-2xl text-gray-900">
                 {t.editEstablishment}
               </h3>
               <button
@@ -853,7 +934,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-7 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Fjalla_One'] text-2xl text-gray-900">
+              <h3 className="font-semibold font-display tracking-tight text-2xl text-gray-900">
                 {t.addPhotosTitle}
               </h3>
               <button
@@ -883,7 +964,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               </label>
               {selectedFiles.length > 0 && (
                 <p className="text-sm font-bold mt-3" style={{ color: "#0D7C84" }}>
-                  {selectedFiles.length} arquivo(s) selecionado(s)
+                  {selectedFiles.length} {t.filesSelected}
                 </p>
               )}
             </div>
@@ -911,7 +992,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
           <div className="bg-white rounded-2xl p-7 max-w-3xl w-full my-8 shadow-2xl">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-2xl" style={{ color: '#0F172A' }}>
-                {language === "pt" ? "Promova seu Estabelecimento" : language === "en" ? "Promote your Establishment" : "Promociona tu Establecimiento"}
+                {t.promoteTitle}
               </h3>
               <button
                 onClick={() => setShowPromoteModal(false)}
@@ -921,11 +1002,7 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               </button>
             </div>
             <p className="text-sm mb-6" style={{ color: '#64748B' }}>
-              {language === "pt"
-                ? "Aumente sua visibilidade e alcance mais turistas com nossos planos"
-                : language === "en"
-                ? "Increase your visibility and reach more tourists with our plans"
-                : "Aumenta tu visibilidad y alcanza más turistas con nuestros planes"}
+              {t.promoteDesc}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -933,22 +1010,22 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
               <div className="border-2 rounded-2xl p-5 transition-colors" style={{ borderColor: '#E5E7EB' }}>
                 <div className="text-center mb-4">
                   <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>
-                    {language === "pt" ? "Básico" : language === "en" ? "Basic" : "Básico"}
+                    {t.planBasic}
                   </h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0D7C84' }}>
-                    R$ 99<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 99<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
                 <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque na listagem</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Galeria de até 10 fotos</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Estatísticas básicas</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planBasicDetail3}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Básico selecionado!"); }}
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planBasicSelected); }}
                   className="w-full py-2.5 border-2 border-(--azul) text-(--azul) rounded-sm text-xs font-bold hover:bg-(--azul) hover:text-white transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
 
@@ -962,52 +1039,52 @@ export function ParceiroScreen({ onToast, language }: ParceiroScreenProps): JSX.
                 </div>
                 <div className="text-center mb-4">
                   <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>
-                    {language === "pt" ? "Profissional" : language === "en" ? "Professional" : "Profesional"}
+                    {t.planProfessional}
                   </h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0D7C84' }}>
-                    R$ 199<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 199<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
                 <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque no topo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Fotos ilimitadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Estatísticas avançadas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Post em redes sociais</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail3}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planProfessionalDetail4}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Profissional selecionado!"); }}
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planProfessionalSelected); }}
                   className="w-full py-2.5 bg-primary text-white rounded-sm text-xs font-bold hover:bg-(--vermelho) transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
 
               {/* Premium */}
               <div className="border-2 rounded-2xl p-5 transition-colors" style={{ borderColor: '#E5E7EB' }}>
                 <div className="text-center mb-4">
-                  <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>Premium</h4>
+                  <h4 className="font-bold text-xl" style={{ color: '#0F172A' }}>{t.planPremium}</h4>
                   <div className="font-bold text-xl mt-1" style={{ color: '#0F172A' }}>
-                    R$ 349<span className="text-sm" style={{ color: '#64748B' }}>/mês</span>
+                    R$ 349<span className="text-sm" style={{ color: '#64748B' }}>{t.perMonth}</span>
                   </div>
                 </div>
                 <ul className="text-xs text-(--cinza-txt) space-y-2 mb-4">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Destaque exclusivo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Conteúdo em vídeo</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Análise completa</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> Gerente dedicado</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail1}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail2}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail3}</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={12} className="text-(--verde)" /> {t.planPremiumDetail4}</li>
                 </ul>
                 <button
-                  onClick={() => { setShowPromoteModal(false); onToast("✓ Plano Premium selecionado!"); }}
+                  onClick={() => { setShowPromoteModal(false); onToast(t.planPremiumSelected); }}
                   className="w-full py-2.5 border-2 border-[#7C3AED] text-[#7C3AED] rounded-sm text-xs font-bold hover:bg-[#7C3AED] hover:text-white transition-colors"
                 >
-                  Selecionar
+                  {t.select}
                 </button>
               </div>
             </div>
 
             <div className="rounded-xl p-3 text-center" style={{ backgroundColor: '#F1F5F9' }}>
               <p className="text-xs" style={{ color: '#64748B' }}>
-                Todos os planos incluem 7 dias de teste gratuito. Cancele a qualquer momento.
+                {t.plansTerms}
               </p>
             </div>
           </div>

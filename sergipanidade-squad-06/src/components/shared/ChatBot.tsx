@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { translations } from "@/constants/translations";
+import { fetchChatBotReply } from "@/services/chatbot.service";
+import serginhoImg from '@/assets/images/serginho.png';
 
 interface ChatBotProps {
   isVisible: boolean;
-  language: 'pt' | 'en' | 'es';
+  language: 'pt' | 'en' | 'es' | 'sp';
 }
 
 interface Message {
@@ -22,7 +24,7 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     setMessages([
@@ -35,6 +37,12 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
   if (!isVisible) return null;
 
   const handleSend = async () => {
@@ -44,82 +52,30 @@ export function ChatBot({ isVisible, language }: ChatBotProps) {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
-    if (!apiKey) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: 'Chave da API não configurada. Verifique o arquivo .env.',
-          isBot: true,
-        },
-      ]);
-      return;
-    }
-
     setIsLoading(true);
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
+    let botText: string;
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          temperature: 0.4,
-          max_tokens: 512,
-          messages: [
-            {
-              role: 'system',
-              content: `Você é o assistente oficial do Hub Sergipanidade.
-Sua função é responder EXCLUSIVAMENTE sobre temas
-relacionados ao Hub Sergipanidade, incluindo:
-- Cultura, história e identidade sergipana
-- Produtos, artesanato, natureza, passeios e gastronomia de Sergipe
-- Empreendedores e projetos do Hub
-- Eventos, programações e parceiros do Hub
-
-Regras obrigatórias:
-1. NUNCA responda perguntas fora desses temas.
-2. Se a pergunta for fora do escopo, responda:
-  "Só posso ajudar com temas do Hub Sergipanidade."
-3. Use tom acolhedor, cultural e sergipano.
-4. Cite exemplos reais de Sergipe sempre que possível.`,
-            },
-            { role: 'user', content: userText },
-          ],
-        }),
-      });
-
-      const data = await response.json();
-      const botReply = response.ok && data?.choices?.length
-        ? data.choices[0]?.message?.content
-            .replace(/\*\*/g, "")
-            .replace(/\*/g, "")
-        : null;
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: botReply ??
-            t.chatResponses[
-              (Object.keys(t.chatResponses).find((key) => userText.toLowerCase().includes(key)) || 'default') as keyof typeof t.chatResponses
-            ],
-          isBot: true,
-        },
-      ]);
+      const result = await fetchChatBotReply(userText, controller.signal);
+      if (result.ok) {
+        botText = result.data;
+      } else {
+        botText = result.error.code === 'NO_API_KEY'
+          ? t.chatBotApiKeyMissing
+          : t.chatBotConnectionError;
+        console.error('ChatBot service error:', result.error);
+      }
     } catch (error) {
-      console.error('ChatBot error:', error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: 'Desculpe, não consegui conectar ao serviço de IA no momento.',
-          isBot: true,
-        },
-      ]);
+      console.error('ChatBot unexpected error:', error);
+      botText = t.chatBotConnectionError;
     } finally {
       setIsLoading(false);
     }
+
+    setMessages((prev) => [...prev, { text: botText, isBot: true }]);
   };
 
   return (
@@ -138,7 +94,7 @@ Regras obrigatórias:
         {isOpen ? (
           <X size={22} color="#FFFFFF" strokeWidth={2.5} />
         ) : (
-          <MessageCircle size={22} color="#FFFFFF" strokeWidth={2} fill="rgba(255,255,255,0.15)" />
+          <img src={serginhoImg} alt="Serginho" className="w-[38px] h-[38px] object-contain" />
         )}
 
         {/* Pulse indicator when closed */}
@@ -165,12 +121,12 @@ Regras obrigatórias:
           >
             {/* Avatar com ícone de chat */}
             <div
-              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center flex-shrink-0 overflow-hidden"
             >
-              <MessageCircle size={18} color="#FFFFFF" strokeWidth={2} />
+              <img src={serginhoImg} alt="Serginho" className="w-[28px] h-[28px] object-contain" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-['Fjalla_One'] text-[15px] tracking-wide text-white truncate">
+              <div className="font-semibold font-display text-[15px] tracking-tight text-white truncate">
                 {t.chatBotName}
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -190,7 +146,12 @@ Regras obrigatórias:
           </div>
 
           {/* Messages */}
-          <div className="flex-1 max-h-[240px] overflow-y-auto px-3.5 py-3.5 flex flex-col gap-2.5 bg-[var(--cinza-leve)]">
+          <div
+            className="flex-1 max-h-[240px] overflow-y-auto px-3.5 py-3.5 flex flex-col gap-2.5 bg-[var(--cinza-leve)]"
+            role="log"
+            aria-live="polite"
+            aria-label={t.chatBotMessagesLabel}
+          >
             {messages.map((msg, i) => (
               <div
                 key={i}
